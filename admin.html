@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNDERDOGG — ADMIN PANEL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #050102;
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image:
+                radial-gradient(circle at 50% 20%, rgba(180, 10, 25, 0.25) 0%, rgba(10, 0, 3, 0.95) 75%),
+                radial-gradient(circle at 50% 80%, rgba(140, 5, 15, 0.2) 0%, rgba(5, 1, 2, 1) 70%);
+        }
+
+        .admin-container {
+            width: 100%;
+            max-width: 480px;
+            background: radial-gradient(circle at 50% 30%, #1c0205 0%, #0d0103 65%, #050001 100%);
+            border: 2px solid #ff2a4b;
+            border-radius: 28px;
+            padding: 30px 24px;
+            box-shadow: 0 0 60px rgba(255, 0, 35, 0.3);
+            animation: breatheBg 6s ease-in-out infinite;
+        }
+
+        @keyframes breatheBg {
+            0%, 100% {
+                background: radial-gradient(circle at 50% 30%, #1c0205 0%, #0d0103 65%, #050001 100%);
+                box-shadow: 0 0 60px rgba(255, 0, 35, 0.3);
+            }
+            50% {
+                background: radial-gradient(circle at 45% 35%, #2a0308 0%, #120205 65%, #080002 100%);
+                box-shadow: 0 0 80px rgba(255, 0, 35, 0.45);
+            }
+        }
+
+        .admin-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            text-align: center;
+            color: #ff2a4b;
+            text-shadow: 0 0 20px rgba(255, 42, 75, 0.4);
+            letter-spacing: 4px;
+            margin-bottom: 6px;
+        }
+
+        .admin-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            letter-spacing: 3px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 42, 75, 0.1);
+            padding-bottom: 16px;
+        }
+
+        #loginSection {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        #loginSection input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 42, 75, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+            margin-bottom: 14px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        #loginSection input:focus {
+            border-color: #ff2a4b;
+            box-shadow: 0 0 20px rgba(255, 42, 75, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #ff2a4b;
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255, 42, 75, 0.3);
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            box-shadow: 0 0 50px rgba(255, 42, 75, 0.5);
+            transform: scale(1.02);
+        }
+
+        .login-error {
+            color: #ff4444;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        #adminPanel {
+            display: none;
+        }
+
+        .settings-group {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 42, 75, 0.1);
+            border-radius: 16px;
+            padding: 18px 16px;
+            margin-bottom: 18px;
+        }
+
+        .settings-group h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            color: #ff2a4b;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            text-shadow: 0 0 10px rgba(255, 42, 75, 0.2);
+        }
+
+        .setting-row {
+            margin-bottom: 12px;
+        }
+
+        .setting-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-row label {
+            display: block;
+            color: #aaa;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .setting-row input,
+        .setting-row select,
+        .setting-row textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 42, 75, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .setting-row input:focus,
+        .setting-row select:focus,
+        .setting-row textarea:focus {
+            border-color: #ff2a4b;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.15);
+        }
+
+        .setting-row textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 12px;
+            background: #00aa55;
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 170, 85, 0.2);
+            transition: 0.3s;
+            margin-top: 4px;
+        }
+
+        .save-btn:hover {
+            box-shadow: 0 0 40px rgba(0, 170, 85, 0.4);
+            transform: scale(1.02);
+        }
+
+        .participants-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .participant-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            margin-bottom: 4px;
+            font-size: 13px;
+            border-left: 2px solid rgba(255, 42, 75, 0.2);
+        }
+
+        .participant-item .tg { color: #00ccff; }
+        .participant-item .kick { color: #66ff66; }
+        .participant-item .casino { color: #ffcc00; }
+
+        .participant-item .flags {
+            font-size: 10px;
+            color: #ff4444;
+            margin-left: 6px;
+        }
+
+        .participant-item .remove-btn {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 6px;
+        }
+
+        .participant-item .remove-btn:hover {
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .participant-item.fraud {
+            border-left-color: #ff0000;
+            background: rgba(255, 0, 0, 0.08);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 42, 75, 0.1);
+            border-radius: 10px;
+            padding: 10px 6px;
+            text-align: center;
+        }
+
+        .stat-box .num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .stat-box .label {
+            font-size: 9px;
+            color: #888;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .stat-box.total .num { color: #fff; }
+        .stat-box.bots .num { color: #ff6666; }
+        .stat-box.real .num { color: #00ff88; }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .action-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .action-btn.primary {
+            background: #ff2a4b;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 42, 75, 0.3);
+        }
+
+        .action-btn.primary:hover {
+            box-shadow: 0 0 40px rgba(255, 42, 75, 0.5);
+            transform: scale(1.02);
+        }
+
+        .action-btn.danger {
+            background: transparent;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+        }
+
+        .action-btn.danger:hover {
+            background: #ff4444;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .action-btn.success {
+            background: #00aa55;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 170, 85, 0.2);
+        }
+
+        .action-btn.success:hover {
+            box-shadow: 0 0 40px rgba(0, 170, 85, 0.4);
+            transform: scale(1.02);
+        }
+
+        .action-btn.full {
+            grid-column: 1 / -1;
+        }
+
+        .action-btn.warning {
+            background: #ff8800;
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 136, 0, 0.3);
+        }
+
+        .action-btn.warning:hover {
+            box-shadow: 0 0 40px rgba(255, 136, 0, 0.5);
+            transform: scale(1.02);
+        }
+
+        .action-btn.purple {
+            background: #8844ff;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(136, 68, 255, 0.3);
+        }
+
+        .action-btn.purple:hover {
+            box-shadow: 0 0 40px rgba(136, 68, 255, 0.5);
+            transform: scale(1.02);
+        }
+
+        /* ===== ПРОВЕРКА РЕФЕРАЛА ===== */
+        .check-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .check-row input {
+            flex: 1;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 42, 75, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            font-family: 'Rajdhani', sans-serif;
+        }
+        .check-row input:focus {
+            border-color: #ff2a4b;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.15);
+        }
+        .check-row button {
+            padding: 10px 20px;
+            background: #8844ff;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        .check-row button:hover {
+            box-shadow: 0 0 30px rgba(136, 68, 255, 0.4);
+            transform: scale(1.02);
+        }
+
+        .check-result {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #aaa;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #8844ff;
+            display: none;
+        }
+        .check-result.show {
+            display: block;
+        }
+        .check-result .positive {
+            color: #00ff88;
+        }
+        .check-result .negative {
+            color: #ff4444;
+        }
+
+        .logout-btn {
+            margin-top: 16px;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 30px;
+            color: #666;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .logout-btn:hover {
+            border-color: #ff2a4b;
+            color: #ff2a4b;
+        }
+
+        .participants-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .participants-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+        }
+        .participants-list::-webkit-scrollbar-thumb {
+            background: #ff2a4b;
+            border-radius: 4px;
+        }
+
+        .fraud-badge {
+            display: inline-block;
+            font-size: 8px;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            border-radius: 4px;
+            padding: 1px 6px;
+            margin-left: 4px;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+
+    <div class="admin-title">⛓️ UNDERDOGG</div>
+    <div class="admin-subtitle">ADMIN PANEL v2.0</div>
+
+    <!-- ===== ВХОД ===== -->
+    <div id="loginSection">
+        <input type="password" id="adminPassword" placeholder="ВВЕДИ ПАРОЛЬ" />
+        <button class="login-btn" id="loginBtn">🔓 ВОЙТИ</button>
+        <div class="login-error" id="loginError">❌ НЕВЕРНЫЙ ПАРОЛЬ</div>
+    </div>
+
+    <!-- ===== АДМИН-ПАНЕЛЬ ===== -->
+    <div id="adminPanel">
+
+        <!-- ===== СТАТИСТИКА ===== -->
+        <div class="settings-group">
+            <h3>📊 СТАТИСТИКА</h3>
+            <div class="stats-grid">
+                <div class="stat-box total">
+                    <div class="num" id="statTotal">0</div>
+                    <div class="label">ВСЕГО</div>
+                </div>
+                <div class="stat-box bots">
+                    <div class="num" id="statBots">0</div>
+                    <div class="label">БОТЫ</div>
+                </div>
+                <div class="stat-box real">
+                    <div class="num" id="statReal">0</div>
+                    <div class="label">РЕАЛЬНЫЕ</div>
+                </div>
+            </div>
+            <div style="text-align:center;font-size:11px;color:#666;letter-spacing:1px;">
+                🏆 ПОБЕДИТЕЛЕЙ: <span id="statWinners" style="color:#ffcc00;font-weight:700;">0</span>
+            </div>
+        </div>
+
+        <!-- ===== УЧАСТНИКИ ===== -->
+        <div class="settings-group">
+            <h3>👥 УЧАСТНИКИ</h3>
+            <div class="participants-list" id="participantsList">
+                <div style="color:#444;font-size:13px;text-align:center;padding:20px 0;">
+                    Нет зарегистрированных участников
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:10px;">
+                <button class="action-btn danger" style="flex:1;" id="clearParticipantsBtn">🗑️ ОЧИСТИТЬ</button>
+                <button class="action-btn success" style="flex:1;" id="addDemoParticipantsBtn">➕ ДЕМО</button>
+            </div>
+        </div>
+
+        <!-- ===== ПРОВЕРКА РЕФЕРАЛА ===== -->
+        <div class="settings-group">
+            <h3>🔗 ПРОВЕРКА РЕФЕРАЛА</h3>
+            <div class="check-row">
+                <input type="text" id="refCheckInput" placeholder="Введи ник для проверки" />
+                <button id="refCheckBtn">ПРОВЕРИТЬ</button>
+            </div>
+            <div class="check-result" id="refCheckResult">
+                <span id="refCheckText">🔍 Проверка...</span>
+            </div>
+        </div>
+
+        <!-- ===== ПРОВЕРКА НА БОТА ===== -->
+        <div class="settings-group">
+            <h3>🤖 ПРОВЕРКА НА БОТА</h3>
+            <div class="check-row">
+                <input type="text" id="botCheckInput" placeholder="Введи ник для проверки" />
+                <button id="botCheckBtn">ПРОВЕРИТЬ</button>
+            </div>
+            <div class="check-result" id="botCheckResult">
+                <span id="botCheckText">🔍 Проверка...</span>
+            </div>
+        </div>
+
+        <!-- ===== НАСТРОЙКИ ===== -->
+        <div class="settings-group">
+            <h3>⚙️ НАСТРОЙКИ</h3>
+
+            <div class="setting-row">
+                <label>📅 ДАТА РОЗЫГРЫША</label>
+                <input type="datetime-local" id="giveawayDate" />
+            </div>
+
+            <div class="setting-row">
+                <label>🏆 НАЗВАНИЕ КОНКУРСА</label>
+                <input type="text" id="contestTitle" placeholder="Например: Розыгрыш 1000$" />
+            </div>
+
+            <div class="setting-row">
+                <label>📋 УСЛОВИЯ КОНКУРСА</label>
+                <textarea id="contestRules" rows="3" placeholder="Подпишись на канал, сделай репост..."></textarea>
+            </div>
+
+            <div class="setting-row">
+                <label>👑 КОЛИЧЕСТВО ПОБЕДИТЕЛЕЙ</label>
+                <input type="number" id="winnersCountInput" min="1" max="10" value="3" />
+            </div>
+
+            <div class="setting-row">
+                <label>🎰 НАЗВАНИЕ КАЗИНО</label>
+                <input type="text" id="casinoNameInput" placeholder="Stake / Roobet / и т.д." />
+            </div>
+
+            <button class="save-btn" id="saveSettingsBtn">💾 СОХРАНИТЬ НАСТРОЙКИ</button>
+        </div>
+
+        <!-- ===== УПРАВЛЕНИЕ ===== -->
+        <div class="settings-group">
+            <h3>🎮 УПРАВЛЕНИЕ</h3>
+            <div class="action-buttons">
+                <button class="action-btn primary" id="runGiveawayBtn">🎰 ЗАПУСТИТЬ РОЗЫГРЫШ</button>
+                <button class="action-btn success" id="pickWinnerBtn">🏆 ВЫБРАТЬ ПОБЕДИТЕЛЯ</button>
+                <button class="action-btn danger full" id="resetAllBtn">🔄 СБРОСИТЬ ВСЁ</button>
+            </div>
+        </div>
+
+        <!-- ===== ВЫХОД ===== -->
+        <button class="logout-btn" id="logoutBtn">🚪 ВЫЙТИ</button>
+
+    </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- ===== СКРИПТЫ ===== -->
+<!-- ============================================================ -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // ============================================================
+        // 1. ПЕРЕМЕННЫЕ
+        // ============================================================
+        const PASSWORD = 'underd0gg2026';
+
+        const loginSection = document.getElementById('loginSection');
+        const adminPanel = document.getElementById('adminPanel');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        const participantsList = document.getElementById('participantsList');
+        const clearParticipantsBtn = document.getElementById('clearParticipantsBtn');
+        const addDemoBtn = document.getElementById('addDemoParticipantsBtn');
+
+        const giveawayDateInput = document.getElementById('giveawayDate');
+        const contestTitleInput = document.getElementById('contestTitle');
+        const contestRulesInput = document.getElementById('contestRules');
+        const winnersCountInput = document.getElementById('winnersCountInput');
+        const casinoNameInput = document.getElementById('casinoNameInput');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+
+        const runGiveawayBtn = document.getElementById('runGiveawayBtn');
+        const pickWinnerBtn = document.getElementById('pickWinnerBtn');
+        const resetAllBtn = document.getElementById('resetAllBtn');
+
+        const statTotal = document.getElementById('statTotal');
+        const statBots = document.getElementById('statBots');
+        const statReal = document.getElementById('statReal');
+        const statWinners = document.getElementById('statWinners');
+
+        // ============================================================
+        // 2. РАБОТА С LOCALSTORAGE
+        // ============================================================
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem('underdogg_admin') || '{}');
+            return {
+                participants: data.participants || [],
+                settings: data.settings || {},
+                winners: data.winners || [],
+                giveawayActive: data.giveawayActive || false
+            };
+        }
+
+        function saveData(data) {
+            localStorage.setItem('underdogg_admin', JSON.stringify(data));
+        }
+
+        function getParticipants() {
+            return loadData().participants;
+        }
+
+        function setParticipants(list) {
+            const data = loadData();
+            data.participants = list;
+            saveData(data);
+        }
+
+        function getSettings() {
+            return loadData().settings;
+        }
+
+        function setSettings(settings) {
+            const data = loadData();
+            data.settings = settings;
+            saveData(data);
+        }
+
+        // ============================================================
+        // 3. АНТИФРОД-ПРОВЕРКА
+        // ============================================================
+        function checkFraud(participants) {
+            const tgMap = {};
+            const kickMap = {};
+            const casinoMap = {};
+            const fraudList = [];
+
+            participants.forEach((p, index) => {
+                const flags = [];
+                if (tgMap[p.tg]) flags.push('tg');
+                if (kickMap[p.kick]) flags.push('kick');
+                if (casinoMap[p.casino]) flags.push('casino');
+
+                tgMap[p.tg] = true;
+                kickMap[p.kick] = true;
+                casinoMap[p.casino] = true;
+
+                if (flags.length > 0) {
+                    fraudList.push({ index, flags });
+                }
+            });
+
+            return fraudList;
+        }
+
+        // ============================================================
+        // 4. ВХОД / ВЫХОД
+        // ============================================================
+        loginBtn.addEventListener('click', function() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === PASSWORD) {
+                loginSection.style.display = 'none';
+                adminPanel.style.display = 'block';
+                loginError.style.display = 'none';
+                renderParticipants();
+                loadSettingsToForm();
+                updateStats();
+            } else {
+                loginError.style.display = 'block';
+                setTimeout(() => { loginError.style.display = 'none'; }, 3000);
+            }
+        });
+
+        logoutBtn.addEventListener('click', function() {
+            adminPanel.style.display = 'none';
+            loginSection.style.display = 'block';
+            document.getElementById('adminPassword').value = '';
+        });
+
+        // ============================================================
+        // 5. ОТОБРАЖЕНИЕ УЧАСТНИКОВ
+        // ============================================================
+        function renderParticipants() {
+            const list = getParticipants();
+            const fraudList = checkFraud(list);
+
+            if (list.length === 0) {
+                participantsList.innerHTML = `
+                    <div style="color:#444;font-size:13px;text-align:center;padding:20px 0;">
+                        Нет зарегистрированных участников
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            list.forEach((p, index) => {
+                const isFraud = fraudList.some(f => f.index === index);
+                const fraudFlags = fraudList.find(f => f.index === index);
+
+                let flagText = '';
+                if (fraudFlags) {
+                    const f = fraudFlags.flags;
+                    if (f.includes('tg')) flagText += '🔁TG ';
+                    if (f.includes('kick')) flagText += '🔁Kick ';
+                    if (f.includes('casino')) flagText += '🔁Casino ';
+                }
+
+                html += `
+                    <div class="participant-item ${isFraud ? 'fraud' : ''}">
+                        <div>
+                            <span class="tg">${p.tg || '—'}</span>
+                            <span style="color:#444;margin:0 4px;">|</span>
+                            <span class="kick">${p.kick || '—'}</span>
+                            <span style="color:#444;margin:0 4px;">|</span>
+                            <span class="casino">${p.casino || '—'}</span>
+                            ${flagText ? `<span class="fraud-badge">⚠️ ${flagText.trim()}</span>` : ''}
+                        </div>
+                        <button class="remove-btn" data-index="${index}">✕</button>
+                    </div>
+                `;
+            });
+            participantsList.innerHTML = html;
+
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.dataset.index);
+                    const list = getParticipants();
+                    list.splice(idx, 1);
+                    setParticipants(list);
+                    renderParticipants();
+                    updateStats();
+                    syncToHome();
+                });
+            });
+        }
+
+        // ============================================================
+        // 6. СТАТИСТИКА
+        // ============================================================
+        function updateStats() {
+            const list = getParticipants();
+            const total = list.length;
+            const settings = getSettings();
+            // Для демо — считаем ботами тех, у кого есть флаги
+            const fraudList = checkFraud(list);
+            const bots = fraudList.length;
+            const real = total - bots;
+            const winners = parseInt(settings.winnersCount) || 3;
+
+            statTotal.textContent = total;
+            statBots.textContent = bots;
+            statReal.textContent = real;
+            statWinners.textContent = Math.min(winners, real);
+        }
+
+        // ============================================================
+        // 7. ЗАГРУЗКА НАСТРОЕК
+        // ============================================================
+        function loadSettingsToForm() {
+            const settings = getSettings();
+            if (settings.giveawayDate) {
+                const date = new Date(settings.giveawayDate);
+                if (!isNaN(date)) {
+                    giveawayDateInput.value = date.toISOString().slice(0, 16);
+                }
+            }
+            contestTitleInput.value = settings.contestTitle || 'РОЗЫГРЫШ';
+            contestRulesInput.value = settings.contestRules || '';
+            winnersCountInput.value = settings.winnersCount || 3;
+            casinoNameInput.value = settings.casinoName || 'КАЗИНО';
+        }
+
+        // ============================================================
+        // 8. СОХРАНЕНИЕ НАСТРОЕК
+        // ============================================================
+        saveSettingsBtn.addEventListener('click', function() {
+            const settings = {
+                giveawayDate: giveawayDateInput.value ? new Date(giveawayDateInput.value).toISOString() : '',
+                contestTitle: contestTitleInput.value.trim() || 'РОЗЫГРЫШ',
+                contestRules: contestRulesInput.value.trim() || '',
+                winnersCount: parseInt(winnersCountInput.value) || 3,
+                casinoName: casinoNameInput.value.trim() || 'КАЗИНО'
+            };
+            setSettings(settings);
+            updateStats();
+            syncToHome();
+
+            const btn = this;
+            const orig = btn.textContent;
+            btn.textContent = '✅ СОХРАНЕНО!';
+            btn.style.background = '#00aa55';
+            setTimeout(() => {
+                btn.textContent = orig;
+                btn.style.background = '#00aa55';
+            }, 2000);
+        });
+
+        // ============================================================
+        // 9. СИНХРОНИЗАЦИЯ С HOME.HTML
+        // ============================================================
+        function syncToHome() {
+            const data = loadData();
+            const settings = data.settings;
+            const participants = data.participants;
+
+            if (settings.giveawayDate) {
+                localStorage.setItem('giveawayDate', settings.giveawayDate);
+            }
+            if (settings.casinoName) {
+                localStorage.setItem('casinoName', settings.casinoName);
+            }
+            if (settings.contestTitle) {
+                localStorage.setItem('contestTitle', settings.contestTitle);
+            }
+            if (settings.contestRules) {
+                localStorage.setItem('contestRules', settings.contestRules);
+            }
+            if (settings.winnersCount) {
+                localStorage.setItem('winnersCount', settings.winnersCount);
+            }
+            localStorage.setItem('underdogg_participants', JSON.stringify(participants));
+        }
+
+        // ============================================================
+        // 10. ДЕМО-УЧАСТНИКИ
+        // ============================================================
+        addDemoBtn.addEventListener('click', function() {
+            const list = getParticipants();
+            const names = ['alex', 'max', 'dimon', 'vlad', 'sanya', 'kostya', 'petya', 'misha', 'igor', 'ruslan'];
+            const usedNames = new Set();
+
+            for (let i = 0; i < 12; i++) {
+                let name;
+                do {
+                    name = names[Math.floor(Math.random() * names.length)] + (Math.floor(Math.random() * 100));
+                } while (usedNames.has(name));
+                usedNames.add(name);
+
+                const isDuplicate = Math.random() < 0.2 && i > 0;
+                const base = isDuplicate ? list[Math.floor(Math.random() * list.length)] : null;
+
+                list.push({
+                    tg: isDuplicate ? base.tg : '@' + name,
+                    kick: isDuplicate ? base.kick : name + '_kick',
+                    casino: isDuplicate ? base.casino : 'user' + (Math.floor(Math.random() * 9000) + 1000)
+                });
+            }
+            setParticipants(list);
+            renderParticipants();
+            updateStats();
+            syncToHome();
+        });
+
+        // ============================================================
+        // 11. ОЧИСТИТЬ УЧАСТНИКОВ
+        // ============================================================
+        clearParticipantsBtn.addEventListener('click', function() {
+            if (confirm('🗑️ Удалить всех участников?')) {
+                setParticipants([]);
+                renderParticipants();
+                updateStats();
+                syncToHome();
+            }
+        });
+
+        // ============================================================
+        // 12. СБРОСИТЬ ВСЁ
+        // ============================================================
+        resetAllBtn.addEventListener('click', function() {
+            if (confirm('⚠️ Сбросить ВСЁ (участники, настройки)?')) {
+                localStorage.removeItem('underdogg_admin');
+                localStorage.removeItem('underdogg_participants');
+                localStorage.removeItem('giveawayDate');
+                localStorage.removeItem('contestTitle');
+                localStorage.removeItem('contestRules');
+                renderParticipants();
+                updateStats();
+                loadSettingsToForm();
+                document.getElementById('adminPassword').value = '';
+            }
+        });
+
+        // ============================================================
+        // 13. УПРАВЛЕНИЕ РОЗЫГРЫШЕМ
+        // ============================================================
+        runGiveawayBtn.addEventListener('click', function() {
+            const list = getParticipants();
+            if (list.length === 0) {
+                alert('❌ Нет участников!');
+                return;
+            }
+            alert('🎰 Розыгрыш запущен!');
+        });
+
+        pickWinnerBtn.addEventListener('click', function() {
+            const list = getParticipants();
+            if (list.length === 0) {
+                alert('❌ Нет участников!');
+                return;
+            }
+
+            const settings = getSettings();
+            const winnersCount = parseInt(settings.winnersCount) || 3;
+            const fraudList = checkFraud(list);
+            const real = list.filter((_, i) => !fraudList.some(f => f.index === i));
+
+            if (real.length === 0) {
+                alert('❌ Все участники отсеяны как боты!');
+                return;
+            }
+
+            const shuffled = [...real].sort(() => Math.random() - 0.5);
+            const winners = shuffled.slice(0, Math.min(winnersCount, real.length));
+
+            const data = loadData();
+            data.winners = winners;
+            saveData(data);
+
+            let msg = '🏆 ПОБЕДИТЕЛИ:\n\n';
+            winners.forEach((w, i) => {
+                msg += `${i+1}. ${w.tg} (Kick: ${w.kick}, Casino: ${w.casino})\n`;
+            });
+            alert(msg);
+            updateStats();
+        });
+
+        // ============================================================
+        // 14. ПРОВЕРКА РЕФЕРАЛА (ЗАГЛУШКА)
+        // ============================================================
+        document.getElementById('refCheckBtn').addEventListener('click', function() {
+            const input = document.getElementById('refCheckInput');
+            const result = document.getElementById('refCheckResult');
+            const text = document.getElementById('refCheckText');
+            const nick = input.value.trim();
+
+            if (!nick) {
+                alert('⚠️ Введи ник для проверки');
+                return;
+            }
+
+            result.classList.add('show');
+            text.innerHTML = '🔍 Проверяем реферала <span class="positive">' + nick + '</span>...';
+
+            setTimeout(() => {
+                const isRef = Math.random() > 0.5;
+                if (isRef) {
+                    text.innerHTML = '✅ <span class="positive">' + nick + ' является рефералом!</span> (дата: 2026-08-01)';
+                } else {
+                    text.innerHTML = '❌ <span class="negative">' + nick + ' не найден в реферальной системе</span>';
+                }
+            }, 1200);
+        });
+
+        // ============================================================
+        // 15. ПРОВЕРКА НА БОТА (ЗАГЛУШКА)
+        // ============================================================
+        document.getElementById('botCheckBtn').addEventListener('click', function() {
+            const input = document.getElementById('botCheckInput');
+            const result = document.getElementById('botCheckResult');
+            const text = document.getElementById('botCheckText');
+            const nick = input.value.trim();
+
+            if (!nick) {
+                alert('⚠️ Введи ник для проверки');
+                return;
+            }
+
+            result.classList.add('show');
+            text.innerHTML = '🔍 Проверяем <span class="positive">' + nick + '</span>...';
+
+            setTimeout(() => {
+                const isBot = Math.random() > 0.6;
+                const tgDate = '2024-' + String(Math.floor(Math.random() * 12) + 1).padStart(2, '0') + '-' + String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+                const kickSub = Math.random() > 0.3 ? '✅ Подписан на Kick' : '❌ Не подписан на Kick';
+
+                if (isBot) {
+                    text.innerHTML = `
+                        🤖 <span class="negative">${nick} — ПОДОЗРИТЕЛЬНЫЙ БОТ!</span><br>
+                        📅 Дата регистрации TG: ${tgDate}<br>
+                        ${kickSub}
+                    `;
+                } else {
+                    text.innerHTML = `
+                        ✅ <span class="positive">${nick} — реальный пользователь</span><br>
+                        📅 Дата регистрации TG: ${tgDate}<br>
+                        ${kickSub}
+                    `;
+                }
+            }, 1200);
+        });
+
+        // ============================================================
+        // 16. ИНИЦИАЛИЗАЦИЯ
+        // ============================================================
+        renderParticipants();
+        updateStats();
+        loadSettingsToForm();
+        syncToHome();
+
+        console.log('🔐 Админ-панель v2.0 загружена.');
+        console.log('📌 Пароль: underd0gg2026');
+
+    });
+</script>
+
+</body>
+</html>
