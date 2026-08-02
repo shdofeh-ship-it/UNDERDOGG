@@ -4,120 +4,504 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNDERDOGG - CONTROL PANEL</title>
-    <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #050102;
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+            background-image: 
+                radial-gradient(circle at 50% 20%, rgba(180, 10, 25, 0.25) 0%, rgba(10, 0, 3, 0.95) 75%),
+                radial-gradient(circle at 50% 80%, rgba(140, 5, 15, 0.2) 0%, rgba(5, 1, 2, 1) 70%);
+        }
+
+        .panel-container {
+            width: 100%;
+            max-width: 420px;
+            background: radial-gradient(circle at 50% 30%, #1c0205 0%, #0d0103 65%, #050001 100%);
+            border: 1px solid rgba(255, 30, 60, 0.3);
+            border-radius: 28px;
+            padding: 22px 18px;
+            box-shadow: 0 0 40px rgba(255, 0, 35, 0.25), inset 0 0 15px rgba(200, 0, 30, 0.15);
+            animation: breatheBg 6s ease-in-out infinite;
+        }
+
+        /* ===== ФОН С ЭФФЕКТОМ ДЫХАНИЯ ===== */
+        @keyframes breatheBg {
+            0%, 100% {
+                background: radial-gradient(circle at 50% 30%, #1c0205 0%, #0d0103 65%, #050001 100%);
+                box-shadow: 0 0 40px rgba(255, 0, 35, 0.25), inset 0 0 15px rgba(200, 0, 30, 0.15);
+                transform: scale(1);
+            }
+            50% {
+                background: radial-gradient(circle at 45% 35%, #2a0308 0%, #120205 65%, #080002 100%);
+                box-shadow: 0 0 60px rgba(255, 0, 35, 0.35), inset 0 0 25px rgba(200, 0, 30, 0.25);
+                transform: scale(1.003);
+            }
+        }
+
+        /* ===== СТАТУС-БАР ===== */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            border: 1px solid #ff2020;
+            border-radius: 30px;
+            background: rgba(255, 0, 0, 0.04);
+            margin-bottom: 20px;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            color: #aaa;
+        }
+
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background: #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #ff0000;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.7); }
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .online-text {
+            color: #ff4040;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .signal-icon {
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+        }
+        .signal-icon .bar {
+            width: 3px;
+            background: #ff4040;
+            border-radius: 2px;
+            display: inline-block;
+        }
+        .bar-1 { height: 8px; }
+        .bar-2 { height: 12px; }
+        .bar-3 { height: 16px; }
+
+        /* ===== ЛОГОТИП ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .brand-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #ffffff;
+            text-shadow: 
+                0 0 3px #fff,
+                0 0 10px #ff2a2a,
+                0 0 22px #ff0000,
+                0 0 40px rgba(255, 0, 0, 0.55);
+            animation: glitch 6s infinite;
+        }
+
+        .brand-subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 6px;
+            color: rgba(255, 200, 210, 0.8);
+            margin-top: 2px;
+            animation: glitchControl 4s infinite;
+        }
+
+        /* ===== ГЛИТЧ-АНИМАЦИИ ===== */
+        @keyframes glitch {
+            0%, 95%, 100% { transform: none; }
+            96% { transform: translateX(-2px); }
+            97% { transform: translateX(2px); }
+            98% { transform: translateX(-1px); }
+        }
+
+        @keyframes glitchControl {
+            0%, 90%, 100% { transform: none; opacity: 1; }
+            92% { transform: translateX(-1px) skewX(-2deg); opacity: 0.8; color: #ff4444; }
+            94% { transform: translateX(1px) skewX(2deg); opacity: 1; color: #ffffff; }
+            96% { transform: translateX(-1px) skewX(-1deg); opacity: 0.9; color: #ff8888; }
+            98% { transform: translateX(1px) skewX(1deg); opacity: 1; color: #ffffff; }
+        }
+
+        /* ===== КАРТОЧКИ (СМОТРЕТЬ СТРИМ / РОЗЫГРЫШ) ===== */
+        .top-cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .action-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            background: rgba(22, 6, 9, 0.9);
+            border: 1.5px solid #ff2a4b;
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(255, 26, 60, 0.2), inset 0 0 10px rgba(255, 26, 60, 0.08);
+            transition: 0.2s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 26, 60, 0.45), inset 0 0 20px rgba(255, 26, 60, 0.2);
+        }
+
+        .card-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+
+        .icon-wrapper svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 4px #ff2a4b);
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        /* ===== ОДИНАКОВЫЙ БЕЙДЖ ОНЛАЙН ПОД КНОПКАМИ ===== */
+        .badge-online {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 3px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            background: #ff1a3c;
+            color: #ffffff;
+            border: 1px solid #ff1a3c;
+            box-shadow: 0 0 12px rgba(255, 26, 60, 0.4);
+            margin-bottom: 6px;
+        }
+
+        .card-subtitle {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== КНОПКИ МЕНЮ ===== */
+        .menu-navigation {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .nav-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            background: rgba(22, 6, 9, 0.9);
+            border: 1.5px solid rgba(255, 42, 75, 0.45);
+            border-radius: 14px;
+            padding: 12px 16px;
+            box-shadow: 0 0 10px rgba(255, 0, 30, 0.1);
+            transition: 0.25s;
+        }
+
+        .nav-button:hover {
+            border-color: #ff2a4b;
+            transform: translateX(4px);
+            box-shadow: 0 0 20px rgba(255, 42, 75, 0.3);
+        }
+
+        .button-icon {
+            width: 34px;
+            height: 34px;
+            margin-right: 14px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button-icon svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 4px #ff2a4b);
+        }
+
+        .button-content {
+            flex-grow: 1;
+        }
+
+        .button-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .button-subtitle {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 1px;
+        }
+
+        .button-arrow {
+            font-size: 20px;
+            color: #ff2a4b;
+            margin-left: 10px;
+            text-shadow: 0 0 6px rgba(255, 42, 75, 0.5);
+        }
+
+        /* ===== ФУТЕР ===== */
+        .bottom-footer {
+            display: flex;
+            justify-content: center;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 42, 75, 0.1);
+        }
+
+        .hood-wrapper {
+            width: 48px;
+            height: 48px;
+            opacity: 0.5;
+        }
+
+        .hood-wrapper svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 12px rgba(255, 26, 60, 0.4));
+        }
+    </style>
 </head>
 <body>
-    <div class="screen-container">
 
-        <!-- Status Bar Header -->
-        <header class="status-bar">
-    <div class="status-left">
-        <span class="pulse-dot"></span>
-        <span>СТАТУС СТРИМА</span>
-    </div>
-    <div class="status-right">
-        <span class="online-text">В СЕТИ</span>
-        <div class="signal-icon">
-            <span class="bar bar-1"></span>
-            <span class="bar bar-2"></span>
-            <span class="bar bar-3"></span>
+<div class="panel-container">
+
+    <!-- ===== СТАТУС-БАР ===== -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span class="pulse-dot"></span>
+            СТАТУС СТРИМА
         </div>
-    </div>
-        </header>
-
-        <!-- Brand Header -->
-        <div class="brand-header">
-            <h1 class="brand-title logo">UNDERDOGG</h1>
-            <div class="brand-subtitle">CONTROL PANEL</div>
-        </div>
-
-        <!-- Top Main Action Cards -->
-<div class="top-cards-grid">
-    <!-- Card 1: Stream -->
-    <a href="#" class="action-card">
-        <div class="card-inner">
-            <div class="icon-wrapper">
-                <img src="images/play.svg" alt="Play Icon" class="card-icon">
+        <div class="status-right">
+            <span class="online-text">В СЕТИ</span>
+            <div class="signal-icon">
+                <span class="bar bar-1"></span>
+                <span class="bar bar-2"></span>
+                <span class="bar bar-3"></span>
             </div>
-            <div class="card-title">СМОТРЕТЬ<br>СТРИМ</div>
-            <div class="badge badge-online">ОНЛАЙН</div>
-            <div class="card-subtitle">Прямая трансляция</div>
         </div>
-    </a>
+    </div>
 
-    <!-- Card 2: Giveaway -->
-    <a href="#" class="action-card">
-        <div class="card-inner">
-            <div class="icon-wrapper">
-                <img src="images/gift.svg" alt="Gift Icon" class="card-icon">
+    <!-- ===== ЛОГОТИП ===== -->
+    <div class="header">
+        <div class="brand-title">UNDERDOGG</div>
+        <div class="brand-subtitle">CONTROL PANEL</div>
+    </div>
+
+    <!-- ===== КАРТОЧКИ (СМОТРЕТЬ СТРИМ / РОЗЫГРЫШ) ===== -->
+    <div class="top-cards-grid">
+        <!-- Card 1: Stream -->
+        <a href="#" class="action-card">
+            <div class="card-inner">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2.5" stroke-linecap="round">
+                        <circle cx="32" cy="32" r="22" />
+                        <polygon points="26,18 44,32 26,46" fill="#ff2a4b" stroke="none" />
+                    </svg>
+                </div>
+                <div class="card-title">СМОТРЕТЬ<br>СТРИМ</div>
+                <span class="badge-online">ОНЛАЙН</span>
+                <div class="card-subtitle">Прямая трансляция</div>
             </div>
-            <div class="card-title">УЧАСТВОВАТЬ<br>В РОЗЫГРЫШЕ</div>
-            <div class="badge badge-online">ОНЛАЙН</div>
-            <div class="card-subtitle">Розыгрыши на стриме</div>
+        </a>
+
+        <!-- Card 2: Giveaway -->
+        <a href="#" class="action-card">
+            <div class="card-inner">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2.5" stroke-linecap="round">
+                        <rect x="14" y="26" width="36" height="26" rx="4" />
+                        <path d="M20 26 v-6 a6 6 0 0 1 12 0 v6" />
+                        <path d="M32 26 v-6 a6 6 0 0 1 12 0 v6" />
+                        <line x1="14" y1="34" x2="50" y2="34" />
+                        <line x1="26" y1="26" x2="26" y2="52" />
+                        <line x1="38" y1="26" x2="38" y2="52" />
+                    </svg>
+                </div>
+                <div class="card-title">УЧАСТВОВАТЬ<br>В РОЗЫГРЫШЕ</div>
+                <span class="badge-online">ОНЛАЙН</span>
+                <div class="card-subtitle">Розыгрыши на стриме</div>
+            </div>
+        </a>
+    </div>
+
+    <!-- ===== МЕНЮ (КНОПКИ) ===== -->
+    <div class="menu-navigation">
+
+        <!-- Статистика -->
+        <a href="#" class="nav-button">
+            <div class="button-icon">
+                <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2.5" stroke-linecap="round">
+                    <rect x="6" y="34" width="12" height="24" rx="2" />
+                    <rect x="26" y="18" width="12" height="40" rx="2" />
+                    <rect x="46" y="6" width="12" height="52" rx="2" />
+                </svg>
+            </div>
+            <div class="button-content">
+                <div class="button-title">СТАТИСТИКА И БЛИЖАЙШИЕ РОЗЫГРЫШИ</div>
+                <div class="button-subtitle">История, условия, динамика</div>
+            </div>
+            <div class="button-arrow">›</div>
+        </a>
+
+        <!-- Ссылки на проекты -->
+        <a href="#" class="nav-button">
+            <div class="button-icon">
+                <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2.5" stroke-linecap="round">
+                    <circle cx="32" cy="32" r="22" />
+                    <circle cx="32" cy="32" r="14" stroke-dasharray="4 3" />
+                    <circle cx="32" cy="32" r="7" />
+                    <line x1="32" y1="10" x2="32" y2="14" />
+                    <line x1="32" y1="50" x2="32" y2="54" />
+                    <line x1="10" y1="32" x2="14" y2="32" />
+                    <line x1="50" y1="32" x2="54" y2="32" />
+                </svg>
+            </div>
+            <div class="button-content">
+                <div class="button-title">ССЫЛКИ НА ПРОЕКТЫ</div>
+                <div class="button-subtitle">Наши социальные сети и проекты</div>
+            </div>
+            <div class="button-arrow">›</div>
+        </a>
+
+        <!-- Наши сервисы -->
+        <a href="#" class="nav-button">
+            <div class="button-icon">
+                <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2.5" stroke-linecap="round">
+                    <path d="M26 18 v20 a8 8 0 0 0 16 0 v-24 a13 13 0 0 0 -26 0 v26 a17 17 0 0 0 34 0 v-18" transform="rotate(-30 32 32)" />
+                </svg>
+            </div>
+            <div class="button-content">
+                <div class="button-title">НАШИ СЕРВИСЫ</div>
+                <div class="button-subtitle">Все сервисы для сообщества</div>
+            </div>
+            <div class="button-arrow">›</div>
+        </a>
+
+        <!-- Ввести промокод -->
+        <a href="#" class="nav-button">
+            <div class="button-icon">
+                <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2.5" stroke-linecap="round">
+                    <path d="M14 12 h24 l12 12 v28 a4 4 0 0 1 -4 4 h-32 a4 4 0 0 1 -4 -4 v-36 a4 4 0 0 1 4 -4 z" />
+                    <path d="M38 12 v12 h12" />
+                    <line x1="20" y1="26" x2="32" y2="26" />
+                    <line x1="20" y1="34" x2="40" y2="34" />
+                    <path d="M42 46 l12 -12 a2.5 2.5 0 0 0 -3.5 -3.5 l-12 12 -2.5 7z" fill="#110507" />
+                </svg>
+            </div>
+            <div class="button-content">
+                <div class="button-title">ВВЕСТИ ПРОМОКОД</div>
+                <div class="button-subtitle">Активация бонусов и подарков</div>
+            </div>
+            <div class="button-arrow">›</div>
+        </a>
+
+        <!-- Пригласить друга -->
+        <a href="#" class="nav-button">
+            <div class="button-icon">
+                <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2.5" stroke-linecap="round">
+                    <circle cx="24" cy="20" r="8" />
+                    <path d="M10 48 c0 -8 6 -14 14 -14 s14 6 14 14" />
+                    <circle cx="42" cy="24" r="6" />
+                    <path d="M33 48 c1 -5 5 -9 9 -9 s8 4 9 9" />
+                </svg>
+            </div>
+            <div class="button-content">
+                <div class="button-title">ПРИГЛАСИТЬ ДРУГА</div>
+                <div class="button-subtitle">Реферальная система и награды</div>
+            </div>
+            <div class="button-arrow">›</div>
+        </a>
+
+    </div>
+
+    <!-- ===== ФУТЕР ===== -->
+    <div class="bottom-footer">
+        <div class="hood-wrapper">
+            <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2" stroke-linecap="round">
+                <path d="M32 8 C20 8 12 18 12 28 v12 c0 8 6 14 12 14 h16 c6 0 12 -6 12 -14 v-12 c0 -10 -8 -20 -20 -20 z" />
+                <path d="M32 8 c-4 8 -2 20 4 30 c-4 4 -10 6 -16 4 c6 4 14 6 24 0 c-6 -6 -8 -18 -12 -34 z" fill="#110507" stroke="none" />
+                <ellipse cx="28" cy="28" rx="4" ry="2" fill="#ff2a4b" />
+                <ellipse cx="36" cy="28" rx="4" ry="2" fill="#ff2a4b" />
+                <path d="M26 38 c2 2 10 2 12 0" stroke="#ff2a4b" stroke-width="2" />
+            </svg>
         </div>
-    </a>
+    </div>
+
 </div>
-        <!-- Navigation Menu Items -->
-        <nav class="menu-navigation">
-            <!-- Item 1 -->
-            <a href="#" class="menu-button">
-                <div class="menu-icon-box">
-                    <img src="images/stats.svg" alt="Stats">
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">Статистика и ближайшие розыгрыши</div>
-                    <div class="menu-desc">История, условия, динамика</div>
-                </div>
-                <div class="menu-arrow">&rsaquo;</div>
-            </a>
 
-            <!-- Item 2 -->
-            <a href="#" class="menu-button">
-                <div class="menu-icon-box">
-                    <img src="images/link.svg" alt="Links">
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">ССЫЛКИ НА ПРОЕКТЫ</div>
-                    <div class="menu-desc">Наши социальные сети и проекты</div>
-                </div>
-                <div class="menu-arrow">&rsaquo;</div>
-            </a>
-
-            <!-- Item 3 -->
-            <a href="#" class="menu-button">
-                <div class="menu-icon-box">
-                    <img src="images/services.svg" alt="Services">
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">НАШИ СЕРВИСЫ</div>
-                    <div class="menu-desc">Все сервисы для сообщества</div>
-                </div>
-                <div class="menu-arrow">&rsaquo;</div>
-            </a>
-
-            <!-- Item 4 -->
-            <a href="#" class="menu-button">
-                <div class="menu-icon-box">
-                    <img src="images/promo.svg" alt="Promo">
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">Ввести промокод</div>
-                    <div class="menu-desc">Активация бонусов и подарков</div>
-                </div>
-                <div class="menu-arrow">&rsaquo;</div>
-            </a>
-        </nav>
-
-        <!-- Footer Icon -->
-        <footer class="bottom-footer">
-            <div class="hood-wrapper">
-                <img src="images/hood.svg" alt="Underdogg Hood" class="hood-img">
-            </div>
-        </footer>
-
-    </div>
 </body>
 </html>
