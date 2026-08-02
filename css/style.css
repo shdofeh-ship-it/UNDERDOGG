@@ -1,7 +1,57 @@
-/* =========================
-   UNDERDOGG UI v2.0
-========================= */
+/* ===== Анимации ===== */
 
+@keyframes pulseGlow{
+    0%{
+        transform:scale(1);
+        filter:drop-shadow(0 0 12px #ff0000);
+    }
+    50%{
+        transform:scale(1.03);
+        filter:drop-shadow(0 0 35px #ff2a2a);
+    }
+    100%{
+        transform:scale(1);
+        filter:drop-shadow(0 0 12px #ff0000);
+    }
+}
+
+@keyframes floating{
+    0%{transform:translateY(0px);}
+    50%{transform:translateY(-8px);}
+    100%{transform:translateY(0px);}
+}
+
+@keyframes flicker{
+    0%,100%{opacity:1;}
+    20%{opacity:.8;}
+    40%{opacity:1;}
+    60%{opacity:.6;}
+    80%{opacity:1;}
+}
+
+.hero-image{
+    animation:
+        pulseGlow 2.8s ease-in-out infinite,
+        floating 5s ease-in-out infinite;
+    will-change:transform,filter;
+}
+
+.logo{
+    animation:flicker 3s infinite;
+}
+
+.loading-fill{
+    animation:loadingGlow 1s linear infinite;
+}
+
+@keyframes loadingGlow{
+    from{
+        filter:brightness(1);
+    }
+    to{
+        filter:brightness(1.5);
+    }
+}
 * {
     margin: 0;
     padding: 0;
