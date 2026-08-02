@@ -6,94 +6,6 @@
     <title>UNDERDOGG • CONTROL PANEL</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ МЕНЮ */
-        .menu-panel {
-            max-width: 420px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .menu-item {
-            display: block;
-            width: 100%;
-            padding: 18px 22px;
-            margin: 12px 0;
-            background: rgba(20, 20, 20, 0.95);
-            border: 1px solid rgba(255, 0, 0, 0.2);
-            border-radius: 16px;
-            color: #fff;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            letter-spacing: 1.5px;
-            text-decoration: none;
-            text-align: left;
-            transition: 0.3s;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.05);
-            position: relative;
-        }
-
-        .menu-item:hover {
-            border-color: #ff0000;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.15);
-            transform: translateX(5px);
-        }
-
-        .menu-item .badge {
-            display: inline-block;
-            font-size: 10px;
-            color: #ff2020;
-            border: 1px solid #ff2020;
-            border-radius: 20px;
-            padding: 2px 12px;
-            margin-left: 8px;
-            letter-spacing: 1px;
-            vertical-align: middle;
-        }
-
-        .menu-item .desc {
-            display: block;
-            font-size: 12px;
-            color: #666;
-            letter-spacing: 1px;
-            margin-top: 4px;
-            font-weight: 400;
-        }
-
-        .menu-item .arrow {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #ff3030;
-            font-size: 16px;
-            opacity: 0.5;
-            transition: 0.3s;
-        }
-
-        .menu-item:hover .arrow {
-            opacity: 1;
-            transform: translateY(-50%) translateX(4px);
-        }
-
-        .menu-divider {
-            border: none;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #ff0000, transparent);
-            margin: 18px 0;
-            opacity: 0.2;
-        }
-
-        .menu-footer {
-            text-align: center;
-            font-size: 11px;
-            color: #444;
-            letter-spacing: 4px;
-            margin-top: 25px;
-            border-top: 1px solid rgba(255, 0, 0, 0.1);
-            padding-top: 18px;
-        }
-    </style>
 </head>
 <body>
 
@@ -107,32 +19,35 @@
         margin: 0;
     ">
 
-        <div class="menu-panel">
+        <div style="
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+        ">
 
             <!-- СТАТУС -->
-            <div class="status" style="
+            <div style="
                 border: 1px solid #ff2020;
                 border-radius: 30px;
                 padding: 14px 20px;
                 display: inline-flex;
                 align-items: center;
                 gap: 12px;
-                font-size: 14px;
+                font-size: 13px;
                 letter-spacing: 2px;
                 color: #aaa;
                 margin-bottom: 25px;
-                background: rgba(255, 0, 0, 0.05);
+                background: rgba(255, 0, 0, 0.03);
                 width: 100%;
                 justify-content: center;
                 box-sizing: border-box;
             ">
                 <span style="
-                    width: 12px;
-                    height: 12px;
+                    width: 10px;
+                    height: 10px;
                     background: #ff0000;
                     border-radius: 50%;
-                    box-shadow: 0 0 15px #ff0000;
-                    animation: pulse 1.5s infinite;
+                    box-shadow: 0 0 12px #ff0000;
                     display: inline-block;
                 "></span>
                 <span>СТАТУС СТРИМА</span>
@@ -141,68 +56,186 @@
 
             <!-- ЛОГОТИП -->
             <h1 style="
-                font-size: 44px;
-                letter-spacing: 8px;
+                font-size: 38px;
+                letter-spacing: 6px;
                 font-weight: 900;
                 color: #fff;
-                text-shadow: 0 0 10px #ff0000, 0 0 30px rgba(255, 0, 0, 0.3);
+                text-shadow: 0 0 8px #ff0000, 0 0 20px rgba(255, 0, 0, 0.2);
                 margin: 0 0 2px 0;
-                text-align: center;
             ">UNDERDOGG</h1>
 
             <div style="
-                text-align: center;
-                font-size: 14px;
+                font-size: 13px;
                 color: #ff4444;
-                letter-spacing: 6px;
+                letter-spacing: 5px;
                 margin-bottom: 25px;
             ">CONTROL PANEL</div>
 
             <!-- ПУНКТЫ МЕНЮ -->
-            <a href="#" class="menu-item">
-                ▶ СМОТРЕТЬ СТРИМ
-                <span class="badge">LIVE</span>
-                <span class="desc">Прямые трансляции</span>
-                <span class="arrow">›</span>
+            <a href="#" style="
+                display: block;
+                padding: 14px 18px;
+                margin: 8px 0;
+                background: rgba(15, 15, 15, 0.9);
+                border: 1px solid rgba(255, 0, 0, 0.15);
+                border-radius: 12px;
+                color: #fff;
+                text-decoration: none;
+                text-align: left;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 13px;
+                letter-spacing: 1.5px;
+                transition: 0.2s;
+                position: relative;
+            ">
+                <span style="font-weight: 700;">▶ СМОТРЕТЬ СТРИМ</span>
+                <span style="
+                    display: inline-block;
+                    font-size: 9px;
+                    color: #ff2020;
+                    border: 1px solid #ff2020;
+                    border-radius: 20px;
+                    padding: 1px 10px;
+                    margin-left: 8px;
+                    letter-spacing: 1px;
+                    vertical-align: middle;
+                ">LIVE</span>
+                <span style="
+                    display: block;
+                    font-size: 11px;
+                    color: #666;
+                    letter-spacing: 1px;
+                    margin-top: 3px;
+                    font-weight: 400;
+                ">Прямые трансляции</span>
             </a>
 
-            <a href="#" class="menu-item">
-                🎁 УЧАСТВОВАТЬ В РОЗЫГРЫШЕ
-                <span class="badge">5 АКТИВНЫХ</span>
-                <span class="desc">Розыгрыши на стриме</span>
-                <span class="arrow">›</span>
+            <a href="#" style="
+                display: block;
+                padding: 14px 18px;
+                margin: 8px 0;
+                background: rgba(15, 15, 15, 0.9);
+                border: 1px solid rgba(255, 0, 0, 0.15);
+                border-radius: 12px;
+                color: #fff;
+                text-decoration: none;
+                text-align: left;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 13px;
+                letter-spacing: 1.5px;
+                transition: 0.2s;
+                position: relative;
+            ">
+                <span style="font-weight: 700;">🎁 УЧАСТВОВАТЬ В РОЗЫГРЫШЕ</span>
+                <span style="
+                    display: inline-block;
+                    font-size: 9px;
+                    color: #ff2020;
+                    border: 1px solid #ff2020;
+                    border-radius: 20px;
+                    padding: 1px 10px;
+                    margin-left: 8px;
+                    letter-spacing: 1px;
+                    vertical-align: middle;
+                ">5 АКТИВНЫХ</span>
+                <span style="
+                    display: block;
+                    font-size: 11px;
+                    color: #666;
+                    letter-spacing: 1px;
+                    margin-top: 3px;
+                    font-weight: 400;
+                ">Розыгрыши на стриме</span>
             </a>
 
-            <hr class="menu-divider">
+            <hr style="
+                border: none;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, #ff0000, transparent);
+                margin: 15px 0;
+                opacity: 0.15;
+            ">
 
-            <a href="#" class="menu-item">
-                📊 СТАТИСТИКА РОЗЫГРЫШЕЙ
-                <span class="desc">История, победители, динамика</span>
-                <span class="arrow">›</span>
+            <a href="#" style="
+                display: block;
+                padding: 14px 18px;
+                margin: 8px 0;
+                background: rgba(15, 15, 15, 0.9);
+                border: 1px solid rgba(255, 0, 0, 0.15);
+                border-radius: 12px;
+                color: #fff;
+                text-decoration: none;
+                text-align: left;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 13px;
+                letter-spacing: 1.5px;
+                transition: 0.2s;
+                position: relative;
+            ">
+                <span style="font-weight: 700;">📊 СТАТИСТИКА РОЗЫГРЫШЕЙ</span>
+                <span style="
+                    display: block;
+                    font-size: 11px;
+                    color: #666;
+                    letter-spacing: 1px;
+                    margin-top: 3px;
+                    font-weight: 400;
+                ">История, победители, динамика</span>
             </a>
 
-            <a href="#" class="menu-item">
-                🔗 ССЫЛКИ НА ПРОЕКТЫ
-                <span class="desc">Наши социальные сети и проекты</span>
-                <span class="arrow">›</span>
+            <a href="#" style="
+                display: block;
+                padding: 14px 18px;
+                margin: 8px 0;
+                background: rgba(15, 15, 15, 0.9);
+                border: 1px solid rgba(255, 0, 0, 0.15);
+                border-radius: 12px;
+                color: #fff;
+                text-decoration: none;
+                text-align: left;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 13px;
+                letter-spacing: 1.5px;
+                transition: 0.2s;
+                position: relative;
+            ">
+                <span style="font-weight: 700;">🔗 ССЫЛКИ НА ПРОЕКТЫ</span>
+                <span style="
+                    display: block;
+                    font-size: 11px;
+                    color: #666;
+                    letter-spacing: 1px;
+                    margin-top: 3px;
+                    font-weight: 400;
+                ">Наши социальные сети и проекты</span>
             </a>
 
-            <a href="#" class="menu-item">
-                🛠 НАШИ СЕРВИСЫ
-                <span class="desc">Все сервисы для сообщества</span>
-                <span class="arrow">›</span>
+            <a href="#" style="
+                display: block;
+                padding: 14px 18px;
+                margin: 8px 0;
+                background: rgba(15, 15, 15, 0.9);
+                border: 1px solid rgba(255, 0, 0, 0.15);
+                border-radius: 12px;
+                color: #fff;
+                text-decoration: none;
+                text-align: left;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 13px;
+                letter-spacing: 1.5px;
+                transition: 0.2s;
+                position: relative;
+            ">
+                <span style="font-weight: 700;">🛠 НАШИ СЕРВИСЫ</span>
+                <span style="
+                    display: block;
+                    font-size: 11px;
+                    color: #666;
+                    letter-spacing: 1px;
+                    margin-top: 3px;
+                    font-weight: 400;
+                ">Все сервисы для сообщества</span>
             </a>
-
-            <hr class="menu-divider">
-
-            <a href="#" class="menu-item">
-                👤 ПРИГЛАСИТЬ ДРУГА
-                <span class="desc">Приглашай и получай бонусы</span>
-                <span class="arrow">›</span>
-            </a>
-
-            <!-- ФУТЕР -->
-            <div class="menu-footer">SYSTEM // ONLINE // v2.0</div>
 
         </div>
 
