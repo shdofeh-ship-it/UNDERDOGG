@@ -42,6 +42,7 @@ button,.menu a{display:block;width:100%;margin:15px 0;padding:20px;border-radius
     animation:loadingGlow 1s linear infinite;
 }
 
+/* ===== ЦИФРЫ ЗАГРУЗКИ (ЭТОТ БЛОК БЫЛ ПРОПУЩЕН) ===== */
 .loading-percent{
     margin-top:10px;
     color:#ff3b3b;
@@ -98,7 +99,7 @@ button,.menu a{display:block;width:100%;margin:15px 0;padding:20px;border-radius
     animation:flicker 3s infinite;
 }
 
-/* ===== КНОПКА ВХОДА (НОВЫЕ СТИЛИ) ===== */
+/* ===== КНОПКА ВХОДА ===== */
 .enter-btn{
     opacity:.55;
     transform:scale(.95);
