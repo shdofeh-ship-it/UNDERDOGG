@@ -97,3 +97,18 @@ button,.menu a{display:block;width:100%;margin:15px 0;padding:20px;border-radius
 .logo{
     animation:flicker 3s infinite;
 }
+
+/* ===== КНОПКА ВХОДА (НОВЫЕ СТИЛИ) ===== */
+.enter-btn{
+    opacity:.55;
+    transform:scale(.95);
+    transition:.45s;
+}
+
+.enter-btn.ready{
+    opacity:1;
+    transform:scale(1);
+    box-shadow:
+        0 0 25px rgba(255,0,0,.45),
+        0 0 60px rgba(255,0,0,.2);
+}
