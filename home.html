@@ -3,263 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNDERDOGG • CONTROL PANEL</title>
+    <title>UNDERDOGG - CONTROL PANEL</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <div class="screen" style="
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background: radial-gradient(circle at center, #2a0000 0%, #050505 80%);
-        padding: 20px;
-        margin: 0;
-    ">
-
-        <div style="
-            max-width: 420px;
-            width: 100%;
-            text-align: center;
-        ">
-
-            <!-- СТАТУС СТРИМА -->
-            <div style="
-                border: 1px solid #ff2020;
-                border-radius: 30px;
-                padding: 12px 20px;
-                display: inline-flex;
-                align-items: center;
-                gap: 10px;
-                font-size: 13px;
-                letter-spacing: 2px;
-                color: #aaa;
-                margin-bottom: 25px;
-                background: rgba(255, 0, 0, 0.03);
-                width: 100%;
-                justify-content: center;
-                box-sizing: border-box;
-            ">
-                <span style="
-                    width: 10px;
-                    height: 10px;
-                    background: #ff0000;
-                    border-radius: 50%;
-                    box-shadow: 0 0 12px #ff0000;
-                    display: inline-block;
-                "></span>
-                <span>СТАТУС СТРИМА</span>
-                <b style="color: #ff4444;">В СЕТИ</b>
+    <div class="screen-container">
+        <!-- Status Bar Header -->
+        <header class="status-bar">
+            <div class="status-left">
+                <span class="pulse-dot"></span>
+                <span class="status-text">СТАТУС СТРИМА</span>
             </div>
-
-            <!-- UNDERDOGG -->
-            <h1 style="
-                font-size: 40px;
-                letter-spacing: 8px;
-                font-weight: 900;
-                color: #fff;
-                text-shadow: 0 0 10px #ff0000, 0 0 30px rgba(255, 0, 0, 0.2);
-                margin: 0 0 2px 0;
-            ">UNDERDOGG</h1>
-
-            <!-- CONTROL PANEL -->
-            <div style="
-                font-size: 14px;
-                color: #ff4444;
-                letter-spacing: 6px;
-                margin-bottom: 25px;
-            ">CONTROL PANEL</div>
-
-            <!-- СМОТРЕТЬ СТРИМ -->
-            <a href="#" style="
-                display: block;
-                padding: 14px 20px;
-                margin: 8px 0;
-                background: rgba(15, 15, 15, 0.9);
-                border: 1px solid rgba(255, 0, 0, 0.12);
-                border-radius: 14px;
-                color: #fff;
-                text-decoration: none;
-                text-align: left;
-                font-family: 'Orbitron', sans-serif;
-                font-size: 14px;
-                letter-spacing: 1.5px;
-                transition: 0.2s;
-            ">
-                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                    <span style="font-weight: 700;">СМОТРЕТЬ СТРИМ</span>
-                    <span style="
-                        font-size: 9px;
-                        color: #ff2020;
-                        border: 1px solid #ff2020;
-                        border-radius: 20px;
-                        padding: 1px 10px;
-                        letter-spacing: 1px;
-                    ">LIVE</span>
+            <div class="status-right">
+                <span class="online-text">В СЕТИ</span>
+                <div class="signal-icon">
+                    <span class="bar bar-1"></span>
+                    <span class="bar bar-2"></span>
+                    <span class="bar bar-3"></span>
                 </div>
-                <div style="
-                    font-size: 12px;
-                    color: #666;
-                    letter-spacing: 1px;
-                    margin-top: 3px;
-                    font-weight: 400;
-                ">Прямая трансляция</div>
-            </a>
+            </div>
+        </header>
 
-            <!-- УЧАСТВОВАТЬ В РОЗЫГРЫШЕ -->
-            <a href="#" style="
-                display: block;
-                padding: 14px 20px;
-                margin: 8px 0;
-                background: rgba(15, 15, 15, 0.9);
-                border: 1px solid rgba(255, 0, 0, 0.12);
-                border-radius: 14px;
-                color: #fff;
-                text-decoration: none;
-                text-align: left;
-                font-family: 'Orbitron', sans-serif;
-                font-size: 14px;
-                letter-spacing: 1.5px;
-                transition: 0.2s;
-            ">
-                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                    <span style="font-weight: 700;">УЧАСТВОВАТЬ В РОЗЫГРЫШЕ</span>
-                    <span style="
-                        font-size: 9px;
-                        color: #ff2020;
-                        border: 1px solid #ff2020;
-                        border-radius: 20px;
-                        padding: 1px 10px;
-                        letter-spacing: 1px;
-                    ">ОНЛАЙН</span>
-                </div>
-                <div style="
-                    font-size: 12px;
-                    color: #666;
-                    letter-spacing: 1px;
-                    margin-top: 3px;
-                    font-weight: 400;
-                ">Розыгрыши на стриме</div>
-            </a>
-
-            <!-- РАЗДЕЛИТЕЛЬ -->
-            <hr style="
-                border: none;
-                height: 1px;
-                background: linear-gradient(90deg, transparent, #ff0000, transparent);
-                margin: 16px 0;
-                opacity: 0.12;
-            ">
-
-            <!-- СТАТИСТИКА И БЛИЖАЙШИЕ РОЗЫГРЫШИ -->
-            <a href="#" style="
-                display: block;
-                padding: 14px 20px;
-                margin: 8px 0;
-                background: rgba(15, 15, 15, 0.9);
-                border: 1px solid rgba(255, 0, 0, 0.12);
-                border-radius: 14px;
-                color: #fff;
-                text-decoration: none;
-                text-align: left;
-                font-family: 'Orbitron', sans-serif;
-                font-size: 14px;
-                letter-spacing: 1.5px;
-                transition: 0.2s;
-            ">
-                <div style="font-weight: 700;">Статистика и ближайшие розыгрыши</div>
-                <div style="
-                    font-size: 12px;
-                    color: #666;
-                    letter-spacing: 1px;
-                    margin-top: 3px;
-                    font-weight: 400;
-                ">История, условия, динамика</div>
-            </a>
-
-            <!-- ССЫЛКИ НА ПРОЕКТЫ -->
-            <a href="#" style="
-                display: block;
-                padding: 14px 20px;
-                margin: 8px 0;
-                background: rgba(15, 15, 15, 0.9);
-                border: 1px solid rgba(255, 0, 0, 0.12);
-                border-radius: 14px;
-                color: #fff;
-                text-decoration: none;
-                text-align: left;
-                font-family: 'Orbitron', sans-serif;
-                font-size: 14px;
-                letter-spacing: 1.5px;
-                transition: 0.2s;
-            ">
-                <div style="font-weight: 700;">ССЫЛКИ НА ПРОЕКТЫ</div>
-                <div style="
-                    font-size: 12px;
-                    color: #666;
-                    letter-spacing: 1px;
-                    margin-top: 3px;
-                    font-weight: 400;
-                ">Наши социальные сети и проекты</div>
-            </a>
-
-            <!-- НАШИ СЕРВИСЫ -->
-            <a href="#" style="
-                display: block;
-                padding: 14px 20px;
-                margin: 8px 0;
-                background: rgba(15, 15, 15, 0.9);
-                border: 1px solid rgba(255, 0, 0, 0.12);
-                border-radius: 14px;
-                color: #fff;
-                text-decoration: none;
-                text-align: left;
-                font-family: 'Orbitron', sans-serif;
-                font-size: 14px;
-                letter-spacing: 1.5px;
-                transition: 0.2s;
-            ">
-                <div style="font-weight: 700;">НАШИ СЕРВИСЫ</div>
-                <div style="
-                    font-size: 12px;
-                    color: #666;
-                    letter-spacing: 1px;
-                    margin-top: 3px;
-                    font-weight: 400;
-                ">Все сервисы для сообщества</div>
-            </a>
-
-            <!-- ВВЕСТИ ПРОМОКОД -->
-            <a href="#" style="
-                display: block;
-                padding: 14px 20px;
-                margin: 8px 0;
-                background: rgba(15, 15, 15, 0.9);
-                border: 1px solid rgba(255, 0, 0, 0.12);
-                border-radius: 14px;
-                color: #fff;
-                text-decoration: none;
-                text-align: left;
-                font-family: 'Orbitron', sans-serif;
-                font-size: 14px;
-                letter-spacing: 1.5px;
-                transition: 0.2s;
-            ">
-                <div style="font-weight: 700;">Ввести промокод</div>
-                <div style="
-                    font-size: 12px;
-                    color: #666;
-                    letter-spacing: 1px;
-                    margin-top: 3px;
-                    font-weight: 400;
-                ">Активация бонусов и подарков</div>
-            </a>
-
+        <!-- Brand Header -->
+        <div class="brand-header">
+            <h1 class="brand-title">UNDERDOGG</h1>
+            <div class="brand-subtitle">CONTROL PANEL</div>
         </div>
 
-    </div>
+        <!-- Top Main Action Cards -->
+        <div class="top-cards-grid">
+            <!-- Card 1: Stream -->
+            <a href="#" class="action-card">
+                <div class="card-inner">
+                    <div class="icon-wrapper">
+                        <img src="images/play.svg" alt="Play Icon" class="card-icon">
+                    </div>
+                    <div class="card-title">СМОТРЕТЬ<br>СТРИМ</div>
+                    <div class="badge badge-live">
+                        <span class="dot">●</span> LIVE
+                    </div>
+                    <div class="card-subtitle">Прямая трансляция</div>
+                </div>
+            </a>
 
+            <!-- Card 2: Giveaway -->
+            <a href="#" class="action-card">
+                <div class="card-inner">
+                    <div class="icon-wrapper">
+                        <img src="images/gift.svg" alt="Gift Icon" class="card-icon">
+                    </div>
+                    <div class="card-title">УЧАСТВОВАТЬ<br>В РОЗЫГРЫШЕ</div>
+                    <div class="badge badge-online">
+                        ОНЛАЙН
+                    </div>
+                    <div class="card-subtitle">Розыгрыши на стриме</div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Navigation Menu Items -->
+        <nav class="menu-navigation">
+            <!-- Item 1 -->
+            <a href="#" class="menu-button">
+                <div class="menu-icon-box">
+                    <img src="images/stats.svg" alt="Stats">
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Статистика и ближайшие розыгрыши</div>
+                    <div class="menu-desc">История, условия, динамика</div>
+                </div>
+                <div class="menu-arrow">&rsaquo;</div>
+            </a>
+
+            <!-- Item 2 -->
+            <a href="#" class="menu-button">
+                <div class="menu-icon-box">
+                    <img src="images/link.svg" alt="Links">
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">ССЫЛКИ НА ПРОЕКТЫ</div>
+                    <div class="menu-desc">Наши социальные сети и проекты</div>
+                </div>
+                <div class="menu-arrow">&rsaquo;</div>
+            </a>
+
+            <!-- Item 3 -->
+            <a href="#" class="menu-button">
+                <div class="menu-icon-box">
+                    <img src="images/services.svg" alt="Services">
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">НАШИ СЕРВИСЫ</div>
+                    <div class="menu-desc">Все сервисы для сообщества</div>
+                </div>
+                <div class="menu-arrow">&rsaquo;</div>
+            </a>
+
+            <!-- Item 4 -->
+            <a href="#" class="menu-button">
+                <div class="menu-icon-box">
+                    <img src="images/promo.svg" alt="Promo">
+                </div>
+                <div class="menu-content">
+                    <div class="menu-title">Ввести промокод</div>
+                    <div class="menu-desc">Активация бонусов и подарков</div>
+                </div>
+                <div class="menu-arrow">&rsaquo;</div>
+            </a>
+        </nav>
+
+        <!-- Footer Icon -->
+        <footer class="bottom-footer">
+            <div class="hood-wrapper">
+                <img src="images/hood.svg" alt="Underdogg Hood" class="hood-img">
+            </div>
+        </footer>
+    </div>
 </body>
 </html>
