@@ -617,3 +617,22 @@ body {
 .badge-live .dot {
     display: none;
 }
+
+/* ===== ФОН С ЭФФЕКТОМ ПОКАЧИВАНИЯ ===== */
+
+.screen-container {
+    animation: breatheBg 6s ease-in-out infinite;
+}
+
+@keyframes breatheBg {
+    0%, 100% {
+        background: radial-gradient(circle at 50% 30%, #1c0205 0%, #0d0103 65%, #050001 100%);
+        box-shadow: 0 0 40px rgba(255, 0, 35, 0.25), inset 0 0 15px rgba(200, 0, 30, 0.15);
+        transform: scale(1);
+    }
+    50% {
+        background: radial-gradient(circle at 45% 35%, #2a0308 0%, #120205 65%, #080002 100%);
+        box-shadow: 0 0 60px rgba(255, 0, 35, 0.35), inset 0 0 25px rgba(200, 0, 30, 0.25);
+        transform: scale(1.003);
+    }
+}
