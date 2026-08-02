@@ -580,3 +580,40 @@ body {
         color: #ff3333;
     }
 }
+
+/* ===== ОДИНАКОВЫЕ БЕЙДЖИ ДЛЯ КАРТОЧЕК ===== */
+
+.badge-online {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    background: #ff1a3c;
+    color: #ffffff;
+    border: 1px solid #ff1a3c;
+    box-shadow: 0 0 15px rgba(255, 26, 60, 0.4);
+    margin-bottom: 6px;
+}
+
+/* Убираем старые стили для badge-online, чтобы не мешали */
+.badge-live {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    background: #ff1a3c;
+    color: #ffffff;
+    border: 1px solid #ff1a3c;
+    box-shadow: 0 0 15px rgba(255, 26, 60, 0.4);
+    margin-bottom: 6px;
+}
+
+.badge-live .dot {
+    display: none;
+}
