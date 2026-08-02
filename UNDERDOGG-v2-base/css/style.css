@@ -1,0 +1,9 @@
+*{box-sizing:border-box}
+body{margin:0;background:#050505;color:white;font-family:Arial,sans-serif}
+.screen{min-height:100vh;padding:25px;text-align:center;background:radial-gradient(circle,#4b0000,#050505 60%)}
+.status{border:1px solid #ff2020;border-radius:30px;padding:15px;display:flex;justify-content:center;gap:10px}
+.status span{width:12px;height:12px;background:red;border-radius:50%;box-shadow:0 0 15px red}
+.hood{width:70%;max-width:420px;margin:60px auto 20px;display:block;filter:drop-shadow(0 0 25px red)}
+.small{margin:30px auto;width:45%}
+h1{letter-spacing:8px}
+button,.menu a{display:block;width:100%;margin:15px 0;padding:20px;border-radius:22px;background:#111;color:white;border:2px solid red;font-size:18px;text-decoration:none}
