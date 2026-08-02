@@ -158,11 +158,36 @@
         }
 
         @keyframes glitchControl {
-            0%, 90%, 100% { transform: none; opacity: 1; }
-            92% { transform: translateX(-1px) skewX(-2deg); opacity: 0.8; color: #ff4444; }
-            94% { transform: translateX(1px) skewX(2deg); opacity: 1; color: #ffffff; }
-            96% { transform: translateX(-1px) skewX(-1deg); opacity: 0.9; color: #ff8888; }
-            98% { transform: translateX(1px) skewX(1deg); opacity: 1; color: #ffffff; }
+    0%, 90%, 100% {
+        transform: none;
+        opacity: 1;
+        color: #ffffff;
+        text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+    }
+    92% {
+        transform: translateX(-1px) skewX(-2deg);
+        opacity: 0.8;
+        color: #ff4444;
+        text-shadow: 0 0 10px #ff0000, 0 0 20px rgba(255, 0, 0, 0.5);
+    }
+    94% {
+        transform: translateX(1px) skewX(2deg);
+        opacity: 1;
+        color: #ffffff;
+        text-shadow: 0 0 15px #ff0000, 0 0 30px rgba(255, 0, 0, 0.6);
+    }
+    96% {
+        transform: translateX(-1px) skewX(-1deg);
+        opacity: 0.9;
+        color: #ff6666;
+        text-shadow: 0 0 10px #ff0000, 0 0 20px rgba(255, 0, 0, 0.4);
+    }
+    98% {
+        transform: translateX(1px) skewX(1deg);
+        opacity: 1;
+        color: #ffffff;
+        text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+    }
         }
 
         /* ===== КАРТОЧКИ (СМОТРЕТЬ СТРИМ / РОЗЫГРЫШ) ===== */
