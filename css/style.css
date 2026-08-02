@@ -542,3 +542,43 @@ body {
     0%, 100% { opacity: .45; transform: scaleX(.82); }
     50% { opacity: 1; transform: scaleX(1); }
 }
+
+/* ===== ГЛИТЧ-АНИМАЦИЯ ДЛЯ CONTROL PANEL ===== */
+
+.brand-subtitle {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 6px;
+    color: rgba(255, 200, 210, 0.9);
+    margin-top: 4px;
+    animation: glitchControl 4s infinite;
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+@keyframes glitchControl {
+    0%, 90%, 100% {
+        transform: none;
+        opacity: 1;
+    }
+    92% {
+        transform: translateX(-1px) skewX(-2deg);
+        opacity: 0.8;
+        color: #ff4444;
+    }
+    94% {
+        transform: translateX(1px) skewX(2deg);
+        opacity: 1;
+        color: #ffffff;
+    }
+    96% {
+        transform: translateX(-1px) skewX(-1deg);
+        opacity: 0.9;
+        color: #ff8888;
+    }
+    98% {
+        transform: translateX(1px) skewX(1deg);
+        opacity: 1;
+        color: #ffffff;
+    }
+}
