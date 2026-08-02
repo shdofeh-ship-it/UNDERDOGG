@@ -901,48 +901,57 @@
   document.addEventListener('DOMContentLoaded', function() {
 
     // ============================================================
-    // 1. ТАЙМЕР ДО РОЗЫГРЫША
-    // ============================================================
-    function startCountdown() {
-      // 🔥 УСТАНОВИ СВОЮ ДАТУ РОЗЫГРЫША (ГОД-МЕСЯЦ-ДЕНЬ ЧАС:МИНУТА)
-      const targetDate = new Date('2026-12-31T23:59:59').getTime();
+// 1. ТАЙМЕР ДО РОЗЫГРЫША (читает дату из админ-панели)
+// ============================================================
+function startCountdown() {
+  // Берём дату из localStorage (её сохраняет админ-панель)
+  let savedDate = localStorage.getItem('giveawayDate');
+  
+  // Если даты нет — ставим запасную (через 7 дней)
+  if (!savedDate) {
+    const defaultDate = new Date();
+    defaultDate.setDate(defaultDate.getDate() + 7);
+    savedDate = defaultDate.toISOString();
+  }
+  
+  const targetDate = new Date(savedDate).getTime();
 
-      const daysEl = document.getElementById('days');
-      const hoursEl = document.getElementById('hours');
-      const minutesEl = document.getElementById('minutes');
-      const secondsEl = document.getElementById('seconds');
+  const daysEl = document.getElementById('days');
+  const hoursEl = document.getElementById('hours');
+  const minutesEl = document.getElementById('minutes');
+  const secondsEl = document.getElementById('seconds');
 
-      if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+  if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
 
-      function updateTimer() {
-        const now = Date.now();
-        let diff = targetDate - now;
+  function updateTimer() {
+    const now = Date.now();
+    let diff = targetDate - now;
 
-        if (diff <= 0) {
-          daysEl.textContent = '00';
-          hoursEl.textContent = '00';
-          minutesEl.textContent = '00';
-          secondsEl.textContent = '00';
-          return;
-        }
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        diff -= days * (1000 * 60 * 60 * 24);
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        diff -= hours * (1000 * 60 * 60);
-        const minutes = Math.floor(diff / (1000 * 60));
-        diff -= minutes * (1000 * 60);
-        const seconds = Math.floor(diff / 1000);
-
-        daysEl.textContent = String(days).padStart(2, '0');
-        hoursEl.textContent = String(hours).padStart(2, '0');
-        minutesEl.textContent = String(minutes).padStart(2, '0');
-        secondsEl.textContent = String(seconds).padStart(2, '0');
-      }
-
-      updateTimer();
-      setInterval(updateTimer, 1000);
+    if (diff <= 0) {
+      daysEl.textContent = '00';
+      hoursEl.textContent = '00';
+      minutesEl.textContent = '00';
+      secondsEl.textContent = '00';
+      return;
     }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= days * (1000 * 60 * 60 * 24);
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+    const minutes = Math.floor(diff / (1000 * 60));
+    diff -= minutes * (1000 * 60);
+    const seconds = Math.floor(diff / 1000);
+
+    daysEl.textContent = String(days).padStart(2, '0');
+    hoursEl.textContent = String(hours).padStart(2, '0');
+    minutesEl.textContent = String(minutes).padStart(2, '0');
+    secondsEl.textContent = String(seconds).padStart(2, '0');
+  }
+
+  updateTimer();
+  setInterval(updateTimer, 1000);
+}
 
     startCountdown();
 
