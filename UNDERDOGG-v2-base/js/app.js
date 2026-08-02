@@ -1,1 +1,0 @@
-console.log('UNDERDOGG v2 started');
