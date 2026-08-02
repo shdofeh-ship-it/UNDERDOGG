@@ -12,7 +12,11 @@ const loading = setInterval(() => {
     percent.textContent = progress;
 
     if(progress >= 100){
-        clearInterval(loading);
-    }
 
-},25);
+    clearInterval(loading);
+
+    setTimeout(()=>{
+        document.querySelector(".enter-btn").classList.add("ready");
+    },400);
+
+    }
