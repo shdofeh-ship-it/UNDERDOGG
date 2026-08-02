@@ -1,48 +1,172 @@
-*{box-sizing:border-box}
-body{margin:0;background:#050505;color:white;font-family:Arial,sans-serif}
-.screen{min-height:100vh;padding:25px;text-align:center;background:radial-gradient(circle,#4b0000,#050505 60%)}
-.status{border:1px solid #ff2020;border-radius:30px;padding:15px;display:flex;justify-content:center;gap:10px}
-.status span{width:12px;height:12px;background:red;border-radius:50%;box-shadow:0 0 15px red}
-.hood{width:70%;max-width:420px;margin:60px auto 20px;display:block;filter:drop-shadow(0 0 25px red)}
-.small{margin:30px auto;width:45%}
-h1{letter-spacing:8px}
-button,.menu a{display:block;width:100%;margin:15px 0;padding:20px;border-radius:22px;background:#111;color:white;border:2px solid red;font-size:18px;text-decoration:none}
-.loading-block{
-    width:100%;
-    max-width:340px;
-    margin:25px auto;
-    text-align:center;
+/* =========================
+   UNDERDOGG UI v2.0
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.loading-text{
-    color:#888;
-    letter-spacing:4px;
-    font-size:13px;
-    margin-bottom:14px;
+body {
+    background: #050505;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-.loading-bar{
-    width:100%;
-    height:8px;
-    background:#161616;
-    border-radius:20px;
-    overflow:hidden;
-    border:1px solid rgba(255,0,0,.3);
-    box-shadow:0 0 15px rgba(255,0,0,.15);
+.loader-screen {
+    text-align: center;
+    padding: 20px;
+    max-width: 420px;
+    width: 100%;
 }
 
-.loading-fill{
-    width:0%;
-    height:100%;
-    border-radius:20px;
-    background:linear-gradient(90deg,#ff0000,#ff3b3b,#ff0000);
-    box-shadow:0 0 25px #ff0000;
+/* СТАТУС СТРИМА */
+.stream-status {
+    font-size: 13px;
+    color: #888;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
 }
 
-.loading-percent{
-    margin-top:10px;
-    color:#ff3b3b;
-    font-size:15px;
-    font-weight:700;
-    letter-spacing:2px;
+.status-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: #ff0000;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+    margin-right: 10px;
+    vertical-align: middle;
 }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.2; transform: scale(0.7); }
+}
+
+/* ЛОГОТИП (ЕСЛИ КАРТИНКА) */
+.logo-box {
+    margin: 10px 0 5px 0;
+}
+
+.main-logo {
+    width: 200px;
+    filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.3));
+}
+
+/* ИЗОБРАЖЕНИЕ КАПЮШОНА */
+.hood-box {
+    margin: 10px 0 15px 0;
+}
+
+.hood-image {
+    width: 180px;
+    filter: drop-shadow(0 0 30px rgba(255, 0, 0, 0.4));
+}
+
+/* БЛОК ЗАГРУЗКИ (НОВЫЙ) */
+.loading-block {
+    margin: 20px 0;
+}
+
+.loading-text {
+    font-size: 12px;
+    color: #666;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+}
+
+.loading-bar {
+    width: 100%;
+    height: 3px;
+    background: #1a1a1a;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.loading-fill {
+    width: 0%;
+    height: 100%;
+    background: #ff0000;
+    border-radius: 3px;
+    animation: load 3s ease-in-out infinite;
+}
+
+.loading-percent {
+    font-size: 14px;
+    color: #ff4444;
+    letter-spacing: 2px;
+}
+
+/* СТАРЫЙ БЛОК ЗАГРУЗКИ (ЕСЛИ ОСТАЛСЯ) */
+.loading {
+    margin: 15px 0;
+}
+
+.progress {
+    width: 100%;
+    height: 2px;
+    background: #1a1a1a;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-line {
+    width: 0%;
+    height: 100%;
+    background: #ff0000;
+    animation: load 3s ease-in-out infinite;
+}
+
+/* КНОПКА ВХОДА */
+.enter-btn {
+    margin-top: 20px;
+    padding: 16px 48px;
+    background: transparent;
+    border: 2px solid #ff0000;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    letter-spacing: 2px;
+    transition: 0.3s;
+}
+
+.enter-btn:hover {
+    background: #ff0000;
+    color: #000;
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
+}
+
+/* АНИМАЦИЯ ЗАГРУЗКИ */
+@keyframes load {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+/* АДАПТИВ */
+@media (max-width: 480px) {
+    .loader-screen {
+        padding: 15px;
+    }
+    .main-logo {
+        width: 160px;
+    }
+    .hood-image {
+        width: 150px;
+    }
+    .loading-text {
+        font-size: 11px;
+    }
+    .enter-btn {
+        font-size: 14px;
+        padding: 14px 36px;
+    }
