@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
@@ -303,12 +303,18 @@
       padding: 12px 16px;
       box-shadow: 0 0 10px rgba(255, 0, 30, 0.1);
       transition: 0.25s;
+      cursor: pointer;
     }
 
     .nav-button:hover {
       border-color: #ff2a4b;
       transform: translateX(4px);
       box-shadow: 0 0 20px rgba(255, 42, 75, 0.3);
+    }
+
+    .nav-button.copied {
+      border-color: #00ff00;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
     }
 
     .button-icon {
@@ -345,6 +351,7 @@
       font-size: 11px;
       color: rgba(255, 255, 255, 0.45);
       margin-top: 1px;
+      transition: 0.3s;
     }
 
     .button-arrow {
@@ -553,8 +560,8 @@
       <div class="button-arrow">›</div>
     </a>
 
-    <!-- Пригласить друга -->
-    <a href="#" class="nav-button">
+    <!-- ПРИГЛАСИТЬ ДРУГА (с функцией копирования) -->
+    <a href="#" class="nav-button" id="inviteButton">
       <div class="button-icon">
         <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2.5" stroke-linecap="round">
           <circle cx="24" cy="20" r="8" />
@@ -565,7 +572,7 @@
       </div>
       <div class="button-content">
         <div class="button-title">ПРИГЛАСИТЬ ДРУГА</div>
-        <div class="button-subtitle">Реферальная система и награды</div>
+        <div class="button-subtitle" id="inviteSubtitle">Реферальная система и награды</div>
       </div>
       <div class="button-arrow">›</div>
     </a>
@@ -581,5 +588,81 @@
 
 </div>
 
+<!-- ===== СКРИПТ ДЛЯ КНОПКИ "ПРИГЛАСИТЬ ДРУГА" ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const inviteBtn = document.getElementById('inviteButton');
+    const inviteSubtitle = document.getElementById('inviteSubtitle');
+
+    if (inviteBtn) {
+      inviteBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // 🔥 ТВОЯ РЕФЕРАЛЬНАЯ ССЫЛКА (ЗАМЕНИ НА СВОЮ)
+        const inviteLink = 'https://t.me/underd0gg_bot?start=ref_123456';
+
+        // Оригинальный текст
+        const originalText = inviteSubtitle.textContent;
+
+        // Функция показа уведомления
+        function showMessage(text, isSuccess = true) {
+          inviteSubtitle.textContent = text;
+          inviteBtn.classList.add('copied');
+          if (!isSuccess) {
+            inviteBtn.style.borderColor = '#ff4444';
+            inviteBtn.style.boxShadow = '0 0 20px rgba(255, 0, 0, 0.3)';
+          }
+          setTimeout(() => {
+            inviteSubtitle.textContent = originalText;
+            inviteBtn.classList.remove('copied');
+            inviteBtn.style.borderColor = '';
+            inviteBtn.style.boxShadow = '';
+          }, 3000);
+        }
+
+        // Проверяем Web Share API (мобильные устройства)
+        if (navigator.share) {
+          navigator.share({
+            title: 'UNDERDOGG',
+            text: 'Присоединяйся к UNDERDOGG! 🚀 Получи бонусы и участвуй в розыгрышах!',
+            url: inviteLink
+          }).catch(() => {});
+          return;
+        }
+
+        // Копирование в буфер обмена (десктоп)
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(inviteLink)
+            .then(() => {
+              showMessage('✅ Ссылка скопирована! Отправь другу.');
+            })
+            .catch(() => {
+              fallbackCopy(inviteLink);
+            });
+        } else {
+          fallbackCopy(inviteLink);
+        }
+
+        // Запасной вариант
+        function fallbackCopy(text) {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try {
+            document.execCommand('copy');
+            showMessage('✅ Ссылка скопирована! Отправь другу.');
+          } catch (err) {
+            prompt('Скопируй ссылку вручную:', text);
+          }
+          document.body.removeChild(textarea);
+        }
+      });
+    }
+  });
+</script>
+
 </body>
-</html>
+       </html>
