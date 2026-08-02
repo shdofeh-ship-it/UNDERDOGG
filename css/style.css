@@ -237,6 +237,81 @@ body {
     line-height: 1;
 }
 
+/* ===== СТАТУС-БАР КАК НА INDEX.HTML ===== */
+
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    border: 1px solid #ff2020;
+    border-radius: 30px;
+    background: rgba(255, 0, 0, 0.05);
+    margin-bottom: 22px;
+}
+
+.status-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: #aaa;
+}
+
+.pulse-dot {
+    width: 12px;
+    height: 12px;
+    background: #ff0000;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #ff0000;
+    display: inline-block;
+    animation: pulse 1.5s infinite;
+}
+
+.status-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.online-text {
+    color: #ff4040;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+/* СИГНАЛ (полоски как на index.html) */
+.signal-icon {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+}
+
+.signal-icon .bar {
+    width: 3px;
+    background: #ff4040;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+.bar-1 { height: 8px; }
+.bar-2 { height: 12px; }
+.bar-3 { height: 16px; }
+
+/* АНИМАЦИЯ ПУЛЬСАЦИИ ТОЧКИ */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.2;
+        transform: scale(0.7);
+    }
+}
+
 .brand-subtitle {
     font-family: 'Orbitron', sans-serif;
     font-size: 11px;
