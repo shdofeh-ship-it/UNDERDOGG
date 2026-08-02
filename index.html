@@ -1,25 +1,43 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>UNDERDOGG</title>
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/animations.css">
-</head>
-<body>
-<div class="screen">
-<div class="status"><span></span> СТАТУС СТРИМА: <b>НЕ В ЭФИРЕ</b></div>
+<section class="loader-screen">
 
-<img class="hood" src="images/hood.png" alt="UNDERDOGG">
+    <div class="stream-status">
+        <span class="status-dot"></span>
+        <span>СТАТУС СТРИМА</span>
+        <b>В СЕТИ</b>
+    </div>
 
-<h1>UNDERDOGG</h1>
 
-<p class="loading">INITIALIZING SYSTEM...</p>
+    <div class="logo-box">
+        <img src="images/logo.png" class="main-logo">
+    </div>
 
-<button onclick="location.href='home.html'">ВОЙТИ В СИСТЕМУ</button>
-</div>
 
-<script src="js/app.js"></script>
-</body>
-</html>
+    <div class="tagline">
+        SYSTEM INITIALIZATION
+    </div>
+
+
+    <div class="hood-box">
+        <img src="images/hood.png" class="hood-image">
+    </div>
+
+
+    <div class="loading">
+
+        <div class="loading-text">
+            INITIALIZING SYSTEM...
+        </div>
+
+        <div class="progress">
+            <div class="progress-line"></div>
+        </div>
+
+    </div>
+
+
+    <button class="enter-btn">
+        ▶ ВОЙТИ В СИСТЕМУ
+    </button>
+
+
+</section>
