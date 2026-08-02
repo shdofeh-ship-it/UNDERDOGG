@@ -7,6 +7,8 @@ body{margin:0;background:#050505;color:white;font-family:Arial,sans-serif}
 .small{margin:30px auto;width:45%}
 h1{letter-spacing:8px}
 button,.menu a{display:block;width:100%;margin:15px 0;padding:20px;border-radius:22px;background:#111;color:white;border:2px solid red;font-size:18px;text-decoration:none}
+
+/* ===== БЛОК ЗАГРУЗКИ ===== */
 .loading-block{
     width:100%;
     max-width:340px;
@@ -37,6 +39,7 @@ button,.menu a{display:block;width:100%;margin:15px 0;padding:20px;border-radius
     border-radius:20px;
     background:linear-gradient(90deg,#ff0000,#ff3b3b,#ff0000);
     box-shadow:0 0 25px #ff0000;
+    animation:loadingGlow 1s linear infinite;
 }
 
 .loading-percent{
@@ -47,7 +50,7 @@ button,.menu a{display:block;width:100%;margin:15px 0;padding:20px;border-radius
     letter-spacing:2px;
 }
 
-/* ===== Анимации ===== */
+/* ===== АНИМАЦИИ ===== */
 
 @keyframes pulseGlow{
     0%{
@@ -78,6 +81,12 @@ button,.menu a{display:block;width:100%;margin:15px 0;padding:20px;border-radius
     80%{opacity:1;}
 }
 
+@keyframes loadingGlow{
+    from{filter:brightness(1);}
+    to{filter:brightness(1.5);}
+}
+
+/* ===== КЛАССЫ ДЛЯ АНИМАЦИЙ ===== */
 .hero-image{
     animation:
         pulseGlow 2.8s ease-in-out infinite,
@@ -88,16 +97,3 @@ button,.menu a{display:block;width:100%;margin:15px 0;padding:20px;border-radius
 .logo{
     animation:flicker 3s infinite;
 }
-
-.loading-fill{
-    animation:loadingGlow 1s linear infinite;
-}
-
-@keyframes loadingGlow{
-    from{
-        filter:brightness(1);
-    }
-    to{
-        filter:brightness(1.5);
-    }
-    }
