@@ -9,40 +9,126 @@
 </head>
 <body>
 
-    <section class="loader-screen">
+    <!-- ЦЕНТРИРУЮЩИЙ КОНТЕЙНЕР -->
+    <div style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+    ">
 
-        <div class="stream-status">
-            <span class="status-dot"></span>
-            <span>СТАТУС СТРИМА</span>
-            <b>В СЕТИ</b>
-        </div>
+        <section class="loader-screen" style="
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+        ">
 
-        <div class="logo-box">
-            <h1 class="main-logo">UNDERDOGG</h1>
-        </div>
-
-        <div class="tagline">
-            SYSTEM INITIALIZATION
-        </div>
-
-        <div class="hood-box">
-            <img src="images/hood.png" class="hood-image" alt="UNDERDOGG">
-        </div>
-
-        <div class="loading">
-            <div class="loading-text">
-                INITIALIZING SYSTEM...
+            <div class="stream-status" style="
+                font-size: 14px;
+                color: #888;
+                letter-spacing: 2px;
+                margin-bottom: 20px;
+            ">
+                <span class="status-dot" style="
+                    display: inline-block;
+                    width: 12px;
+                    height: 12px;
+                    background: #ff0000;
+                    border-radius: 50%;
+                    animation: pulse 1.5s infinite;
+                    margin-right: 10px;
+                    vertical-align: middle;
+                "></span>
+                <span>СТАТУС СТРИМА</span>
+                <b style="color: #ff4444;">В СЕТИ</b>
             </div>
-            <div class="progress">
-                <div class="progress-line"></div>
+
+            <div class="logo-box">
+                <h1 class="main-logo" style="
+                    font-size: 48px;
+                    letter-spacing: 6px;
+                    color: #fff;
+                    text-shadow: 0 0 10px #ff0000, 0 0 30px rgba(255, 0, 0, 0.3);
+                    margin: 10px 0 5px 0;
+                ">UNDERDOGG</h1>
             </div>
-        </div>
 
-        <button class="enter-btn" onclick="location.href='home.html'">
-            ▶ ВОЙТИ В СИСТЕМУ
-        </button>
+            <div class="tagline" style="
+                font-size: 14px;
+                color: #ff4444;
+                letter-spacing: 4px;
+                margin: 0 0 15px 0;
+            ">
+                SYSTEM INITIALIZATION
+            </div>
 
-    </section>
+            <div class="hood-box" style="margin: 10px 0;">
+                <img src="images/hood.png" class="hood-image" alt="UNDERDOGG" style="
+                    width: 180px;
+                    max-width: 100%;
+                    filter: drop-shadow(0 0 30px rgba(255, 0, 0, 0.4));
+                ">
+            </div>
+
+            <div class="loading" style="margin: 20px 0;">
+                <div class="loading-text" style="
+                    font-size: 12px;
+                    color: #666;
+                    letter-spacing: 3px;
+                    margin-bottom: 8px;
+                ">
+                    INITIALIZING SYSTEM...
+                </div>
+                <div class="progress" style="
+                    width: 100%;
+                    height: 2px;
+                    background: #1a1a1a;
+                    border-radius: 2px;
+                    overflow: hidden;
+                ">
+                    <div class="progress-line" style="
+                        width: 0%;
+                        height: 100%;
+                        background: #ff0000;
+                        animation: load 3s ease-in-out infinite;
+                    "></div>
+                </div>
+            </div>
+
+            <button class="enter-btn" onclick="location.href='home.html'" style="
+                margin-top: 20px;
+                padding: 16px 48px;
+                background: transparent;
+                border: 2px solid #ff0000;
+                color: #fff;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 16px;
+                cursor: pointer;
+                border-radius: 8px;
+                letter-spacing: 2px;
+                transition: 0.3s;
+            ">
+                ▶ ВОЙТИ В СИСТЕМУ
+            </button>
+
+        </section>
+
+    </div>
+
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.7); }
+        }
+        @keyframes load {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+    </style>
 
     <script src="js/app.js"></script>
 </body>
