@@ -467,7 +467,7 @@
     </a>
 
     <!-- КАРТОЧКА 2: РОЗЫГРЫШ -->
-    <a href="#" class="action-card">
+    <a href="#" class="action-card" id="giveawayButton">
       <div class="card-inner">
         <div class="icon-wrapper">
           <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2.5" stroke-linecap="round">
@@ -560,7 +560,7 @@
       <div class="button-arrow">›</div>
     </a>
 
-    <!-- ПРИГЛАСИТЬ ДРУГА (с функцией копирования) -->
+    <!-- ПРИГЛАСИТЬ ДРУГА -->
     <a href="#" class="nav-button" id="inviteButton">
       <div class="button-icon">
         <svg viewBox="0 0 64 64" fill="none" stroke="#ff2a4b" stroke-width="2.5" stroke-linecap="round">
@@ -588,9 +588,528 @@
 
 </div>
 
-<!-- ===== СКРИПТ ДЛЯ КНОПКИ "ПРИГЛАСИТЬ ДРУГА" ===== -->
+<!-- ============================================================ -->
+<!-- ===== МОДАЛЬНОЕ ОКНО РОЗЫГРЫША ===== -->
+<!-- ============================================================ -->
+<div id="giveawayModal" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+">
+    <div style="
+        background: radial-gradient(circle at 50% 30%, #1c0205, #0d0103);
+        border: 2px solid #ff2a4b;
+        border-radius: 28px;
+        max-width: 420px;
+        width: 100%;
+        padding: 30px 24px;
+        text-align: center;
+        box-shadow: 0 0 60px rgba(255, 0, 35, 0.4);
+        animation: breatheBg 6s ease-in-out infinite;
+        max-height: 95vh;
+        overflow-y: auto;
+    ">
+        <h2 style="
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            letter-spacing: 4px;
+            color: #fff;
+            text-shadow: 0 0 20px #ff2a4b;
+            margin-bottom: 20px;
+        ">🎁 УЧАСТИЕ В РОЗЫГРЫШЕ</h2>
+
+        <!-- ===== ТАЙМЕР ===== -->
+        <div style="
+            font-family: 'Orbitron', sans-serif;
+            background: rgba(255, 0, 0, 0.05);
+            border: 1px solid rgba(255, 42, 75, 0.2);
+            border-radius: 16px;
+            padding: 16px 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        ">
+            <div style="
+                font-size: 11px;
+                color: #888;
+                letter-spacing: 3px;
+                margin-bottom: 6px;
+            ">⏳ ДО РОЗЫГРЫША</div>
+            <div id="countdownTimer" style="
+                font-size: 28px;
+                font-weight: 900;
+                color: #ff2a4b;
+                text-shadow: 0 0 20px rgba(255, 42, 75, 0.5);
+                letter-spacing: 2px;
+            ">
+                <span id="days">00</span>:<span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+            </div>
+            <div style="
+                display: flex;
+                justify-content: center;
+                gap: 18px;
+                margin-top: 6px;
+                font-size: 9px;
+                color: #555;
+                letter-spacing: 1px;
+            ">
+                <span>ДНИ</span>
+                <span>ЧАСЫ</span>
+                <span>МИН</span>
+                <span>СЕК</span>
+            </div>
+        </div>
+
+        <!-- ===== ФОРМА РЕГИСТРАЦИИ ===== -->
+        <div id="registrationForm" style="text-align: left; margin-bottom: 20px;">
+            <div style="
+                color: #888;
+                font-size: 12px;
+                letter-spacing: 1px;
+                margin-bottom: 16px;
+                text-align: center;
+            ">Заполни все поля, чтобы участвовать</div>
+
+            <div style="margin-bottom: 12px;">
+                <label style="
+                    display: block;
+                    color: #aaa;
+                    font-size: 12px;
+                    letter-spacing: 1px;
+                    margin-bottom: 4px;
+                ">📱 TELEGRAM</label>
+                <input type="text" id="tgUsername" placeholder="@username" style="
+                    width: 100%;
+                    padding: 12px 16px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 42, 75, 0.3);
+                    border-radius: 10px;
+                    color: #fff;
+                    font-size: 14px;
+                    outline: none;
+                    transition: 0.3s;
+                ">
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <label style="
+                    display: block;
+                    color: #aaa;
+                    font-size: 12px;
+                    letter-spacing: 1px;
+                    margin-bottom: 4px;
+                ">🎮 KICK</label>
+                <input type="text" id="kickUsername" placeholder="@username" style="
+                    width: 100%;
+                    padding: 12px 16px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 42, 75, 0.3);
+                    border-radius: 10px;
+                    color: #fff;
+                    font-size: 14px;
+                    outline: none;
+                    transition: 0.3s;
+                ">
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label style="
+                    display: block;
+                    color: #aaa;
+                    font-size: 12px;
+                    letter-spacing: 1px;
+                    margin-bottom: 4px;
+                ">🎰 КАЗИНО</label>
+                <input type="text" id="casinoUsername" placeholder="Ник в казино" style="
+                    width: 100%;
+                    padding: 12px 16px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 42, 75, 0.3);
+                    border-radius: 10px;
+                    color: #fff;
+                    font-size: 14px;
+                    outline: none;
+                    transition: 0.3s;
+                ">
+            </div>
+
+            <button id="registerBtn" style="
+                width: 100%;
+                padding: 14px;
+                background: #ff2a4b;
+                border: none;
+                border-radius: 30px;
+                color: #fff;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 14px;
+                font-weight: 700;
+                letter-spacing: 2px;
+                cursor: pointer;
+                box-shadow: 0 0 30px rgba(255, 42, 75, 0.4);
+                transition: 0.3s;
+            ">
+                ✅ ЗАРЕГИСТРИРОВАТЬСЯ
+            </button>
+        </div>
+
+        <!-- ===== СТАТИСТИКА (появляется после регистрации) ===== -->
+        <div id="statsBlock" style="display: none;">
+            <div style="
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+                gap: 8px;
+                margin-bottom: 20px;
+            ">
+                <div style="
+                    background: rgba(255, 0, 0, 0.08);
+                    border: 1px solid rgba(255, 42, 75, 0.3);
+                    border-radius: 12px;
+                    padding: 10px 6px;
+                ">
+                    <div style="font-size: 9px; color: #888; letter-spacing: 1px;">ВСЕГО</div>
+                    <div style="font-size: 18px; font-weight: 900; color: #fff;" id="totalUsers">0</div>
+                </div>
+                <div style="
+                    background: rgba(255, 0, 0, 0.08);
+                    border: 1px solid rgba(255, 42, 75, 0.3);
+                    border-radius: 12px;
+                    padding: 10px 6px;
+                ">
+                    <div style="font-size: 9px; color: #888; letter-spacing: 1px;">БОТЫ</div>
+                    <div style="font-size: 18px; font-weight: 900; color: #ff6666;" id="botsCount">0</div>
+                </div>
+                <div style="
+                    background: rgba(255, 0, 0, 0.08);
+                    border: 1px solid rgba(255, 42, 75, 0.3);
+                    border-radius: 12px;
+                    padding: 10px 6px;
+                ">
+                    <div style="font-size: 9px; color: #888; letter-spacing: 1px;">РЕАЛЬНЫЕ</div>
+                    <div style="font-size: 18px; font-weight: 900; color: #00ff88;" id="realUsers">0</div>
+                </div>
+                <div style="
+                    background: rgba(255, 0, 0, 0.08);
+                    border: 1px solid rgba(255, 42, 75, 0.3);
+                    border-radius: 12px;
+                    padding: 10px 6px;
+                ">
+                    <div style="font-size: 9px; color: #888; letter-spacing: 1px;">ПОБЕДИТ.</div>
+                    <div style="font-size: 18px; font-weight: 900; color: #ffcc00;" id="winnersCount">0</div>
+                </div>
+            </div>
+
+            <div id="winnerDisplay" style="
+                font-family: 'Orbitron', sans-serif;
+                font-size: 22px;
+                font-weight: 900;
+                color: #fff;
+                text-shadow: 0 0 30px #ff2a4b;
+                min-height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 16px;
+                border: 1px dashed rgba(255, 42, 75, 0.3);
+                border-radius: 16px;
+                background: rgba(0, 0, 0, 0.3);
+                padding: 16px;
+            ">
+                <span id="winnerText">Нажми "Выбрать"</span>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button id="startGiveawayBtn" style="
+                    padding: 14px 28px;
+                    background: #ff2a4b;
+                    border: none;
+                    border-radius: 30px;
+                    color: #fff;
+                    font-family: 'Orbitron', sans-serif;
+                    font-size: 13px;
+                    font-weight: 700;
+                    letter-spacing: 2px;
+                    cursor: pointer;
+                    box-shadow: 0 0 30px rgba(255, 42, 75, 0.4);
+                    transition: 0.3s;
+                ">
+                    🎰 ВЫБРАТЬ ПОБЕДИТЕЛЯ
+                </button>
+                <button id="closeGiveawayBtn" style="
+                    padding: 14px 28px;
+                    background: transparent;
+                    border: 1px solid #666;
+                    border-radius: 30px;
+                    color: #888;
+                    font-family: 'Orbitron', sans-serif;
+                    font-size: 13px;
+                    font-weight: 700;
+                    letter-spacing: 2px;
+                    cursor: pointer;
+                    transition: 0.3s;
+                ">
+                    ✕ ЗАКРЫТЬ
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== ЭКРАН УСПЕШНОЙ РЕГИСТРАЦИИ ===== -->
+        <div id="registrationSuccess" style="display: none; padding: 20px 0;">
+            <div style="
+                font-size: 48px;
+                margin-bottom: 12px;
+            ">✅</div>
+            <div style="
+                font-family: 'Orbitron', sans-serif;
+                font-size: 18px;
+                color: #00ff88;
+                text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            ">ТЫ ЗАРЕГИСТРИРОВАН!</div>
+            <div style="
+                color: #888;
+                font-size: 13px;
+                margin-top: 8px;
+            ">Ожидай розыгрыша на стриме</div>
+            <button id="closeAfterRegisterBtn" style="
+                margin-top: 20px;
+                padding: 12px 40px;
+                background: transparent;
+                border: 1px solid #666;
+                border-radius: 30px;
+                color: #888;
+                font-family: 'Orbitron', sans-serif;
+                font-size: 13px;
+                cursor: pointer;
+            ">
+                ✕ ЗАКРЫТЬ
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ===== СКРИПТЫ ===== -->
+<!-- ============================================================ -->
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+
+    // ============================================================
+    // 1. ТАЙМЕР ДО РОЗЫГРЫША
+    // ============================================================
+    function startCountdown() {
+      // 🔥 УСТАНОВИ СВОЮ ДАТУ РОЗЫГРЫША (ГОД-МЕСЯЦ-ДЕНЬ ЧАС:МИНУТА)
+      const targetDate = new Date('2026-12-31T23:59:59').getTime();
+
+      const daysEl = document.getElementById('days');
+      const hoursEl = document.getElementById('hours');
+      const minutesEl = document.getElementById('minutes');
+      const secondsEl = document.getElementById('seconds');
+
+      if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+      function updateTimer() {
+        const now = Date.now();
+        let diff = targetDate - now;
+
+        if (diff <= 0) {
+          daysEl.textContent = '00';
+          hoursEl.textContent = '00';
+          minutesEl.textContent = '00';
+          secondsEl.textContent = '00';
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        diff -= days * (1000 * 60 * 60 * 24);
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        diff -= hours * (1000 * 60 * 60);
+        const minutes = Math.floor(diff / (1000 * 60));
+        diff -= minutes * (1000 * 60);
+        const seconds = Math.floor(diff / 1000);
+
+        daysEl.textContent = String(days).padStart(2, '0');
+        hoursEl.textContent = String(hours).padStart(2, '0');
+        minutesEl.textContent = String(minutes).padStart(2, '0');
+        secondsEl.textContent = String(seconds).padStart(2, '0');
+      }
+
+      updateTimer();
+      setInterval(updateTimer, 1000);
+    }
+
+    startCountdown();
+
+    // ============================================================
+    // 2. ЭЛЕМЕНТЫ МОДАЛКИ
+    // ============================================================
+    const giveawayBtn = document.getElementById('giveawayButton');
+    const modal = document.getElementById('giveawayModal');
+    const closeBtn = document.getElementById('closeGiveawayBtn');
+    const closeAfterRegisterBtn = document.getElementById('closeAfterRegisterBtn');
+    const startBtn = document.getElementById('startGiveawayBtn');
+    const registerBtn = document.getElementById('registerBtn');
+
+    const totalUsersEl = document.getElementById('totalUsers');
+    const botsCountEl = document.getElementById('botsCount');
+    const realUsersEl = document.getElementById('realUsers');
+    const winnersCountEl = document.getElementById('winnersCount');
+    const winnerText = document.getElementById('winnerText');
+
+    const registrationForm = document.getElementById('registrationForm');
+    const statsBlock = document.getElementById('statsBlock');
+    const registrationSuccess = document.getElementById('registrationSuccess');
+
+    const tgInput = document.getElementById('tgUsername');
+    const kickInput = document.getElementById('kickUsername');
+    const casinoInput = document.getElementById('casinoUsername');
+
+    let isRegistered = false;
+
+    // ============================================================
+    // 3. ФУНКЦИЯ ГЕНЕРАЦИИ СТАТИСТИКИ
+    // ============================================================
+    function generateStats() {
+      const total = Math.floor(Math.random() * 400) + 800;
+      const botPercent = Math.random() * 0.2 + 0.3;
+      const bots = Math.floor(total * botPercent);
+      const real = total - bots;
+      const winners = Math.min(Math.floor(Math.random() * 3) + 1, real);
+
+      totalUsersEl.textContent = total;
+      botsCountEl.textContent = bots;
+      realUsersEl.textContent = real;
+      winnersCountEl.textContent = winners;
+      window.giveawayData = { total, bots, real, winners };
+    }
+
+    // ============================================================
+    // 4. ФУНКЦИЯ ВЫБОРА ПОБЕДИТЕЛЯ
+    // ============================================================
+    function pickWinner() {
+      const data = window.giveawayData;
+      if (!data || data.real === 0) {
+        winnerText.textContent = '❌ Нет реальных участников!';
+        return;
+      }
+
+      startBtn.disabled = true;
+      startBtn.textContent = '⏳ ВЫБИРАЕМ...';
+
+      let counter = 0;
+      const interval = setInterval(() => {
+        counter++;
+        const fakeWinners = [];
+        for (let i = 0; i < data.winners; i++) {
+          const id = Math.floor(Math.random() * 90000) + 10000;
+          fakeWinners.push('@user' + id);
+        }
+        winnerText.textContent = '🔍 ' + fakeWinners.join(' | ');
+        winnerText.style.color = '#ffcc00';
+
+        if (counter > 20) {
+          clearInterval(interval);
+          const realWinners = [];
+          for (let i = 0; i < data.winners; i++) {
+            const id = Math.floor(Math.random() * 900000) + 100000;
+            realWinners.push('@user' + id);
+          }
+          winnerText.textContent = '🏆 ПОБЕДИТЕЛИ: ' + realWinners.join(' | ');
+          winnerText.style.color = '#ffcc00';
+          winnerText.style.textShadow = '0 0 60px #ffaa00';
+          startBtn.disabled = false;
+          startBtn.textContent = '🔄 ВЫБРАТЬ ЕЩЁ';
+        }
+      }, 100);
+    }
+
+    // ============================================================
+    // 5. РЕГИСТРАЦИЯ
+    // ============================================================
+    registerBtn.addEventListener('click', function() {
+      const tg = tgInput.value.trim();
+      const kick = kickInput.value.trim();
+      const casino = casinoInput.value.trim();
+
+      if (!tg || !kick || !casino) {
+        alert('⚠️ Заполни все поля!');
+        return;
+      }
+
+      if (!tg.startsWith('@')) {
+        alert('⚠️ Telegram ник должен начинаться с @');
+        return;
+      }
+
+      if (!kick.startsWith('@')) {
+        alert('⚠️ Kick ник должен начинаться с @');
+        return;
+      }
+
+      isRegistered = true;
+      registrationForm.style.display = 'none';
+      registrationSuccess.style.display = 'block';
+
+      setTimeout(() => {
+        statsBlock.style.display = 'block';
+        generateStats();
+        winnerText.textContent = 'Нажми "Выбрать победителя"';
+        winnerText.style.color = '#fff';
+      }, 1000);
+    });
+
+    // ============================================================
+    // 6. ОТКРЫТИЕ / ЗАКРЫТИЕ МОДАЛКИ
+    // ============================================================
+    giveawayBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      isRegistered = false;
+      registrationForm.style.display = 'block';
+      statsBlock.style.display = 'none';
+      registrationSuccess.style.display = 'none';
+      winnerText.textContent = 'Нажми "Выбрать победителя"';
+      winnerText.style.color = '#fff';
+
+      tgInput.value = '';
+      kickInput.value = '';
+      casinoInput.value = '';
+
+      startBtn.textContent = '🎰 ВЫБРАТЬ ПОБЕДИТЕЛЯ';
+      startBtn.disabled = false;
+
+      modal.style.display = 'flex';
+    });
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    closeAfterRegisterBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeModal();
+    });
+
+    // ============================================================
+    // 7. ЗАПУСК РОЗЫГРЫША
+    // ============================================================
+    startBtn.addEventListener('click', function() {
+      if (!isRegistered) {
+        alert('⚠️ Сначала зарегистрируйся!');
+        return;
+      }
+      pickWinner();
+    });
+
+    // ============================================================
+    // 8. КНОПКА "ПРИГЛАСИТЬ ДРУГА"
+    // ============================================================
     const inviteBtn = document.getElementById('inviteButton');
     const inviteSubtitle = document.getElementById('inviteSubtitle');
 
@@ -598,13 +1117,9 @@
       inviteBtn.addEventListener('click', function(e) {
         e.preventDefault();
 
-        // 🔥 ТВОЯ РЕФЕРАЛЬНАЯ ССЫЛКА (ЗАМЕНИ НА СВОЮ)
         const inviteLink = 'https://t.me/underd0gg_bot?start=ref_123456';
-
-        // Оригинальный текст
         const originalText = inviteSubtitle.textContent;
 
-        // Функция показа уведомления
         function showMessage(text, isSuccess = true) {
           inviteSubtitle.textContent = text;
           inviteBtn.classList.add('copied');
@@ -620,7 +1135,6 @@
           }, 3000);
         }
 
-        // Проверяем Web Share API (мобильные устройства)
         if (navigator.share) {
           navigator.share({
             title: 'UNDERDOGG',
@@ -630,20 +1144,14 @@
           return;
         }
 
-        // Копирование в буфер обмена (десктоп)
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(inviteLink)
-            .then(() => {
-              showMessage('✅ Ссылка скопирована! Отправь другу.');
-            })
-            .catch(() => {
-              fallbackCopy(inviteLink);
-            });
+            .then(() => showMessage('✅ Ссылка скопирована! Отправь другу.'))
+            .catch(() => fallbackCopy(inviteLink));
         } else {
           fallbackCopy(inviteLink);
         }
 
-        // Запасной вариант
         function fallbackCopy(text) {
           const textarea = document.createElement('textarea');
           textarea.value = text;
@@ -661,8 +1169,25 @@
         }
       });
     }
+
+    // ============================================================
+    // 9. АДАПТАЦИЯ ПОД ТЕЛЕФОН
+    // ============================================================
+    function adjustModal() {
+      const modalContent = modal.querySelector('div');
+      if (modalContent) {
+        if (window.innerWidth < 400) {
+          modalContent.style.padding = '20px 16px';
+        } else {
+          modalContent.style.padding = '30px 24px';
+        }
+      }
+    }
+    window.addEventListener('resize', adjustModal);
+    adjustModal();
+
   });
 </script>
 
 </body>
-       </html>
+</html>
