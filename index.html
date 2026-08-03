@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>UNDERDOGG — ВХОД</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #050102;
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image:
+                radial-gradient(circle at 50% 30%, rgba(180, 10, 25, 0.25) 0%, rgba(5, 1, 2, 1) 75%);
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Статус стрима */
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        .pulse {
+            width: 9px;
+            height: 9px;
+            background: #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ff0000;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
+        }
+        .status-title { color: #a0a0a0; }
+        .status-value {
+            color: #ff3333;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+        }
+
+        /* Глитч заголовок */
+        .brand-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #ffffff;
+            text-shadow: 0 0 5px #fff, 0 0 15px #ff2a2a, 0 0 30px #ff0000;
+            animation: glitchMain 3.5s infinite;
+            margin-bottom: 4px;
+        }
+
+        @keyframes glitchMain {
+            0%, 85%, 100% {
+                transform: none;
+                text-shadow: 0 0 5px #fff, 0 0 15px #ff2a2a, 0 0 30px #ff0000;
+            }
+            86% {
+                transform: skewX(-12deg) translateX(-3px);
+                color: #ff3355;
+                text-shadow: 3px 0 #00ffff, -3px 0 #ff0000;
+            }
+            87% {
+                transform: skewX(8deg) translateX(3px);
+                color: #ffffff;
+                text-shadow: -2px 0 #ff0055, 2px 0 #00ffff;
+            }
+            88% {
+                transform: none;
+            }
+            92% {
+                transform: scaleY(1.08) skewX(-4deg);
+                text-shadow: 0 0 20px #ff0000;
+            }
+        }
+
+        .brand-subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            color: #ff3333;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .hood {
+            width: 75%;
+            max-width: 240px;
+            margin: 0 auto 20px;
+            display: block;
+            filter: drop-shadow(0 0 30px rgba(255, 0, 0, 0.45));
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        /* Загрузка */
+        .loading-block {
+            width: 100%;
+            margin-bottom: 22px;
+        }
+        .loading-text {
+            color: #666;
+            letter-spacing: 4px;
+            font-size: 11px;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .loading-bar {
+            width: 100%;
+            height: 3px;
+            background: #150507;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 0, 0, 0.15);
+        }
+        .loading-fill {
+            width: 0%;
+            height: 100%;
+            background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+            transition: width 0.1s linear;
+        }
+        .loading-percent {
+            margin-top: 8px;
+            color: #ff2a2a;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        /* Кнопки */
+        .btn-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 16px;
+            background: rgba(15, 2, 4, 0.5);
+            border: 1.5px solid rgba(255, 0, 0, 0.3);
+            border-radius: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            cursor: not-allowed;
+            transition: all 0.5s ease;
+            box-shadow: none;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-main.ready {
+            cursor: pointer;
+            color: #ffffff;
+            border-color: #ff0000;
+            background: rgba(22, 4, 7, 0.75);
+            box-shadow: 0 0 12px rgba(255, 0, 0, 0.35), inset 0 0 8px rgba(255, 0, 0, 0.15);
+        }
+        .btn-main.ready:hover {
+            background: #ff0000;
+            color: #000000;
+            box-shadow: 0 0 22px rgba(255, 0, 0, 0.75);
+        }
+
+        .btn-secondary.ready {
+            border-color: #cc0000;
+            box-shadow: 0 0 10px rgba(204, 0, 0, 0.25);
+            font-size: 13px;
+            padding: 14px;
+        }
+
+        .btn-support {
+            border-color: rgba(136, 68, 255, 0.2);
+            color: rgba(170, 102, 255, 0.4);
+        }
+        .btn-support.ready {
+            border-color: rgba(136, 68, 255, 0.5);
+            color: #aa66ff;
+            box-shadow: 0 0 10px rgba(136, 68, 255, 0.2);
+            font-size: 12px;
+            padding: 12px;
+        }
+        .btn-support.ready:hover {
+            background: #8844ff;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(136, 68, 255, 0.6);
+        }
+
+        /* Модалка */
+        #registerModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        #registerModal.active { display: flex; }
+
+        .modal-content {
+            background: #0d0103;
+            border: 2px solid #ff2a4b;
+            border-radius: 20px;
+            max-width: 380px;
+            width: 100%;
+            padding: 24px 20px;
+            box-shadow: 0 0 35px rgba(255, 0, 35, 0.4);
+        }
+
+        .modal-content h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .field { margin-bottom: 12px; text-align: left; }
+        .field label { display: block; color: #888; font-size: 11px; margin-bottom: 4px; }
+        .field input {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #ff2a4b;
+            border-radius: 8px;
+            color: #fff;
+            outline: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+        }
+        .field input:disabled {
+            opacity: 0.5;
+            border-color: #444;
+        }
+
+        .info-warning {
+            background: rgba(255, 42, 75, 0.08);
+            border: 1px solid rgba(255, 42, 75, 0.3);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin: 14px 0;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #ff99a8;
+            text-align: center;
+        }
+
+        .registered-msg {
+            display: none;
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 12px 0;
+            color: #00ff88;
+            font-size: 12px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .btn-modal {
+            width: 100%;
+            padding: 12px;
+            background: #ff2a4b;
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.4);
+        }
+        .btn-modal:disabled {
+            background: #444;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .btn-close {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 12px;
+            color: #888;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+
+        <div class="status-header">
+            <span class="pulse" id="indexStatusDot"></span>
+            <span class="status-title">СТАТУС СТРИМА</span>
+            <span class="status-value" id="indexStatusLabel">В СЕТИ</span>
+        </div>
+
+        <div class="brand-title">UNDERDOGG</div>
+        <div class="brand-subtitle">SYSTEM INITIALIZATION</div>
+
+        <img class="hood" src="images/hood.png" alt="UNDERDOGG" />
+
+        <div class="loading-block">
+            <div class="loading-text">INITIALIZING SYSTEM...</div>
+            <div class="loading-bar">
+                <div class="loading-fill" id="loadingFill"></div>
+            </div>
+            <div class="loading-percent">
+                <span id="loadingPercent">0</span>%
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-main" id="enterBtn" disabled>ВОЙТИ В СИСТЕМУ</button>
+            <button class="btn-main btn-secondary" id="openRegisterBtn" disabled>ЗАРЕГИСТРИРОВАТЬСЯ</button>
+            <a href="#" class="btn-main btn-support" id="supportBtn">СВЯЗАТЬСЯ С МОДЕРАТОРОМ</a>
+        </div>
+
+    </div>
+
+    <!-- Модалка -->
+    <div id="registerModal">
+        <div class="modal-content">
+            <h2>РЕГИСТРАЦИЯ</h2>
+            
+            <div class="field">
+                <label>TELEGRAM</label>
+                <input type="text" id="regTg" placeholder="@username" />
+            </div>
+            <div class="field">
+                <label>KICK</label>
+                <input type="text" id="regKick" placeholder="ник" />
+            </div>
+            <div class="field">
+                <label>EPICSTAR</label>
+                <input type="text" id="regEpic" placeholder="ник в Epicstar" />
+            </div>
+
+            <div class="info-warning" id="warningBlock">
+                ⚠️ Убедитесь в правильности предоставленной информации! Регистрация происходит единоразово. В случае ошибки обращайтесь в техподдержку.
+            </div>
+
+            <div class="registered-msg" id="successBlock">
+                ✓ ВЫ УЖЕ ЗАРЕГИСТРИРОВАНЫ
+            </div>
+
+            <button class="btn-modal" id="registerBtn">СОХРАНИТЬ</button>
+            <button class="btn-close" id="closeRegisterBtn">ЗАКРЫТЬ</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fill = document.getElementById('loadingFill');
+            const percent = document.getElementById('loadingPercent');
+
+            const enterBtn = document.getElementById('enterBtn');
+            const openRegisterBtn = document.getElementById('openRegisterBtn');
+            const supportBtn = document.getElementById('supportBtn');
+            const modal = document.getElementById('registerModal');
+            const registerBtn = document.getElementById('registerBtn');
+            const closeBtn = document.getElementById('closeRegisterBtn');
+
+            const tgInput = document.getElementById('regTg');
+            const kickInput = document.getElementById('regKick');
+            const epicInput = document.getElementById('regEpic');
+            const warningBlock = document.getElementById('warningBlock');
+            const successBlock = document.getElementById('successBlock');
+
+            let isReady = false;
+
+            // 1. Пошаговая загрузка до 100%
+            let progress = 0;
+            const interval = setInterval(function() {
+                progress += Math.floor(Math.random() * 2) + 1;
+                if (progress > 100) progress = 100;
+                
+                fill.style.width = progress + '%';
+                percent.textContent = progress;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    isReady = true;
+
+                    enterBtn.removeAttribute('disabled');
+                    openRegisterBtn.removeAttribute('disabled');
+
+                    enterBtn.classList.add('ready');
+                    openRegisterBtn.classList.add('ready');
+                    supportBtn.classList.add('ready');
+                }
+            }, 75);
+
+            // 2. Логика перехода
+            enterBtn.addEventListener('click', function() {
+                if (isReady) location.href = 'home.html';
+            });
+
+            // 3. Открытие формы регистрации
+            openRegisterBtn.addEventListener('click', function() {
+                if (isReady) {
+                    checkUserRegistration();
+                    modal.classList.add('active');
+                }
+            });
+
+            closeBtn.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+
+            // 4. Проверка одноразовой регистрации
+            function checkUserRegistration() {
+                const isRegistered = localStorage.getItem('underdogg_registered') === 'true';
+                if (isRegistered) {
+                    const savedData = JSON.parse(localStorage.getItem('underdogg_user_data') || '{}');
+                    
+                    tgInput.value = savedData.tg || '';
+                    kickInput.value = savedData.kick || '';
+                    epicInput.value = savedData.epic || '';
+
+                    tgInput.disabled = true;
+                    kickInput.disabled = true;
+                    epicInput.disabled = true;
+
+                    registerBtn.disabled = true;
+                    registerBtn.textContent = 'УЖЕ СОХРАНЕНО';
+                    warningBlock.style.display = 'none';
+                    successBlock.style.display = 'block';
+                }
+            }
+
+            // 5. Обработка клика "СОХРАНИТЬ"
+            registerBtn.addEventListener('click', function() {
+                const tg = tgInput.value.trim();
+                const kick = kickInput.value.trim();
+                const epic = epicInput.value.trim();
+
+                if (!tg || !kick || !epic) {
+                    alert('Заполните все поля!');
+                    return;
+                }
+
+                if (!tg.startsWith('@')) {
+                    alert('Telegram ник должен начинаться с @');
+                    return;
+                }
+
+                // Сохраняем в память устройства
+                const userData = { tg, kick, epic, date: new Date().toISOString() };
+                localStorage.setItem('underdogg_user_data', JSON.stringify(userData));
+                localStorage.setItem('underdogg_registered', 'true');
+
+                alert('Регистрация успешно завершена! Изменение данных больше невозможно.');
+                checkUserRegistration();
+            });
+
+            // 6. Поддержка
+            supportBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.open('https://t.me/underd0gg_support', '_blank');
+            });
+        });
+    </script>
+
+</body>
+</html>
