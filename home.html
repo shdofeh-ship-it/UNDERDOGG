@@ -717,60 +717,71 @@
     </div>
 
     <!-- ===== МОДАЛКА НАШИ СЕРВИСЫ ===== -->
-    <div id="servicesModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); justify-content: center; align-items: center; z-index: 1000; padding: 20px;">
-        <div class="modal-content" style="max-width: 420px;">
-            <h2 style="font-family: 'Orbitron', sans-serif; font-size: 18px; letter-spacing: 3px; color: #fff; margin-bottom: 16px;">НАШИ СЕРВИСЫ</h2>
+<div id="servicesModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); justify-content: center; align-items: center; z-index: 1000; padding: 20px;">
+    <div class="modal-content" style="max-width: 420px;">
+        <h2 style="font-family: 'Orbitron', sans-serif; font-size: 18px; letter-spacing: 3px; color: #fff; margin-bottom: 16px;">НАШИ СЕРВИСЫ</h2>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
-                
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <a href="https://t.me/und3r_d0gg" target="_blank" class="service-btn">
-                        <div class="service-icon">
-                            <svg viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-                        </div>
-                        <span class="service-text">ГРУППА В TELEGRAM</span>
-                    </a>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+            
+            <!-- Левая колонка: Сообщество -->
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="https://t.me/und3r_d0gg" target="_blank" class="service-btn">
+                    <div class="service-icon">
+                        <!-- Иконка Telegram Канал -->
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                    </div>
+                    <span class="service-text">ГРУППА В TELEGRAM</span>
+                </a>
 
-                    <a href="https://telegram.me/+VcUG6nx9-JxiY2Iy" target="_blank" class="service-btn">
-                        <div class="service-icon">
-                            <svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-                        </div>
-                        <span class="service-text">НАШ ЧАТ</span>
-                    </a>
+                <a href="https://telegram.me/+VcUG6nx9-JxiY2Iy" target="_blank" class="service-btn">
+                    <div class="service-icon">
+                        <!-- Иконка Telegram Чат -->
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                    </div>
+                    <span class="service-text">НАШ ЧАТ</span>
+                </a>
 
-                    <a href="https://t.me/sizoRRR" target="_blank" class="service-btn">
-                        <div class="service-icon">
-                            <svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-                        </div>
-                        <span class="service-text">СВЯЗЬ С МОДЕРАТОРОМ</span>
-                    </a>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <a href="https://kick.com/underd0gg" target="_blank" class="service-btn">
-                        <div class="service-icon">
-                            <svg viewBox="0 0 24 24" fill="#53fc18"><path d="M3 3h18v18H3V3zm13.5 4.5h-3L10.5 11V7.5H7.5v9h3v-3.5l3 3.5h3.5l-4.5-5 4.5-4z"/></svg>
-                        </div>
-                        <span class="service-text">ОСНОВНАЯ ПЛОЩАДКА (KICK)</span>
-                    </a>
-
-                    <a href="https://www.twitch.tv/und3r_d0gg" target="_blank" class="service-btn">
-                        <div class="service-icon">
-                            <svg viewBox="0 0 24 24" fill="#9146FF"><path d="M11.571 4.714h1.715v5.143h-1.715zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
-                        </div>
-                        <span class="service-text">TWITCH</span>
-                    </a>
-
-                    <a href="https://www.youtube.com/@und3r_d0gg?si=mfYFo7EfaWmMbmok" target="_blank" class="service-btn">
-                        <div class="service-icon">
-                            <svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                        </div>
-                        <span class="service-text">YOUTUBE</span>
-                    </a>
-                </div>
-
+                <a href="https://t.me/sizoRRR" target="_blank" class="service-btn">
+                    <div class="service-icon">
+                        <!-- Иконка Telegram Чат -->
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                    </div>
+                    <span class="service-text">СВЯЗЬ С МОДЕРАТОРОМ</span>
+                </a>
             </div>
 
+            <!-- Правая колонка: Стримы -->
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="https://kick.com/underd0gg" target="_blank" class="service-btn">
+                    <div class="service-icon">
+                        <!-- Иконка Kick -->
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#53fc18"><path d="M3 3h18v18H3V3zm13.5 4.5h-3L10.5 11V7.5H7.5v9h3v-3.5l3 3.5h3.5l-4.5-5 4.5-4z"/></svg>
+                    </div>
+                    <span class="service-text">ОСНОВНАЯ ПЛОЩАДКА (KICK)</span>
+                </a>
+
+                <a href="https://www.twitch.tv/und3r_d0gg" target="_blank" class="service-btn">
+                    <div class="service-icon">
+                        <!-- Иконка Twitch -->
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#9146FF"><path d="M11.571 4.714h1.715v5.143h-1.715zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
+                    </div>
+                    <span class="service-text">TWITCH</span>
+                </a>
+
+                <a href="https://www.youtube.com/@und3r_d0gg?si=mfYFo7EfaWmMbmok" target="_blank" class="service-btn">
+                    <div class="service-icon">
+                        <!-- Иконка YouTube -->
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    </div>
+                    <span class="service-text">YOUTUBE</span>
+                </a>
+            </div>
+
+        </div>
+
+        <button id="closeServicesBtn" class="btn-back">✕ НАЗАД</button>
+    </div>
+</div>
             <button id="closeServicesBtn" class="btn-back">✕ НАЗАД</button>
         </div>
     </div>
