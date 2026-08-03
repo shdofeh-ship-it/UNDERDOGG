@@ -1,17 +1,25 @@
 document.addEventListener("DOMContentLoaded", function() {
 
     // ============================================================
-    // 1. ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP API
+    // 1. БЕЗОПАСНАЯ ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP API
     // ============================================================
-    const tgApp = window.Telegram?.WebApp;
-    if (tgApp) {
-        tgApp.ready();
-        tgApp.expand(); // Разворачиваем приложение во весь экран
-    }
+    let currentTgUsername = null;
 
-    // Достаем Telegram username пользователя
-    const tgUser = tgApp?.initDataUnsafe?.user;
-    const currentTgUsername = tgUser?.username ? `@${tgUser.username}` : null;
+    try {
+        const tgApp = window.Telegram?.WebApp;
+        if (tgApp) {
+            tgApp.ready();
+            tgApp.expand(); // Разворачиваем приложение во весь экран
+            
+            // Достаем Telegram username пользователя
+            const tgUser = tgApp.initDataUnsafe?.user;
+            if (tgUser?.username) {
+                currentTgUsername = `@${tgUser.username}`;
+            }
+        }
+    } catch (e) {
+        console.warn("Telegram WebApp API недоступен:", e);
+    }
 
 
     // ============================================================
@@ -31,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
             regTgInput.style.opacity = '0.7';
             regTgInput.style.cursor = 'not-allowed';
         } else {
-            // Если username НЕ установлен в Telegram — блокируем регистрацию
+            // Если username НЕ установлен в Telegram — предупреждаем
             regTgInput.value = '';
             regTgInput.placeholder = '❌ Установите @username в Telegram!';
             regTgInput.readOnly = true;
@@ -51,14 +59,15 @@ document.addEventListener("DOMContentLoaded", function() {
     // Сохранение данных при регистрации
     if (registerBtn) {
         registerBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             if (registerBtn.disabled) return;
 
-            const tgVal = regTgInput ? regTgInput.value.trim() : '';
+            const tgVal = regTgInput ? regTgInput.value.trim() : currentTgUsername;
             const kickVal = regKickInput ? regKickInput.value.trim() : '';
             const epicVal = regEpicInput ? regEpicInput.value.trim() : '';
 
             if (!tgVal) {
-                alert('⚠️ Ошибка: Telegram ID не найден!');
+                alert('⚠️ Ошибка: Telegram ID не найден! Установите @username в настройках Telegram.');
                 return;
             }
             if (!kickVal || !epicVal) {
