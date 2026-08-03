@@ -169,3 +169,80 @@ document.addEventListener("DOMContentLoaded", function() {
     // Запускаем автозаполнение полей при загрузке
     autofillContestForm();
 });
+// ============================================================
+// ГЛОБАЛЬНАЯ ДИНАМИЧЕСКАЯ СИНХРОНИЗАЦИЯ СТАТУСА СТРИМА С АДМИНКОЙ
+// ============================================================
+function syncGlobalStreamStatus() {
+    // 1. Проверяем статус в localStorage
+    const streamStatus = (localStorage.getItem('underdogg_stream_status') || '').toUpperCase();
+    const streamIsLive = localStorage.getItem('streamIsLive');
+    const isLive = localStorage.getItem('isLive');
+
+    // Проверяем объект админки под ключом underdogg_admin
+    let adminLive = false;
+    try {
+        const adminData = JSON.parse(localStorage.getItem('underdogg_admin') || '{}');
+        if (adminData.isLive === true || adminData.isLive === 'true' || adminData.streamStatus === 'ONLINE') {
+            adminLive = true;
+        }
+    } catch(e) {}
+
+    // Определяем, онлайн ли стрим
+    const isOnline = streamStatus === 'ONLINE' || 
+                     streamStatus === 'TRUE' || 
+                     streamIsLive === 'true' || 
+                     streamIsLive === true || 
+                     isLive === 'true' || 
+                     isLive === true || 
+                     adminLive;
+
+    // 2. Элементы на главной странице входa (index.html)
+    const indexDot = document.getElementById('indexStatusDot');
+    const indexLabel = document.getElementById('indexStatusLabel');
+
+    if (indexLabel) {
+        indexLabel.textContent = isOnline ? 'В СЕТИ' : 'ОФФЛАЙН';
+        indexLabel.style.color = isOnline ? '#ff3333' : '#888888';
+        indexLabel.style.textShadow = isOnline ? '0 0 8px rgba(255, 0, 0, 0.6)' : 'none';
+    }
+    if (indexDot) {
+        indexDot.style.background = isOnline ? '#ff0000' : '#555555';
+        indexDot.style.boxShadow = isOnline ? '0 0 10px #ff0000' : 'none';
+        indexDot.style.animation = isOnline ? 'pulse 1.5s infinite' : 'none';
+    }
+
+    // 3. Элементы внутри панели управления (home.html)
+    const onlineText = document.querySelector('.online-text');
+    const pulseDot = document.querySelector('.pulse-dot');
+    const signalBars = document.querySelectorAll('.signal-icon .bar');
+    const badges = document.querySelectorAll('.badge-live, .badge-online');
+
+    if (onlineText) {
+        onlineText.textContent = isOnline ? 'В СЕТИ' : 'ОФФЛАЙН';
+        onlineText.style.color = isOnline ? '#ff4040' : '#888888';
+    }
+
+    if (pulseDot) {
+        pulseDot.style.background = isOnline ? '#ff0000' : '#555555';
+        pulseDot.style.boxShadow = isOnline ? '0 0 15px #ff0000' : 'none';
+        pulseDot.style.animation = isOnline ? 'pulse 1.5s infinite' : 'none';
+    }
+
+    signalBars.forEach(bar => {
+        bar.style.background = isOnline ? '#ff4040' : '#555555';
+    });
+
+    badges.forEach(badge => {
+        badge.textContent = isOnline ? 'ОНЛАЙН' : 'ОФФЛАЙН';
+        badge.style.background = isOnline ? '#ff1a3c' : '#333333';
+        badge.style.borderColor = isOnline ? '#ff1a3c' : '#555555';
+        badge.style.boxShadow = isOnline ? '0 0 15px rgba(255, 26, 60, 0.4)' : 'none';
+    });
+}
+
+// Запускаем постоянное отслеживание изменений каждые 1 секунду и по событиям storage
+document.addEventListener('DOMContentLoaded', function() {
+    syncGlobalStreamStatus();
+    setInterval(syncGlobalStreamStatus, 1000);
+    window.addEventListener('storage', syncGlobalStreamStatus);
+});
