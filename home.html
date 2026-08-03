@@ -688,11 +688,36 @@
             </div>
         </div>
 
-        <!-- ===== TELEGRAM ===== -->
-        <div id="tgContainer" class="tg-auto">
-            <div class="label">📱 TELEGRAM</div>
-            <div id="tgDisplay" class="value auto">@user</div>
-        </div>
+        <!-- ===== TELEGRAM (авто или ручной ввод) ===== -->
+<div id=<!-- ===== TELEGRAM ===== -->
+<div id="tgContainer" style="
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 42, 75, 0.15);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    text-align: left;
+">
+    <div style="font-size: 11px; color: #888; letter-spacing: 1px; margin-bottom: 4px;">📱 TELEGRAM</div>
+
+    <!-- Для Telegram WebApp — показываем ник -->
+    <div id="tgDisplay" style="font-size: 16px; font-weight: 700; color: #00ff88;">@user</div>
+
+    <!-- Для браузера — поле ввода (скрыто по умолчанию) -->
+    <input type="text" id="tgManualInput" placeholder="@username" style="
+        display: none;
+        width: 100%;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 42, 75, 0.3);
+        border-radius: 10px;
+        color: #ffffff;
+        font-size: 14px;
+        outline: none;
+        font-family: 'Rajdhani', sans-serif;
+        margin-top: 4px;
+    " />
+</div>
 
         <!-- ===== ФОРМА ===== -->
         <div id="registrationForm" style="text-align: left; margin-bottom: 16px;">
