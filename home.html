@@ -1580,3 +1580,58 @@
 
 </body>
                   </html>
+<script>
+    // Универсальная функция обновления статуса стрима в home.html
+    function updateStreamStatus() {
+        // Находим элементы (подходят под любые варианты верстки)
+        const statusDot = document.getElementById('statusDot') || 
+                          document.getElementById('indexStatusDot') || 
+                          document.querySelector('.status-dot') ||
+                          document.querySelector('.pulse');
+                          
+        const statusText = document.getElementById('statusText') || 
+                           document.getElementById('statusValue') || 
+                           document.getElementById('indexStatusLabel') || 
+                           document.querySelector('.status-value');
+
+        // Считываем значения из LocalStorage
+        const streamStatus = localStorage.getItem('underdogg_stream_status');
+        const streamIsLive = localStorage.getItem('streamIsLive');
+        const isLive = localStorage.getItem('isLive');
+
+        // Проверяем, включен ли стрим хотя бы в одном источнике
+        const isOn = streamStatus === 'ONLINE' || 
+                     streamIsLive === 'true' || 
+                     streamIsLive === true || 
+                     isLive === 'true';
+
+        if (statusText && statusDot) {
+            if (isOn) {
+                statusText.textContent = 'В СЕТИ';
+                statusText.style.color = '#ff3333';
+                statusText.style.textShadow = '0 0 8px rgba(255, 0, 0, 0.6)';
+                
+                statusDot.style.background = '#ff0000';
+                statusDot.style.boxShadow = '0 0 10px #ff0000';
+                statusDot.style.animation = 'pulse 1.5s infinite';
+            } else {
+                statusText.textContent = 'ОФФЛАЙН';
+                statusText.style.color = '#888888';
+                statusText.style.textShadow = 'none';
+                
+                statusDot.style.background = '#555555';
+                statusDot.style.boxShadow = 'none';
+                statusDot.style.animation = 'none';
+            }
+        }
+    }
+
+    // Автоматический запуск и слежка за изменениями
+    document.addEventListener('DOMContentLoaded', function() {
+        updateStreamStatus();
+        window.addEventListener('storage', updateStreamStatus);
+        setInterval(updateStreamStatus, 1500);
+    });
+</script>
+
+
