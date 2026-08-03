@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNDERDOGG — LOADING</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #050102;
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image:
+                radial-gradient(circle at 50% 20%, rgba(180, 10, 25, 0.25) 0%, rgba(10, 0, 3, 0.95) 75%),
+                radial-gradient(circle at 50% 80%, rgba(140, 5, 15, 0.2) 0%, rgba(5, 1, 2, 1) 70%);
+        }
+
+        .screen {
+            width: 100%;
+            max-width: 420px;
+            background: radial-gradient(circle at 50% 30%, #1c0205 0%, #0d0103 65%, #050001 100%);
+            border: 1px solid rgba(255, 30, 60, 0.3);
+            border-radius: 28px;
+            padding: 30px 24px;
+            box-shadow: 0 0 60px rgba(255, 0, 35, 0.25);
+            text-align: center;
+        }
+
+        .status-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border: 1px solid #ff2020;
+            border-radius: 30px;
+            background: rgba(255, 0, 0, 0.04);
+            margin-bottom: 24px;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: #aaa;
+        }
+
+        .pulse {
+            width: 12px;
+            height: 12px;
+            background: #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ff0000;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.7); }
+        }
+
+        .status-right {
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .brand-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 44px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #ffffff;
+            text-shadow: 0 0 3px #fff, 0 0 10px #ff2a2a, 0 0 22px #ff0000, 0 0 40px rgba(255, 0, 0, 0.55);
+            animation: glitch 6s infinite;
+            margin-bottom: 4px;
+        }
+
+        @keyframes glitch {
+            0%, 95%, 100% { transform: none; }
+            96% { transform: translateX(-2px); }
+            97% { transform: translateX(2px); }
+            98% { transform: translateX(-1px); }
+        }
+
+        .brand-subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: #ff4444;
+            letter-spacing: 6px;
+            margin-bottom: 24px;
+        }
+
+        .hood {
+            width: 70%;
+            max-width: 280px;
+            margin: 10px auto 20px;
+            display: block;
+            filter: drop-shadow(0 0 30px rgba(255, 0, 0, 0.4));
+        }
+
+        .loading-block {
+            margin: 20px 0;
+        }
+        .loading-text {
+            color: #888;
+            letter-spacing: 4px;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+        .loading-bar {
+            width: 100%;
+            height: 8px;
+            background: #161616;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.15);
+        }
+        .loading-fill {
+            width: 0%;
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #ff0000, #ff3b3b, #ff0000);
+            box-shadow: 0 0 25px #ff0000;
+            animation: loadingGlow 1s linear infinite;
+        }
+        @keyframes loadingGlow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.5); }
+        }
+
+        .loading-percent {
+            margin-top: 10px;
+            color: #ff3b3b;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .enter-btn {
+            width: 100%;
+            padding: 16px;
+            background: transparent;
+            border: 2px solid #ff0000;
+            border-radius: 30px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: 0.45s;
+            opacity: 0.55;
+            transform: scale(0.95);
+            margin-top: 20px;
+        }
+        .enter-btn.ready {
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.45), 0 0 60px rgba(255, 0, 0, 0.2);
+        }
+        .enter-btn:hover {
+            background: #ff0000;
+            color: #000;
+        }
+
+        .tagline-glitch {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: #ffffff;
+            text-shadow: 0 0 3px #fff, 0 0 10px #ff2a2a, 0 0 22px #ff0000, 0 0 40px rgba(255, 0, 0, 0.55);
+            animation: glitchFooter 3s infinite;
+            line-height: 1.4;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255, 42, 75, 0.1);
+            padding-top: 18px;
+        }
+        @keyframes glitchFooter {
+            0%, 90%, 100% { transform: none; opacity: 1; }
+            92% { transform: translateX(-3px) skewX(-3deg); opacity: 0.7; color: #ff6666; text-shadow: 0 0 10px #ff0000, 0 0 30px rgba(255, 0, 0, 0.8); }
+            94% { transform: translateX(3px) skewX(3deg); opacity: 1; color: #ffffff; }
+            96% { transform: translateX(-2px) skewX(-2deg); opacity: 0.8; color: #ff3333; }
+            98% { transform: translateX(2px) skewX(1deg); opacity: 1; color: #ffffff; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="screen">
+
+    <!-- ===== СТАТУС-БАР ===== -->
+    <div class="status-card">
+        <div class="status-left">
+            <span class="pulse" id="indexStatusDot"></span>
+            <span>СТАТУС СТРИМА</span>
+        </div>
+        <div class="status-right" id="indexStatusLabel">
+            НЕ В ЭФИРЕ
+        </div>
+    </div>
+
+    <!-- ===== ЛОГОТИП ===== -->
+    <div class="brand-title">UNDERDOGG</div>
+    <div class="brand-subtitle">SYSTEM INITIALIZATION</div>
+
+    <!-- ===== ИЗОБРАЖЕНИЕ ===== -->
+    <img class="hood" src="images/hood.png" alt="UNDERDOGG" />
+
+    <!-- ===== ЗАГРУЗКА ===== -->
+    <div class="loading-block">
+        <div class="loading-text">INITIALIZING SYSTEM...</div>
+        <div class="loading-bar">
+            <div class="loading-fill" id="loadingFill"></div>
+        </div>
+        <div class="loading-percent">
+            <span id="loadingPercent">0</span>%
+        </div>
+    </div>
+
+    <!-- ===== КНОПКА ===== -->
+    <button class="enter-btn" id="enterBtn" onclick="location.href='home.html'">
+        ▶ ВОЙТИ В СИСТЕМУ
+    </button>
+
+    <!-- ===== ФУТЕР ===== -->
+    <div class="tagline-glitch">
+        NO FACE.<br>NO LIMITS.
+    </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- ===== СКРИПТЫ ===== -->
+<!-- ============================================================ -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // ============================================================
+        // 1. ПРОГРЕСС-БАР
+        // ============================================================
+        const fill = document.getElementById('loadingFill');
+        const percent = document.getElementById('loadingPercent');
+        const btn = document.getElementById('enterBtn');
+
+        if (fill && percent) {
+            let progress = 0;
+            const interval = setInterval(function() {
+                progress += Math.floor(Math.random() * 5) + 1;
+                if (progress > 100) progress = 100;
+                fill.style.width = progress + '%';
+                percent.textContent = progress;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    if (btn) {
+                        setTimeout(function() {
+                            btn.classList.add('ready');
+                        }, 300);
+                    }
+                }
+            }, 100);
+        }
+
+        // ============================================================
+        // 2. СТАТУС СТРИМА (из админ-панели)
+        // ============================================================
+        function updateIndexStatus() {
+            const isLive = localStorage.getItem('streamIsLive') === 'true';
+            const dot = document.getElementById('indexStatusDot');
+            const label = document.getElementById('indexStatusLabel');
+
+            if (dot) {
+                dot.style.background = isLive ? '#ff0000' : '#444';
+                dot.style.boxShadow = isLive ? '0 0 20px #ff0000, 0 0 40px rgba(255,0,0,0.3)' : '0 0 5px #444';
+                dot.style.animation = isLive ? 'pulse 1.5s infinite' : 'none';
+            }
+            if (label) {
+                label.textContent = isLive ? 'В ЭФИРЕ' : 'НЕ В ЭФИРЕ';
+                label.style.color = isLive ? '#ff4040' : '#888';
+            }
+        }
+
+        updateIndexStatus();
+        setInterval(updateIndexStatus, 5000);
+
+    });
+</script>
+
+</body>
+</html>
