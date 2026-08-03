@@ -1,184 +1,179 @@
-// ============================================================
-// ЕДИНАЯ СИСТЕМА: АВТОЗАПОЛНЕНИЕ, 1 РЕГИСТРАЦИЯ И ЖЕСТКИЕ БИЛЕТЫ
-// ============================================================
-
 document.addEventListener("DOMContentLoaded", function() {
 
-    // --- 1. АНИМАЦИЯ ЗАГРУЗКИ ---
-    const fill = document.getElementById("loadingFill");
-    const percent = document.getElementById("loadingPercent");
-    const btn = document.querySelector(".enter-btn");
+    // ============================================================
+    // 1. ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP API
+    // ============================================================
+    const tgApp = window.Telegram?.WebApp;
+    if (tgApp) {
+        tgApp.ready();
+        tgApp.expand(); // Разворачиваем приложение во весь экран
+    }
 
-    if (fill && percent) {
-        let progress = 0;
-        const interval = setInterval(function() {
-            progress += Math.floor(Math.random() * 5) + 1;
-            if (progress > 100) progress = 100;
+    // Достаем Telegram username пользователя
+    const tgUser = tgApp?.initDataUnsafe?.user;
+    const currentTgUsername = tgUser?.username ? `@${tgUser.username}` : null;
 
-            fill.style.width = progress + "%";
-            percent.textContent = progress;
 
-            if (progress === 100) {
-                clearInterval(interval);
-                setTimeout(function() {
-                    if (btn) btn.classList.add("ready");
-                }, 300);
+    // ============================================================
+    // 2. ФОРМА РЕГИСТРАЦИИ (index.html)
+    // ============================================================
+    const regTgInput = document.getElementById('regTg');
+    const regKickInput = document.getElementById('regKick');
+    const regEpicInput = document.getElementById('regEpic');
+    const registerBtn = document.getElementById('registerBtn');
+    const warningBlock = document.getElementById('warningBlock');
+
+    if (regTgInput) {
+        if (currentTgUsername) {
+            // Если у пользователя есть username в Telegram — ставим и БЛОКИРУЕМ
+            regTgInput.value = currentTgUsername;
+            regTgInput.readOnly = true;
+            regTgInput.style.opacity = '0.7';
+            regTgInput.style.cursor = 'not-allowed';
+        } else {
+            // Если username НЕ установлен в Telegram — блокируем регистрацию
+            regTgInput.value = '';
+            regTgInput.placeholder = '❌ Установите @username в Telegram!';
+            regTgInput.readOnly = true;
+            
+            if (warningBlock) {
+                warningBlock.innerHTML = '⚠️ <b>Ошибка:</b> У вас не установлен Username в Telegram. Перейдите в настройки Telegram, установите @username и перезайдите в бота!';
+                warningBlock.style.color = '#ff3333';
             }
-        }, 80);
-    }
-
-    // --- 2. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
-    
-    // Получить данные зарегистрированного юзера
-    function getUserData() {
-        const raw = localStorage.getItem('underdogg_user_data');
-        if (!raw) return null;
-        try {
-            const parsed = JSON.parse(raw);
-            return Array.isArray(parsed) ? parsed[parsed.length - 1] : parsed;
-        } catch(e) {
-            return null;
-        }
-    }
-
-    // Получить ключ билетов
-    function getTicketsKey(user) {
-        if (!user) return null;
-        const id = user.epic || user.casino || user.tg;
-        return id ? 'tickets_epic_' + id.trim() : null;
-    }
-
-    // Получить стабильные билеты (без рандома!)
-    function getUserTickets() {
-        const user = getUserData();
-        if (!user) return { bronze: 0, silver: 0, gold: 0 };
-        
-        const key = getTicketsKey(user);
-        if (!key) return { bronze: 0, silver: 0, gold: 0 };
-
-        const raw = localStorage.getItem(key);
-        if (!raw) return { bronze: 0, silver: 0, gold: 0 };
-        
-        try { return JSON.parse(raw); } 
-        catch(e) { return { bronze: 0, silver: 0, gold: 0 }; }
-    }
-
-    // --- 3. АВТОПОДСТАНОВКА ДАННЫХ В ФОРМУ РОЗЫГРЫША ---
-    function autofillContestForm() {
-        const user = getUserData();
-        const tgInput = document.getElementById('tgInput') || document.getElementById('contestTg');
-        const kickInput = document.getElementById('kickInput') || document.getElementById('contestKick');
-        const casinoInput = document.getElementById('casinoInput') || document.getElementById('contestCasino') || document.getElementById('epicInput');
-        const submitBtn = document.getElementById('submitContestBtn') || document.getElementById('registerBtn');
-
-        if (user) {
-            if (tgInput) { tgInput.value = user.tg || ''; tgInput.readOnly = true; }
-            if (kickInput) { kickInput.value = user.kick || ''; kickInput.readOnly = true; }
-            if (casinoInput) { casinoInput.value = user.epic || user.casino || ''; casinoInput.readOnly = true; }
-
-            // Если человек уже участвует в конкурсе
-            if (localStorage.getItem('underdogg_joined_contest') === 'true') {
-                if (submitBtn) {
-                    submitBtn.textContent = '✅ ВЫ УЖЕ УЧАСТВУЕТЕ';
-                    submitBtn.disabled = true;
-                    submitBtn.style.opacity = '0.6';
-                    submitBtn.style.cursor = 'not-allowed';
-                }
+            if (registerBtn) {
+                registerBtn.disabled = true;
+                registerBtn.style.opacity = '0.4';
+                registerBtn.style.cursor = 'not-allowed';
             }
         }
     }
 
-    // --- 4. ОБРАБОТКА НАЖАТИЯ "УЧАСТВОВАТЬ" (ТОЛЬКО 1 РАЗ) ---
-    const submitBtn = document.getElementById('submitContestBtn') || document.getElementById('registerBtn');
-    if (submitBtn) {
-        submitBtn.addEventListener('click', function(e) {
-            e.preventDefault();
+    // Сохранение данных при регистрации
+    if (registerBtn) {
+        registerBtn.addEventListener('click', function(e) {
+            if (registerBtn.disabled) return;
 
-            if (localStorage.getItem('underdogg_joined_contest') === 'true') {
-                alert('⚠️ Вы уже зарегистрированы в розыгрыше!');
+            const tgVal = regTgInput ? regTgInput.value.trim() : '';
+            const kickVal = regKickInput ? regKickInput.value.trim() : '';
+            const epicVal = regEpicInput ? regEpicInput.value.trim() : '';
+
+            if (!tgVal) {
+                alert('⚠️ Ошибка: Telegram ID не найден!');
+                return;
+            }
+            if (!kickVal || !epicVal) {
+                alert('⚠️ Пожалуйста, введите ваш ник на Kick и ник в Epicstar!');
                 return;
             }
 
-            const tgInput = document.getElementById('tgInput') || document.getElementById('contestTg');
-            const kickInput = document.getElementById('kickInput') || document.getElementById('contestKick');
-            const casinoInput = document.getElementById('casinoInput') || document.getElementById('contestCasino') || document.getElementById('epicInput');
+            const userData = {
+                tg: tgVal,
+                kick: kickVal,
+                epic: epicVal
+            };
 
-            const tg = tgInput ? tgInput.value.trim() : '';
-            const kick = kickInput ? kickInput.value.trim() : '';
-            const casino = casinoInput ? casinoInput.value.trim() : '';
+            localStorage.setItem('underdogg_user_data', JSON.stringify(userData));
+            localStorage.setItem('underdogg_registered', 'true');
 
-            if (!tg || !kick || !casino) {
-                alert('⚠️ Заполните все поля!');
-                return;
-            }
-
-            // Сохраняем профиль (если не был сохранен)
-            const newUser = { tg, kick, casino, epic: casino, date: new Date().toISOString() };
-            localStorage.setItem('underdogg_user_data', JSON.stringify(newUser));
-
-            // Записываем в список участников для админа
-            const adminData = JSON.parse(localStorage.getItem('underdogg_admin') || '{}');
-            adminData.participants = adminData.participants || [];
-            adminData.participants.push(newUser);
-            localStorage.setItem('underdogg_admin', JSON.stringify(adminData));
-
-            // Блокируем повторную регистрацию
-            localStorage.setItem('underdogg_joined_contest', 'true');
-
-            submitBtn.textContent = '✅ ВЫ УЧАСТВУЕТЕ!';
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.6';
-            submitBtn.style.cursor = 'not-allowed';
-
-            alert('🎉 Успешно! Вы зарегистрированы в розыгрыше.');
+            alert('🎉 Регистрация успешно завершена!');
+            closeAllModals();
         });
     }
 
-    // --- 5. МОДАЛКА "МОИ БИЛЕТЫ" (ЖЕСТКИЕ ДАННЫЕ ВМЕСТО РАНДОМА) ---
-    const myTicketsBtn = document.getElementById('myTicketsBtn');
-    if (myTicketsBtn) {
-        // Перехватываем и глушим старые обработчики, чтобы убрать рандом
-        myTicketsBtn.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
 
-            const user = getUserData();
-            if (!user) {
-                alert("⚠️ Сначала зарегистрируйтесь на главной странице!");
-                return;
+    // ============================================================
+    // 3. ЗАКРЫТИЕ МОДАЛЬНЫХ ОКЕН
+    // ============================================================
+    function closeAllModals() {
+        const modals = document.querySelectorAll('.modal, .modal-overlay, #registerModal, #myTicketsModal');
+        modals.forEach(modal => {
+            modal.classList.remove('active');
+            if (modal.style.display !== 'none' && !modal.classList.contains('main-wrapper')) {
+                modal.style.display = 'none';
             }
-
-            const tickets = getUserTickets();
-
-            // Вставляем ТОЧНЫЕ значения из памяти
-            const b = document.getElementById('myBronzeCount');
-            const s = document.getElementById('mySilverCount');
-            const g = document.getElementById('myGoldCount');
-            const t = document.getElementById('myTotalTicketsCount');
-
-            if (b) b.textContent = tickets.bronze || 0;
-            if (s) s.textContent = tickets.silver || 0;
-            if (g) g.textContent = tickets.gold || 0;
-            if (t) t.textContent = (tickets.bronze || 0) + (tickets.silver || 0) + (tickets.gold || 0);
-
-            const modal = document.getElementById('myTicketsModal');
-            if (modal) modal.style.display = 'flex';
-        };
+        });
     }
 
-    // Запускаем автозаполнение полей при загрузке
-    autofillContestForm();
+    // Клик по кнопкам закрытия / крестикам
+    const closeBtns = document.querySelectorAll('.close-modal, .modal-close, #closeRegisterBtn');
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeAllModals();
+        });
+    });
+
+    // Клик мимо окна (по темному фону)
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal') || e.target.classList.contains('modal-overlay')) {
+            closeAllModals();
+        }
+    });
+
+
+    // ============================================================
+    // 4. ФОРМА РОЗЫГРЫША (home.html)
+    // ============================================================
+    function setupContestForm() {
+        const savedData = localStorage.getItem('underdogg_user_data');
+        let user = null;
+        if (savedData) {
+            try { user = JSON.parse(savedData); } catch(e) {}
+        }
+
+        const contestTg = document.getElementById('tgInput') || document.getElementById('contestTg');
+        const contestKick = document.getElementById('kickInput') || document.getElementById('contestKick');
+        const contestEpic = document.getElementById('casinoInput') || document.getElementById('contestCasino') || document.getElementById('contestEpic');
+        const joinBtn = document.getElementById('submitContestBtn') || document.getElementById('joinContestBtn');
+
+        // Подставляем сохраненные данные и делаем поля ТОЛЬКО ЧТЕНИЕ
+        if (contestTg) {
+            contestTg.value = (user && user.tg) ? user.tg : (currentTgUsername || '');
+            contestTg.readOnly = true;
+            contestTg.style.opacity = '0.8';
+        }
+        if (contestKick) {
+            contestKick.value = (user && user.kick) ? user.kick : '';
+            contestKick.readOnly = true;
+            contestKick.style.opacity = '0.8';
+        }
+        if (contestEpic) {
+            contestEpic.value = (user && user.epic) ? user.epic : '';
+            contestEpic.readOnly = true;
+            contestEpic.style.opacity = '0.8';
+        }
+
+        // Логика кнопки участия
+        if (localStorage.getItem('underdogg_joined_contest') === 'true' && joinBtn) {
+            joinBtn.textContent = '✅ ВЫ УЖЕ УЧАСТВУЕТЕ';
+            joinBtn.disabled = true;
+            joinBtn.style.opacity = '0.5';
+            joinBtn.style.cursor = 'not-allowed';
+        } else if (joinBtn) {
+            joinBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.setItem('underdogg_joined_contest', 'true');
+                joinBtn.textContent = '✅ ВЫ УЖЕ УЧАСТВУЕТЕ';
+                joinBtn.disabled = true;
+                joinBtn.style.opacity = '0.5';
+                joinBtn.style.cursor = 'not-allowed';
+                alert('🎉 Вы успешно приняли участие в розыгрыше!');
+            });
+        }
+    }
+
+    setupContestForm();
 });
+
+
 // ============================================================
-// ГЛОБАЛЬНАЯ ДИНАМИЧЕСКАЯ СИНХРОНИЗАЦИЯ СТАТУСА СТРИМА С АДМИНКОЙ
+// 5. ГЛОБАЛЬНАЯ СИНХРОНИЗАЦИЯ СТАТУСА СТРИМА С АДМИНКОЙ
 // ============================================================
 function syncGlobalStreamStatus() {
-    // 1. Проверяем статус в localStorage
     const streamStatus = (localStorage.getItem('underdogg_stream_status') || '').toUpperCase();
     const streamIsLive = localStorage.getItem('streamIsLive');
     const isLive = localStorage.getItem('isLive');
 
-    // Проверяем объект админки под ключом underdogg_admin
     let adminLive = false;
     try {
         const adminData = JSON.parse(localStorage.getItem('underdogg_admin') || '{}');
@@ -187,7 +182,6 @@ function syncGlobalStreamStatus() {
         }
     } catch(e) {}
 
-    // Определяем, онлайн ли стрим
     const isOnline = streamStatus === 'ONLINE' || 
                      streamStatus === 'TRUE' || 
                      streamIsLive === 'true' || 
@@ -196,7 +190,7 @@ function syncGlobalStreamStatus() {
                      isLive === true || 
                      adminLive;
 
-    // 2. Элементы на главной странице входa (index.html)
+    // Индикаторы на index.html
     const indexDot = document.getElementById('indexStatusDot');
     const indexLabel = document.getElementById('indexStatusLabel');
 
@@ -211,7 +205,7 @@ function syncGlobalStreamStatus() {
         indexDot.style.animation = isOnline ? 'pulse 1.5s infinite' : 'none';
     }
 
-    // 3. Элементы внутри панели управления (home.html)
+    // Индикаторы на home.html
     const onlineText = document.querySelector('.online-text');
     const pulseDot = document.querySelector('.pulse-dot');
     const signalBars = document.querySelectorAll('.signal-icon .bar');
@@ -240,9 +234,7 @@ function syncGlobalStreamStatus() {
     });
 }
 
-// Запускаем постоянное отслеживание изменений каждые 1 секунду и по событиям storage
-document.addEventListener('DOMContentLoaded', function() {
-    syncGlobalStreamStatus();
-    setInterval(syncGlobalStreamStatus, 1000);
-    window.addEventListener('storage', syncGlobalStreamStatus);
-});
+// Постоянный опрос состояния стрима
+syncGlobalStreamStatus();
+setInterval(syncGlobalStreamStatus, 1000);
+window.addEventListener('storage', syncGlobalStreamStatus);
