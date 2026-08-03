@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>UNDERDOGG — ADMIN PANEL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #050102;
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+            background-image:
+                radial-gradient(circle at 50% 20%, rgba(180, 10, 25, 0.25) 0%, rgba(10, 0, 3, 0.95) 75%),
+                radial-gradient(circle at 50% 80%, rgba(140, 5, 15, 0.2) 0%, rgba(5, 1, 2, 1) 70%);
+        }
+
+        .admin-container {
+            width: 100%;
+            max-width: 480px;
+            background: radial-gradient(circle at 50% 30%, #1c0205 0%, #0d0103 65%, #050001 100%);
+            border: 2px solid #ff2a4b;
+            border-radius: 28px;
+            padding: 30px 24px;
+            box-shadow: 0 0 60px rgba(255, 0, 35, 0.3);
+            animation: breatheBg 6s ease-in-out infinite;
+            max-height: 98vh;
+            overflow-y: auto;
+        }
+
+        .admin-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .admin-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+        }
+        .admin-container::-webkit-scrollbar-thumb {
+            background: #ff2a4b;
+            border-radius: 4px;
+        }
+
+        @keyframes breatheBg {
+            0%,
+            100% {
+                background: radial-gradient(circle at 50% 30%, #1c0205 0%, #0d0103 65%, #050001 100%);
+                box-shadow: 0 0 60px rgba(255, 0, 35, 0.3);
+            }
+            50% {
+                background: radial-gradient(circle at 45% 35%, #2a0308 0%, #120205 65%, #080002 100%);
+                box-shadow: 0 0 80px rgba(255, 0, 35, 0.45);
+            }
+        }
+
+        .admin-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            text-align: center;
+            color: #ff2a4b;
+            text-shadow: 0 0 20px rgba(255, 42, 75, 0.4);
+            letter-spacing: 4px;
+            margin-bottom: 6px;
+        }
+
+        .admin-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            letter-spacing: 3px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 42, 75, 0.1);
+            padding-bottom: 16px;
+        }
+
+        #loginSection {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        #loginSection input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 42, 75, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+            margin-bottom: 14px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        #loginSection input:focus {
+            border-color: #ff2a4b;
+            box-shadow: 0 0 20px rgba(255, 42, 75, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #ff2a4b;
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255, 42, 75, 0.3);
+            transition: 0.3s;
+        }
+
+        .login-btn:hover {
+            box-shadow: 0 0 50px rgba(255, 42, 75, 0.5);
+            transform: scale(1.02);
+        }
+
+        .login-error {
+            color: #ff4444;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        #adminPanel {
+            display: none;
+        }
+
+        .settings-group {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 42, 75, 0.1);
+            border-radius: 16px;
+            padding: 18px 16px;
+            margin-bottom: 18px;
+        }
+
+        .settings-group h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            color: #ff2a4b;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            text-shadow: 0 0 10px rgba(255, 42, 75, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .settings-group h3 .badge {
+            font-size: 9px;
+            color: #666;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .setting-row {
+            margin-bottom: 12px;
+        }
+        .setting-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-row label {
+            display: block;
+            color: #aaa;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .setting-row input,
+        .setting-row select,
+        .setting-row textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 42, 75, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .setting-row input:focus,
+        .setting-row select:focus,
+        .setting-row textarea:focus {
+            border-color: #ff2a4b;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.15);
+        }
+
+        .setting-row textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 12px;
+            background: #00aa55;
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 170, 85, 0.2);
+            transition: 0.3s;
+            margin-top: 4px;
+        }
+
+        .save-btn:hover {
+            box-shadow: 0 0 40px rgba(0, 170, 85, 0.4);
+            transform: scale(1.02);
+        }
+
+        .participants-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .participant-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            margin-bottom: 4px;
+            font-size: 13px;
+            border-left: 2px solid rgba(255, 42, 75, 0.2);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .participant-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .participant-item .tg {
+            color: #00ccff;
+        }
+        .participant-item .kick {
+            color: #66ff66;
+        }
+        .participant-item .casino {
+            color: #ffcc00;
+        }
+
+        .participant-item .remove-btn {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 6px;
+        }
+
+        .participant-item .remove-btn:hover {
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .participant-item.fraud {
+            border-left-color: #ff0000;
+            background: rgba(255, 0, 0, 0.08);
+        }
+
+        .participant-item.banned {
+            border-left-color: #ff8800;
+            background: rgba(255, 136, 0, 0.08);
+            opacity: 0.6;
+        }
+
+        .participant-item .ban-btn {
+            background: none;
+            border: none;
+            color: #ff8800;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0 6px;
+        }
+
+        .participant-item .ban-btn:hover {
+            color: #ff6600;
+            text-shadow: 0 0 10px #ff6600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 42, 75, 0.1);
+            border-radius: 10px;
+            padding: 10px 6px;
+            text-align: center;
+        }
+
+        .stat-box .num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .stat-box .label {
+            font-size: 9px;
+            color: #888;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .stat-box.total .num {
+            color: #fff;
+        }
+        .stat-box.bots .num {
+            color: #ff6666;
+        }
+        .stat-box.real .num {
+            color: #00ff88;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .action-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .action-btn.primary {
+            background: #ff2a4b;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 42, 75, 0.3);
+        }
+
+        .action-btn.primary:hover {
+            box-shadow: 0 0 40px rgba(255, 42, 75, 0.5);
+            transform: scale(1.02);
+        }
+
+        .action-btn.danger {
+            background: transparent;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+        }
+
+        .action-btn.danger:hover {
+            background: #ff4444;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .action-btn.success {
+            background: #00aa55;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 170, 85, 0.2);
+        }
+
+        .action-btn.success:hover {
+            box-shadow: 0 0 40px rgba(0, 170, 85, 0.4);
+            transform: scale(1.02);
+        }
+
+        .action-btn.full {
+            grid-column: 1 / -1;
+        }
+
+        .action-btn.cyan {
+            background: #00ccdd;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 204, 221, 0.3);
+        }
+
+        .action-btn.cyan:hover {
+            box-shadow: 0 0 40px rgba(0, 204, 221, 0.5);
+            transform: scale(1.02);
+        }
+
+        .check-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .check-row input {
+            flex: 1;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 42, 75, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .check-row input:focus {
+            border-color: #ff2a4b;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.15);
+        }
+
+        .check-row button {
+            padding: 10px 20px;
+            background: #8844ff;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+            box-shadow: 0 0 20px rgba(136, 68, 255, 0.2);
+        }
+
+        .check-row button:hover {
+            box-shadow: 0 0 40px rgba(136, 68, 255, 0.5);
+            transform: scale(1.02);
+        }
+
+        .check-result {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #aaa;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 3px solid #8844ff;
+            display: none;
+        }
+
+        .check-result.show {
+            display: block;
+        }
+
+        .check-result .positive {
+            color: #00ff88;
+        }
+
+        .check-result .negative {
+            color: #ff4444;
+        }
+
+        .ban-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ban-row input {
+            flex: 1;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 42, 75, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .ban-row input:focus {
+            border-color: #ff2a4b;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.15);
+        }
+
+        .ban-row button {
+            padding: 10px 20px;
+            background: #ff8800;
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            white-space: nowrap;
+            box-shadow: 0 0 20px rgba(255, 136, 0, 0.2);
+        }
+
+        .ban-row button:hover {
+            box-shadow: 0 0 40px rgba(255, 136, 0, 0.5);
+            transform: scale(1.02);
+        }
+
+        .banned-list {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #ff8800;
+        }
+
+        .banned-list .tag {
+            display: inline-block;
+            background: rgba(255, 136, 0, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin: 4px;
+            border: 1px solid #ff8800;
+        }
+
+        .banned-list .tag .del {
+            cursor: pointer;
+            color: #ff4444;
+            margin-left: 6px;
+        }
+        .banned-list .tag .del:hover {
+            color: #ff0000;
+        }
+
+        .log-list {
+            max-height: 120px;
+            overflow-y: auto;
+            font-size: 12px;
+            color: #888;
+            line-height: 1.6;
+        }
+
+        .log-list .log-entry {
+            padding: 2px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .log-list .log-entry .time {
+            color: #555;
+            margin-right: 8px;
+        }
+
+        .log-list .log-entry .event {
+            color: #aaa;
+        }
+
+        .profile-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .profile-modal.show {
+            display: flex;
+        }
+
+        .profile-modal .content {
+            background: radial-gradient(circle at 50% 30%, #1c0205, #0d0103);
+            border: 2px solid #ff2a4b;
+            border-radius: 28px;
+            max-width: 420px;
+            width: 100%;
+            padding: 30px 24px;
+            box-shadow: 0 0 60px rgba(255, 0, 35, 0.4);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .profile-modal .content h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            color: #ff2a4b;
+            text-shadow: 0 0 20px rgba(255, 42, 75, 0.3);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .profile-modal .content .field {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 14px;
+        }
+
+        .profile-modal .content .field .label {
+            color: #888;
+        }
+        .profile-modal .content .field .value {
+            color: #fff;
+        }
+
+        .profile-modal .content .close-profile {
+            margin-top: 16px;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 30px;
+            color: #888;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .profile-modal .content .close-profile:hover {
+            border-color: #ff2a4b;
+            color: #ff2a4b;
+        }
+
+        .logout-btn {
+            margin-top: 16px;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 30px;
+            color: #666;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .logout-btn:hover {
+            border-color: #ff2a4b;
+            color: #ff2a4b;
+        }
+
+        .participants-list::-webkit-scrollbar,
+        .log-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .participants-list::-webkit-scrollbar-track,
+        .log-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+        }
+
+        .participants-list::-webkit-scrollbar-thumb,
+        .log-list::-webkit-scrollbar-thumb {
+            background: #ff2a4b;
+            border-radius: 4px;
+        }
+
+        .fraud-badge {
+            display: inline-block;
+            font-size: 8px;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            border-radius: 4px;
+            padding: 1px 6px;
+            margin-left: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== СТАТУС СТРИМА ===== */
+        .stream-block {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 42, 75, 0.08);
+        }
+
+        .stream-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stream-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        .stream-dot.on {
+            background: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5), 0 0 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .stream-dot.off {
+            background: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5), 0 0 40px rgba(255, 0, 0, 0.2);
+        }
+
+        .stream-label {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .stream-label.on {
+            color: #00ff88;
+        }
+
+        .stream-label.off {
+            color: #ff4444;
+        }
+
+        .stream-toggle-btn {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .stream-toggle-btn.on {
+            background: transparent;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            box-shadow: none;
+        }
+
+        .stream-toggle-btn.on:hover {
+            background: rgba(255, 68, 68, 0.08);
+        }
+
+        .stream-toggle-btn.off {
+            background: #ff2a4b;
+            color: #fff;
+            border: none;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.2);
+        }
+
+        .stream-toggle-btn.off:hover {
+            box-shadow: 0 0 25px rgba(255, 42, 75, 0.35);
+            transform: scale(1.02);
+        }
+
+        /* ===== МОДАЛКА УЧАСТНИКОВ ===== */
+        .users-grid-header {
+            display: grid;
+            grid-template-columns: 1.2fr 0.9fr 1fr 0.7fr 0.8fr 0.9fr;
+            gap: 8px;
+            padding: 12px 14px;
+            background: rgba(255, 42, 75, 0.1);
+            border-radius: 10px;
+            font-size: 12px;
+            color: #888;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .users-grid-row {
+            display: grid;
+            grid-template-columns: 1.2fr 0.9fr 1fr 0.7fr 0.8fr 0.9fr;
+            gap: 8px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            font-size: 15px;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .users-grid-row .tg {
+            color: #00ccff;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .users-grid-row .kick {
+            color: #66ff66;
+            font-size: 15px;
+        }
+        .users-grid-row .epic {
+            color: #ffcc00;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .users-grid-row .date {
+            color: #666;
+            font-size: 12px;
+        }
+        .users-grid-row .tickets-count {
+            color: #ffcc00;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .users-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            padding-right: 4px;
+        }
+        .users-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .users-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+        }
+        .users-list::-webkit-scrollbar-thumb {
+            background: #ff2a4b;
+            border-radius: 4px;
+        }
+
+        .modal-ticket-op {
+            padding: 6px 14px;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .modal-ticket-op:hover {
+            transform: scale(1.1);
+        }
+        .modal-ticket-op.bronze {
+            border: 1px solid #cd7f32;
+            color: #cd7f32;
+        }
+        .modal-ticket-op.silver {
+            border: 1px solid #c0c0c0;
+            color: #c0c0c0;
+        }
+        .modal-ticket-op.gold {
+            border: 1px solid #ffd700;
+            color: #ffd700;
+        }
+
+        .modal-ticket-count {
+            font-size: 22px;
+            font-weight: 700;
+            min-width: 40px;
+            text-align: center;
+        }
+        .modal-ticket-count.bronze {
+            color: #cd7f32;
+        }
+        .modal-ticket-count.silver {
+            color: #c0c0c0;
+        }
+        .modal-ticket-count.gold {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+
+        <div class="admin-title">⛓️ UNDERDOGG</div>
+        <div class="admin-subtitle">ADMIN PANEL</div>
+
+        <div id="loginSection">
+            <input type="password" id="adminPassword" placeholder="ВВЕДИ ПАРОЛЬ" />
+            <button class="login-btn" id="loginBtn">🔓 ВОЙТИ</button>
+            <div class="login-error" id="loginError">❌ НЕВЕРНЫЙ ПАРОЛЬ</div>
+        </div>
+
+        <div id="adminPanel">
+
+            <!-- ===== СТАТУС СТРИМА ===== -->
+            <div class="settings-group">
+                <h3>🔴 СТАТУС СТРИМА</h3>
+                <div class="stream-block">
+                    <div class="stream-status">
+                        <span class="stream-dot off" id="streamDot"></span>
+                        <span class="stream-label off" id="streamLabel">НЕ В СЕТИ</span>
+                    </div>
+                    <button class="stream-toggle-btn off" id="streamToggleBtn">🔴 ВКЛЮЧИТЬ</button>
+                </div>
+            </div>
+
+            <!-- ===== СТАТИСТИКА ===== -->
+            <div class="settings-group">
+                <h3>📊 СТАТИСТИКА</h3>
+                <div class="stats-grid">
+                    <div class="stat-box total">
+                        <div class="num" id="statTotal">0</div>
+                        <div class="label">ВСЕГО</div>
+                    </div>
+                    <div class="stat-box bots">
+                        <div class="num" id="statBots">0</div>
+                        <div class="label">БОТЫ</div>
+                    </div>
+                    <div class="stat-box real">
+                        <div class="num" id="statReal">0</div>
+                        <div class="label">РЕАЛЬНЫЕ</div>
+                    </div>
+                </div>
+                <div style="text-align:center;font-size:11px;color:#666;letter-spacing:1px;">
+                    🏆 ПОБЕДИТЕЛЕЙ: <span id="statWinners" style="color:#ffcc00;font-weight:700;">0</span>
+                </div>
+            </div>
+
+            <!-- ===== УЧАСТНИКИ (старые) ===== -->
+            <div class="settings-group">
+                <h3>👥 УЧАСТНИКИ <span class="badge">клик для профиля</span></h3>
+                <div class="participants-list" id="participantsList">
+                    <div style="color:#444;font-size:13px;text-align:center;padding:20px 0;">Нет зарегистрированных участников</div>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
+                    <button class="action-btn danger" style="flex:1;" id="clearParticipantsBtn">🗑️ ОЧИСТИТЬ</button>
+                    <button class="action-btn cyan" style="flex:1;" id="addManualBtn">✏️ ДОБАВИТЬ ВРУЧНУЮ</button>
+                </div>
+            </div>
+
+            <!-- ===== РУЧНОЕ ДОБАВЛЕНИЕ ===== -->
+            <div class="settings-group" id="manualAddSection" style="display:none;">
+                <h3>✏️ РУЧНОЕ ДОБАВЛЕНИЕ</h3>
+                <div class="setting-row"><input type="text" id="manualTg" placeholder="Telegram (без @)" /></div>
+                <div class="setting-row"><input type="text" id="manualKick" placeholder="Kick" /></div>
+                <div class="setting-row"><input type="text" id="manualCasino" placeholder="Casino" /></div>
+                <button class="action-btn success full" id="manualAddConfirm">➕ ДОБАВИТЬ</button>
+            </div>
+
+            <!-- ===== ФИЛЬТР ===== -->
+            <div class="settings-group">
+                <h3>🔍 ФИЛЬТР</h3>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <select id="filterStatus" style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,42,75,0.2);border-radius:10px;color:#fff;font-family:'Rajdhani',sans-serif;">
+                        <option value="all">Все</option>
+                        <option value="real">Реальные</option>
+                        <option value="fraud">Подозрительные</option>
+                        <option value="banned">Забаненные</option>
+                    </select>
+                    <input type="date" id="filterDate" style="flex:1;padding:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,42,75,0.2);border-radius:10px;color:#fff;font-family:'Rajdhani',sans-serif;" />
+                    <button class="action-btn primary" id="applyFilterBtn" style="flex:0.5;">ПРИМЕНИТЬ</button>
+                </div>
+            </div>
+
+            <!-- ===== ЧЕРНЫЙ СПИСОК ===== -->
+            <div class="settings-group">
+                <h3>🚫 ЧЕРНЫЙ СПИСОК</h3>
+                <div class="ban-row">
+                    <input type="text" id="banInput" placeholder="Введи ник (TG) для бана" />
+                    <button id="banBtn">ЗАБАНИТЬ</button>
+                </div>
+                <div class="banned-list" id="bannedList">Нет забаненных</div>
+            </div>
+
+            <!-- ===== ЭКСПОРТ ===== -->
+            <div class="settings-group">
+                <h3>📤 ЭКСПОРТ</h3>
+                <button class="action-btn success full" id="exportCsvBtn">📥 СКАЧАТЬ CSV</button>
+            </div>
+
+            <!-- ===== ЛОГИ ===== -->
+            <div class="settings-group">
+                <h3>📜 ЛОГИ</h3>
+                <div class="log-list" id="logList">
+                    <div style="color:#444;text-align:center;padding:10px 0;">Логов пока нет</div>
+                </div>
+            </div>
+
+            <!-- ===== ПРОВЕРКА РЕФЕРАЛА ===== -->
+            <div class="settings-group">
+                <h3>🔗 ПРОВЕРКА РЕФЕРАЛА</h3>
+                <div class="check-row">
+                    <input type="text" id="refCheckInput" placeholder="Введи ник для проверки" />
+                    <button id="refCheckBtn">ПРОВЕРИТЬ</button>
+                </div>
+                <div class="check-result" id="refCheckResult">
+                    <span id="refCheckText">🔍 Проверка...</span>
+                </div>
+            </div>
+
+            <!-- ===== ПРОВЕРКА НА БОТА ===== -->
+            <div class="settings-group">
+                <h3>🤖 ПРОВЕРКА НА БОТА</h3>
+                <div class="check-row">
+                    <input type="text" id="botCheckInput" placeholder="Введи ник для проверки" />
+                    <button id="botCheckBtn">ПРОВЕРИТЬ</button>
+                </div>
+                <div class="check-result" id="botCheckResult">
+                    <span id="botCheckText">🔍 Проверка...</span>
+                </div>
+            </div>
+
+            <!-- ===== ПРОВЕРКА ПОДПИСКИ ===== -->
+            <div class="settings-group">
+                <h3>🔍 ПРОВЕРКА ПОДПИСКИ</h3>
+                <div class="check-row">
+                    <input type="text" id="subCheckInput" placeholder="Введи ник для проверки" />
+                    <button id="subCheckBtn">ПРОВЕРИТЬ</button>
+                </div>
+                <div class="check-result" id="subCheckResult">
+                    <span id="subCheckText">🔍 Проверка...</span>
+                </div>
+            </div>
+
+            <!-- ===== УВЕДОМЛЕНИЕ ПОБЕДИТЕЛЯ ===== -->
+            <div class="settings-group">
+                <h3>📨 УВЕДОМЛЕНИЕ ПОБЕДИТЕЛЯ</h3>
+                <button class="action-btn primary full" id="notifyWinnerBtn">📨 ОТПРАВИТЬ УВЕДОМЛЕНИЕ ПОБЕДИТЕЛЮ</button>
+            </div>
+
+            <!-- ===== РАССЫЛКА ВСЕМ ===== -->
+            <div class="settings-group">
+                <h3>📢 РАССЫЛКА ВСЕМ</h3>
+                <div class="setting-row">
+                    <textarea id="broadcastMessage" rows="2" placeholder="Введите сообщение для всех участников..." style="width:100%;padding:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,42,75,0.2);border-radius:10px;color:#fff;font-family:'Rajdhani',sans-serif;resize:vertical;"></textarea>
+                </div>
+                <button class="action-btn warning full" id="broadcastBtn" style="background:#ff8800;color:#000;box-shadow:0 0 20px rgba(255,136,0,0.2);">📢 РАЗОСЛАТЬ ВСЕМ</button>
+            </div>
+
+            <!-- ===== ЗАРЕГИСТРИРОВАННЫЕ УЧАСТНИКИ (модалка) ===== -->
+            <div class="settings-group">
+                <h3 style="display:flex;justify-content:space-between;align-items:center;">
+                    📋 ЗАРЕГИСТРИРОВАННЫЕ УЧАСТНИКИ
+                    <button class="action-btn primary" id="openUsersModalBtn" style="padding:6px 16px;font-size:11px;border-radius:10px;">
+                        🔍 ОТКРЫТЬ
+                    </button>
+                </h3>
+                <div style="color:#444;font-size:13px;text-align:center;padding:10px 0;">
+                    Нажми «ОТКРЫТЬ» для просмотра списка
+                </div>
+            </div>
+
+            <!-- ===== НАСТРОЙКИ ===== -->
+            <div class="settings-group">
+                <h3>⚙️ НАСТРОЙКИ</h3>
+                <div class="setting-row">
+                    <label>📅 ДАТА РОЗЫГРЫША</label>
+                    <input type="datetime-local" id="giveawayDate" />
+                </div>
+                <div class="setting-row">
+                    <label>🏆 НАЗВАНИЕ КОНКУРСА</label>
+                    <input type="text" id="contestTitle" placeholder="Например: Розыгрыш 1000$" />
+                </div>
+                <div class="setting-row">
+                    <label>📋 УСЛОВИЯ КОНКУРСА</label>
+                    <textarea id="contestRules" rows="3" placeholder="Подпишись на канал, сделай репост..."></textarea>
+                </div>
+                <div class="setting-row">
+                    <label>👑 КОЛИЧЕСТВО ПОБЕДИТЕЛЕЙ</label>
+                    <input type="number" id="winnersCountInput" min="1" max="10" value="3" />
+                </div>
+                <div class="setting-row">
+                    <label>🎰 НАЗВАНИЕ КАЗИНО</label>
+                    <input type="text" id="casinoNameInput" placeholder="Stake / Roobet / и т.д." />
+                </div>
+                <button class="save-btn" id="saveSettingsBtn">💾 СОХРАНИТЬ НАСТРОЙКИ</button>
+            </div>
+
+            <!-- ===== УПРАВЛЕНИЕ ===== -->
+            <div class="settings-group">
+                <h3>🎮 УПРАВЛЕНИЕ</h3>
+                <div class="action-buttons">
+                    <button class="action-btn primary" id="runGiveawayBtn">🎰 ЗАПУСТИТЬ РОЗЫГРЫШ</button>
+                    <button class="action-btn success" id="pickWinnerBtn">🏆 ВЫБРАТЬ ПОБЕДИТЕЛЯ</button>
+                    <button class="action-btn danger full" id="resetAllBtn">🔄 СБРОСИТЬ ВСЁ</button>
+                </div>
+            </div>
+
+            <button class="logout-btn" id="logoutBtn">🚪 ВЫЙТИ</button>
+
+        </div>
+
+    </div>
+
+    <!-- ===== МОДАЛКА ПРОФИЛЯ ===== -->
+    <div class="profile-modal" id="profileModal">
+        <div class="content">
+            <h2>👤 ПРОФИЛЬ</h2>
+            <div id="profileContent"></div>
+            <button class="close-profile" id="closeProfileBtn">✕ ЗАКРЫТЬ</button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== МОДАЛКА УЧАСТНИКОВ ===== -->
+    <!-- ============================================================ -->
+    <div id="usersModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); justify-content: center; align-items: center; z-index: 3000; padding: 20px;">
+        <div style="background: radial-gradient(circle at 50% 30%, #1c0205, #0d0103); border: 2px solid #ff2a4b; border-radius: 28px; max-width: 520px; width: 100%; padding: 30px 24px; box-shadow: 0 0 60px rgba(255, 0, 35, 0.4); max-height: 95vh; overflow-y: auto;">
+            <h2 style="font-family: 'Orbitron', sans-serif; font-size: 22px; letter-spacing: 4px; color: #fff; text-shadow: 0 0 20px #ff2a4b; text-align: center; margin-bottom: 16px;">📋 УЧАСТНИКИ</h2>
+
+            <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+                <input type="text" id="usersSearchInput" placeholder="🔍 Поиск по нику..." style="flex:2; padding: 12px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,42,75,0.2); border-radius: 12px; color: #fff; font-size: 16px; outline: none; font-family: 'Rajdhani', sans-serif; min-width: 120px;">
+                <select id="usersSortSelect" style="flex:1; padding: 12px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,42,75,0.2); border-radius: 12px; color: #fff; font-size: 15px; outline: none; font-family: 'Rajdhani', sans-serif; min-width: 100px;">
+                    <option value="tickets-desc">📊 По билетам (сначала много)</option>
+                    <option value="tickets-asc">📊 По билетам (сначала мало)</option>
+                    <option value="tg">🔤 По Telegram (А-Я)</option>
+                    <option value="date">📅 По дате (сначала новые)</option>
+                </select>
+            </div>
+
+            <div class="users-list" id="usersListContainer">
+                <div style="color:#444;font-size:15px;text-align:center;padding:30px 0;">Нет зарегистрированных пользователей</div>
+            </div>
+
+            <button id="closeUsersModalBtn" style="width: 100%; padding: 14px; background: #ff2a4b; border: none; border-radius: 30px; color: #fff; font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 2px; cursor: pointer; box-shadow: 0 0 30px rgba(255, 42, 75, 0.4); transition: 0.3s;">
+                ✕ ЗАКРЫТЬ
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ============================================================
+            // 1. ПЕРЕМЕННЫЕ
+            // ============================================================
+            const PASSWORD = 'underd0gg2026';
+
+            const loginSection = document.getElementById('loginSection');
+            const adminPanel = document.getElementById('adminPanel');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginError = document.getElementById('loginError');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            const participantsList = document.getElementById('participantsList');
+            const clearParticipantsBtn = document.getElementById('clearParticipantsBtn');
+            const addManualBtn = document.getElementById('addManualBtn');
+            const manualAddSection = document.getElementById('manualAddSection');
+            const manualAddConfirm = document.getElementById('manualAddConfirm');
+
+            const filterStatus = document.getElementById('filterStatus');
+            const filterDate = document.getElementById('filterDate');
+            const applyFilterBtn = document.getElementById('applyFilterBtn');
+
+            const banInput = document.getElementById('banInput');
+            const banBtn = document.getElementById('banBtn');
+            const bannedList = document.getElementById('bannedList');
+
+            const exportCsvBtn = document.getElementById('exportCsvBtn');
+
+            const giveawayDateInput = document.getElementById('giveawayDate');
+            const contestTitleInput = document.getElementById('contestTitle');
+            const contestRulesInput = document.getElementById('contestRules');
+            const winnersCountInput = document.getElementById('winnersCountInput');
+            const casinoNameInput = document.getElementById('casinoNameInput');
+            const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+
+            const runGiveawayBtn = document.getElementById('runGiveawayBtn');
+            const pickWinnerBtn = document.getElementById('pickWinnerBtn');
+            const resetAllBtn = document.getElementById('resetAllBtn');
+
+            const statTotal = document.getElementById('statTotal');
+            const statBots = document.getElementById('statBots');
+            const statReal = document.getElementById('statReal');
+            const statWinners = document.getElementById('statWinners');
+
+            const logList = document.getElementById('logList');
+
+            const notifyWinnerBtn = document.getElementById('notifyWinnerBtn');
+            const broadcastBtn = document.getElementById('broadcastBtn');
+
+            const profileModal = document.getElementById('profileModal');
+            const profileContent = document.getElementById('profileContent');
+            const closeProfileBtn = document.getElementById('closeProfileBtn');
+
+            const streamDot = document.getElementById('streamDot');
+            const streamLabel = document.getElementById('streamLabel');
+            const streamToggleBtn = document.getElementById('streamToggleBtn');
+
+            // ============================================================
+            // 2. LOCALSTORAGE
+            // ============================================================
+            function loadData() {
+                const data = JSON.parse(localStorage.getItem('underdogg_admin') || '{}');
+                return {
+                    participants: data.participants || [],
+                    settings: data.settings || {},
+                    winners: data.winners || [],
+                    banned: data.banned || [],
+                    logs: data.logs || [],
+                    giveawayActive: data.giveawayActive || false
+                };
+            }
+
+            function saveData(data) {
+                localStorage.setItem('underdogg_admin', JSON.stringify(data));
+            }
+
+            function getParticipants() { return loadData().participants; }
+
+            function setParticipants(list) { const d = loadData();
+                d.participants = list;
+                saveData(d); }
+
+            function getSettings() { return loadData().settings; }
+
+            function setSettings(settings) { const d = loadData();
+                d.settings = settings;
+                saveData(d); }
+
+            function getBanned() { return loadData().banned; }
+
+            function setBanned(list) { const d = loadData();
+                d.banned = list;
+                saveData(d); }
+
+            function getLogs() { return loadData().logs; }
+
+            function addLog(event) { const d = loadData();
+                d.logs = d.logs || [];
+                d.logs.push({ time: new Date().toLocaleString(), event });
+                saveData(d); }
+
+            // ============================================================
+            // 3. СТАТУС СТРИМА
+            // ============================================================
+            function updateStreamStatusUI() {
+                const isLive = localStorage.getItem('streamIsLive') === 'true';
+
+                if (isLive) {
+                    streamDot.className = 'stream-dot on';
+                    streamLabel.className = 'stream-label on';
+                    streamLabel.textContent = '🟢 В ЭФИРЕ';
+                    streamToggleBtn.className = 'stream-toggle-btn on';
+                    streamToggleBtn.textContent = '⭕ ВЫКЛЮЧИТЬ';
+                } else {
+                    streamDot.className = 'stream-dot off';
+                    streamLabel.className = 'stream-label off';
+                    streamLabel.textContent = '🔴 НЕ В СЕТИ';
+                    streamToggleBtn.className = 'stream-toggle-btn off';
+                    streamToggleBtn.textContent = '🔴 ВКЛЮЧИТЬ';
+                }
+            }
+
+            streamToggleBtn.addEventListener('click', function() {
+                const isLive = localStorage.getItem('streamIsLive') === 'true';
+                const newStatus = !isLive;
+                localStorage.setItem('streamIsLive', newStatus ? 'true' : 'false');
+                updateStreamStatusUI();
+                addLog(newStatus ? 'Стрим включён' : 'Стрим выключен');
+            });
+
+            // ============================================================
+            // 4. АНТИФРОД
+            // ============================================================
+            function checkFraud(participants) {
+                const tgMap = {},
+                    kickMap = {},
+                    casinoMap = {};
+                const fraudList = [];
+                participants.forEach((p, index) => {
+                    const flags = [];
+                    if (tgMap[p.tg]) flags.push('tg');
+                    if (kickMap[p.kick]) flags.push('kick');
+                    if (casinoMap[p.casino]) flags.push('casino');
+                    tgMap[p.tg] = true;
+                    kickMap[p.kick] = true;
+                    casinoMap[p.casino] = true;
+                    if (flags.length > 0) fraudList.push({ index, flags });
+                });
+                return fraudList;
+            }
+
+            // ============================================================
+            // 5. ВХОД / ВЫХОД
+            // ============================================================
+            loginBtn.addEventListener('click', function() {
+                const pass = document.getElementById('adminPassword').value;
+                if (pass === PASSWORD) {
+                    loginSection.style.display = 'none';
+                    adminPanel.style.display = 'block';
+                    loginError.style.display = 'none';
+                    renderAll();
+                } else {
+                    loginError.style.display = 'block';
+                    setTimeout(() => { loginError.style.display = 'none'; }, 3000);
+                }
+            });
+
+            logoutBtn.addEventListener('click', function() {
+                adminPanel.style.display = 'none';
+                loginSection.style.display = 'block';
+                document.getElementById('adminPassword').value = '';
+            });
+
+            // ============================================================
+            // 6. РЕНДЕР
+            // ============================================================
+            function renderAll() {
+                renderParticipants();
+                loadSettingsToForm();
+                updateStats();
+                renderBanned();
+                renderLogs();
+                updateStreamStatusUI();
+                document.getElementById('manualTg').value = '';
+                document.getElementById('manualKick').value = '';
+                document.getElementById('manualCasino').value = '';
+            }
+
+            // ============================================================
+            // 7. УЧАСТНИКИ (старые)
+            // ============================================================
+            function renderParticipants() {
+                let list = getParticipants();
+                const banned = getBanned();
+                const fraudList = checkFraud(list);
+
+                const status = filterStatus.value;
+                const date = filterDate.value;
+
+                if (status === 'real') {
+                    list = list.filter((_, i) => !fraudList.some(f => f.index === i));
+                } else if (status === 'fraud') {
+                    list = list.filter((_, i) => fraudList.some(f => f.index === i));
+                } else if (status === 'banned') {
+                    list = list.filter(p => banned.includes(p.tg));
+                }
+
+                if (date) {
+                    list = list.filter(p => p.date && p.date.startsWith(date));
+                }
+
+                if (list.length === 0) {
+                    participantsList.innerHTML =
+                        `<div style="color:#444;font-size:13px;text-align:center;padding:20px 0;">Нет участников</div>`;
+                    return;
+                }
+
+                let html = '';
+                list.forEach((p, idx) => {
+                    const isFraud = fraudList.some(f => f.index === idx);
+                    const isBanned = banned.includes(p.tg);
+                    const fraudFlags = fraudList.find(f => f.index === idx);
+                    let flagText = '';
+                    if (fraudFlags) {
+                        const f = fraudFlags.flags;
+                        if (f.includes('tg')) flagText += '🔁TG ';
+                        if (f.includes('kick')) flagText += '🔁Kick ';
+                        if (f.includes('casino')) flagText += '🔁Casino ';
+                    }
+
+                    html += `
+                            <div class="participant-item ${isFraud ? 'fraud' : ''} ${isBanned ? 'banned' : ''}" data-index="${idx}">
+                                <div>
+                                    <span class="tg">${p.tg || '—'}</span>
+                                    <span style="color:#444;margin:0 4px;">|</span>
+                                    <span class="kick">${p.kick || '—'}</span>
+                                    <span style="color:#444;margin:0 4px;">|</span>
+                                    <span class="casino">${p.casino || '—'}</span>
+                                    ${flagText ? `<span class="fraud-badge">⚠️ ${flagText.trim()}</span>` : ''}
+                                    ${isBanned ? '<span class="fraud-badge" style="border-color:#ff8800;color:#ff8800;">🚫 БАН</span>' : ''}
+                                </div>
+                                <div>
+                                    <button class="ban-btn" data-tg="${p.tg}">${isBanned ? '🔓' : '🚫'}</button>
+                                    <button class="remove-btn" data-index="${idx}">✕</button>
+                                </div>
+                            </div>
+                        `;
+                });
+                participantsList.innerHTML = html;
+
+                document.querySelectorAll('.participant-item').forEach(el => {
+                    el.addEventListener('click', function(e) {
+                        if (e.target.closest('.remove-btn') || e.target.closest('.ban-btn')) return;
+                        const idx = parseInt(this.dataset.index);
+                        const list = getParticipants();
+                        if (list[idx]) showProfile(list[idx]);
+                    });
+                });
+
+                document.querySelectorAll('.remove-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.dataset.index);
+                        const list = getParticipants();
+                        const name = list[idx]?.tg || 'unknown';
+                        list.splice(idx, 1);
+                        setParticipants(list);
+                        addLog(`Удалён участник ${name}`);
+                        renderAll();
+                    });
+                });
+
+                document.querySelectorAll('.ban-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const tg = this.dataset.tg;
+                        toggleBan(tg);
+                    });
+                });
+            }
+
+            // ============================================================
+            // 8. БАН-ЛИСТ
+            // ============================================================
+            function toggleBan(tg) {
+                const banned = getBanned();
+                const idx = banned.indexOf(tg);
+                if (idx > -1) {
+                    banned.splice(idx, 1);
+                    addLog(`Разбанен ${tg}`);
+                } else {
+                    banned.push(tg);
+                    addLog(`Забанен ${tg}`);
+                }
+                setBanned(banned);
+                renderAll();
+            }
+
+            function renderBanned() {
+                const banned = getBanned();
+                if (banned.length === 0) {
+                    bannedList.textContent = 'Нет забаненных';
+                    return;
+                }
+                bannedList.innerHTML = banned.map(tg =>
+                    `<span class="tag">${tg} <span class="del" onclick="toggleBan('${tg}')">✕</span></span>`
+                ).join('');
+            }
+
+            banBtn.addEventListener('click', function() {
+                const tg = banInput.value.trim();
+                if (!tg) { alert('Введи ник!');
+                    return; }
+                toggleBan(tg);
+                banInput.value = '';
+            });
+
+            // ============================================================
+            // 9. РУЧНОЕ ДОБАВЛЕНИЕ
+            // ============================================================
+            addManualBtn.addEventListener('click', function() {
+                manualAddSection.style.display = manualAddSection.style.display === 'none' ? 'block' : 'none';
+            });
+
+            manualAddConfirm.addEventListener('click', function() {
+                const tg = document.getElementById('manualTg').value.trim();
+                const kick = document.getElementById('manualKick').value.trim();
+                const casino = document.getElementById('manualCasino').value.trim();
+                if (!tg || !kick || !casino) { alert('Заполни все поля!');
+                    return; }
+                const list = getParticipants();
+                list.push({ tg: '@' + tg, kick, casino, date: new Date().toISOString().slice(0, 10) });
+                setParticipants(list);
+                addLog(`Добавлен вручную: ${tg}`);
+                renderAll();
+                manualAddSection.style.display = 'none';
+            });
+
+            // ============================================================
+            // 10. ФИЛЬТР
+            // ============================================================
+            applyFilterBtn.addEventListener('click', renderParticipants);
+
+            // ============================================================
+            // 11. ЭКСПОРТ CSV
+            // ============================================================
+            exportCsvBtn.addEventListener('click', function() {
+                const list = getParticipants();
+                if (list.length === 0) { alert('Нет участников для экспорта!');
+                    return; }
+                let csv = 'Telegram,Kick,Casino,Дата\n';
+                list.forEach(p => {
+                    csv += `${p.tg || ''},${p.kick || ''},${p.casino || ''},${p.date || ''}\n`;
+                });
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'participants.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+                addLog('Экспорт CSV выполнен');
+            });
+
+            // ============================================================
+            // 12. СТАТИСТИКА
+            // ============================================================
+            function updateStats() {
+                const list = getParticipants();
+                const total = list.length;
+                const fraudList = checkFraud(list);
+                const bots = fraudList.length;
+                const real = total - bots;
+                const settings = getSettings();
+                const winners = parseInt(settings.winnersCount) || 3;
+                statTotal.textContent = total;
+                statBots.textContent = bots;
+                statReal.textContent = real;
+                statWinners.textContent = Math.min(winners, real);
+            }
+
+            // ============================================================
+            // 13. ЛОГИ
+            // ============================================================
+            function renderLogs() {
+                const logs = getLogs();
+                if (!logs || logs.length === 0) {
+                    logList.innerHTML = '<div style="color:#444;text-align:center;padding:10px 0;">Логов пока нет</div>';
+                    return;
+                }
+                logList.innerHTML = logs.slice(-20).reverse().map(l =>
+                    `<div class="log-entry"><span class="time">${l.time}</span> <span class="event">${l.event}</span></div>`
+                ).join('');
+            }
+
+            // ============================================================
+            // 14. ПРОВЕРКИ
+            // ============================================================
+            document.getElementById('refCheckBtn').addEventListener('click', function() {
+                const input = document.getElementById('refCheckInput');
+                const result = document.getElementById('refCheckResult');
+                const text = document.getElementById('refCheckText');
+                const nick = input.value.trim();
+
+                if (!nick) { alert('⚠️ Введи ник для проверки');
+                    return; }
+
+                result.classList.add('show');
+                text.innerHTML = '🔍 Проверяем реферала <span class="positive">' + nick + '</span>...';
+
+                setTimeout(() => {
+                    const isRef = Math.random() > 0.5;
+                    if (isRef) {
+                        text.innerHTML = '✅ <span class="positive">' + nick + ' является рефералом!</span>';
+                    } else {
+                        text.innerHTML = '❌ <span class="negative">' + nick + ' не найден в реферальной системе</span>';
+                    }
+                }, 1200);
+            });
+
+            document.getElementById('botCheckBtn').addEventListener('click', function() {
+                const input = document.getElementById('botCheckInput');
+                const result = document.getElementById('botCheckResult');
+                const text = document.getElementById('botCheckText');
+                const nick = input.value.trim();
+
+                if (!nick) { alert('⚠️ Введи ник для проверки');
+                    return; }
+
+                result.classList.add('show');
+                text.innerHTML = '🔍 Проверяем <span class="positive">' + nick + '</span>...';
+
+                setTimeout(() => {
+                    const isBot = Math.random() > 0.6;
+                    const tgDate = '2024-' + String(Math.floor(Math.random() * 12) + 1).padStart(2, '0') + '-' +
+                        String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+                    const kickSub = Math.random() > 0.3 ? '✅ Подписан на Kick' : '❌ Не подписан на Kick';
+
+                    if (isBot) {
+                        text.innerHTML = `
+                                🤖 <span class="negative">${nick} — ПОДОЗРИТЕЛЬНЫЙ БОТ!</span><br>
+                                📅 Дата регистрации TG: ${tgDate}<br>
+                                ${kickSub}
+                            `;
+                    } else {
+                        text.innerHTML = `
+                                ✅ <span class="positive">${nick} — реальный пользователь</span><br>
+                                📅 Дата регистрации TG: ${tgDate}<br>
+                                ${kickSub}
+                            `;
+                    }
+                }, 1200);
+            });
+
+            document.getElementById('subCheckBtn').addEventListener('click', function() {
+                const input = document.getElementById('subCheckInput');
+                const result = document.getElementById('subCheckResult');
+                const text = document.getElementById('subCheckText');
+                const nick = input.value.trim();
+                if (!nick) { alert('Введи ник!');
+                    return; }
+                result.classList.add('show');
+                text.innerHTML = '🔍 Проверяем <span class="positive">' + nick + '</span>...';
+                setTimeout(() => {
+                    const kickSub = Math.random() > 0.3 ? '✅ Подписан на Kick' : '❌ Не подписан на Kick';
+                    const twSub = Math.random() > 0.4 ? '✅ Подписан на Twitter' : '❌ Не подписан на Twitter';
+                    text.innerHTML = `
+                            📊 <span class="positive">${nick}</span><br>
+                            ${kickSub}<br>
+                            ${twSub}
+                        `;
+                }, 1200);
+            });
+
+            // ============================================================
+            // 15. УВЕДОМЛЕНИЕ ПОБЕДИТЕЛЯ
+            // ============================================================
+            notifyWinnerBtn.addEventListener('click', function() {
+                const d = loadData();
+                if (!d.winners || d.winners.length === 0) {
+                    alert('❌ Нет победителей!');
+                    return;
+                }
+                alert(`📨 Уведомление отправлено:\n${d.winners.map(w => w.tg).join(', ')}`);
+                addLog(`Уведомление отправлено победителям`);
+            });
+
+            // ============================================================
+            // 16. РАССЫЛКА ВСЕМ
+            // ============================================================
+            broadcastBtn.addEventListener('click', function() {
+                const msg = document.getElementById('broadcastMessage').value.trim();
+                if (!msg) { alert('Введите сообщение!');
+                    return; }
+                const list = getParticipants();
+                if (list.length === 0) { alert('Нет участников!');
+                    return; }
+                alert(`📢 Сообщение отправлено ${list.length} участникам:\n\n"${msg}"`);
+                addLog(`Рассылка всем: "${msg.slice(0, 30)}..."`);
+                document.getElementById('broadcastMessage').value = '';
+            });
+
+            // ============================================================
+            // 17. ПРОФИЛЬ
+            // ============================================================
+            function showProfile(p) {
+                profileContent.innerHTML = `
+                        <div class="field"><span class="label">Telegram</span><span class="value">${p.tg || '—'}</span></div>
+                        <div class="field"><span class="label">Kick</span><span class="value">${p.kick || '—'}</span></div>
+                        <div class="field"><span class="label">Casino</span><span class="value">${p.casino || '—'}</span></div>
+                        <div class="field"><span class="label">Дата регистрации</span><span class="value">${p.date || '—'}</span></div>
+                        <div class="field"><span class="label">Статус</span><span class="value" style="color:${getBanned().includes(p.tg) ? '#ff8800' : '#00ff88'}">${getBanned().includes(p.tg) ? '🚫 ЗАБАНЕН' : '✅ АКТИВЕН'}</span></div>
+                    `;
+                profileModal.classList.add('show');
+            }
+
+            closeProfileBtn.addEventListener('click', function() {
+                profileModal.classList.remove('show');
+            });
+            profileModal.addEventListener('click', function(e) {
+                if (e.target === profileModal) profileModal.classList.remove('show');
+            });
+
+            // ============================================================
+            // 18. НАСТРОЙКИ
+            // ============================================================
+            function loadSettingsToForm() {
+                const settings = getSettings();
+                if (settings.giveawayDate) {
+                    const date = new Date(settings.giveawayDate);
+                    if (!isNaN(date)) giveawayDateInput.value = date.toISOString().slice(0, 16);
+                }
+                contestTitleInput.value = settings.contestTitle || 'РОЗЫГРЫШ';
+                contestRulesInput.value = settings.contestRules || '';
+                winnersCountInput.value = settings.winnersCount || 3;
+                casinoNameInput.value = settings.casinoName || 'КАЗИНО';
+            }
+
+            saveSettingsBtn.addEventListener('click', function() {
+                const settings = {
+                    giveawayDate: giveawayDateInput.value ? new Date(giveawayDateInput.value).toISOString() : '',
+                    contestTitle: contestTitleInput.value.trim() || 'РОЗЫГРЫШ',
+                    contestRules: contestRulesInput.value.trim() || '',
+                    winnersCount: parseInt(winnersCountInput.value) || 3,
+                    casinoName: casinoNameInput.value.trim() || 'КАЗИНО'
+                };
+                setSettings(settings);
+                syncToHome();
+                addLog('Настройки сохранены');
+                const btn = this;
+                const orig = btn.textContent;
+                btn.textContent = '✅ СОХРАНЕНО!';
+                btn.style.background = '#00aa55';
+                setTimeout(() => {
+                    btn.textContent = orig;
+                    btn.style.background = '#00aa55';
+                }, 2000);
+            });
+
+            // ============================================================
+            // 19. СИНХРОНИЗАЦИЯ
+            // ============================================================
+            function syncToHome() {
+                const d = loadData();
+                const s = d.settings;
+                if (s.giveawayDate) localStorage.setItem('giveawayDate', s.giveawayDate);
+                if (s.casinoName) localStorage.setItem('casinoName', s.casinoName);
+                if (s.contestTitle) localStorage.setItem('contestTitle', s.contestTitle);
+                if (s.contestRules) localStorage.setItem('contestRules', s.contestRules);
+                if (s.winnersCount) localStorage.setItem('winnersCount', s.winnersCount);
+                localStorage.setItem('underdogg_participants', JSON.stringify(d.participants));
+            }
+
+            // ============================================================
+            // 20. УПРАВЛЕНИЕ
+            // ============================================================
+            runGiveawayBtn.addEventListener('click', function() {
+                const list = getParticipants();
+                if (list.length === 0) { alert('❌ Нет участников!');
+                    return; }
+                addLog('Розыгрыш запущен');
+                alert('🎰 Розыгрыш запущен!');
+            });
+
+            pickWinnerBtn.addEventListener('click', function() {
+                const list = getParticipants();
+                if (list.length === 0) { alert('❌ Нет участников!');
+                    return; }
+                const settings = getSettings();
+                const winnersCount = parseInt(settings.winnersCount) || 3;
+                const banned = getBanned();
+                const fraudList = checkFraud(list);
+                const real = list.filter((_, i) => !fraudList.some(f => f.index === i) && !banned.includes(list[i].tg));
+                if (real.length === 0) { alert('❌ Нет реальных участников!');
+                    return; }
+                const shuffled = [...real].sort(() => Math.random() - 0.5);
+                const winners = shuffled.slice(0, Math.min(winnersCount, real.length));
+                const d = loadData();
+                d.winners = winners;
+                saveData(d);
+                addLog(`Выбраны победители: ${winners.map(w => w.tg).join(', ')}`);
+                let msg = '🏆 ПОБЕДИТЕЛИ:\n\n';
+                winners.forEach((w, i) => msg += `${i+1}. ${w.tg} (Kick: ${w.kick}, Casino: ${w.casino})\n`);
+                alert(msg);
+                updateStats();
+            });
+
+            resetAllBtn.addEventListener('click', function() {
+                if (confirm('⚠️ Сбросить ВСЁ?')) {
+                    localStorage.removeItem('underdogg_admin');
+                    localStorage.removeItem('underdogg_participants');
+                    localStorage.removeItem('giveawayDate');
+                    localStorage.removeItem('contestTitle');
+                    localStorage.removeItem('contestRules');
+                    renderAll();
+                    document.getElementById('adminPassword').value = '';
+                    addLog('Полный сброс системы');
+                }
+            });
+
+            // ============================================================
+            // 21. МОДАЛКА УЧАСТНИКОВ (ВЫДАЧА БИЛЕТОВ)
+            // ============================================================
+            function getRegisteredUsers() {
+                const data = JSON.parse(localStorage.getItem('underdogg_user_data') || 'null');
+                if (!data) return [];
+                if (data.tg) return [data];
+                return data;
+            }
+
+            function getUserTicketsByEpic(epicNick) {
+                const key = 'tickets_epic_' + epicNick;
+                const data = JSON.parse(localStorage.getItem(key) || '{}');
+                return {
+                    bronze: data.bronze || 0,
+                    silver: data.silver || 0,
+                    gold: data.gold || 0
+                };
+            }
+
+            function saveUserTicketsByEpic(epicNick, tickets) {
+                const key = 'tickets_epic_' + epicNick;
+                localStorage.setItem(key, JSON.stringify(tickets));
+            }
+
+            function renderUsersList() {
+                const users = getRegisteredUsers();
+                const search = document.getElementById('usersSearchInput').value.toLowerCase().trim();
+                const sort = document.getElementById('usersSortSelect').value;
+
+                if (!users || users.length === 0) {
+                    document.getElementById('usersListContainer').innerHTML = `
+                            <div style="color:#444;font-size:16px;text-align:center;padding:30px 0;">
+                                Нет зарегистрированных пользователей
+                            </div>
+                        `;
+                    return;
+                }
+
+                let filtered = users.filter(user => {
+                    const tg = (user.tg || '').toLowerCase();
+                    const kick = (user.kick || '').toLowerCase();
+                    const epic = (user.epic || user.casino || '').toLowerCase();
+                    return tg.includes(search) || kick.includes(search) || epic.includes(search);
+                });
+
+                filtered.sort((a, b) => {
+                    const aEpic = a.epic || a.casino || '';
+                    const bEpic = b.epic || b.casino || '';
+                    const aTickets = getUserTicketsByEpic(aEpic);
+                    const bTickets = getUserTicketsByEpic(bEpic);
+                    const aTotal = aTickets.bronze + aTickets.silver + aTickets.gold;
+                    const bTotal = bTickets.bronze + bTickets.silver + bTickets.gold;
+
+                    switch (sort) {
+                        case 'tickets-desc':
+                            return bTotal - aTotal;
+                        case 'tickets-asc':
+                            return aTotal - bTotal;
+                        case 'tg':
+                            return (a.tg || '').localeCompare(b.tg || '');
+                        case 'date':
+                            return new Date(b.date) - new Date(a.date);
+                        default:
+                            return 0;
+                    }
+                });
+
+                let html = `
+                        <div class="users-grid-header">
+                            <span>TELEGRAM</span>
+                            <span>KICK</span>
+                            <span>EPICSTAR</span>
+                            <span>ДАТА</span>
+                            <span>🎟️ БИЛ.</span>
+                            <span>ДЕЙСТВИЕ</span>
+                        </div>
+                    `;
+
+                filtered.forEach((user) => {
+                    const epic = user.epic || user.casino || '—';
+                    const tickets = getUserTicketsByEpic(epic);
+                    const totalTickets = tickets.bronze + tickets.silver + tickets.gold;
+
+                    html += `
+                            <div class="users-grid-row">
+                                <span class="tg">${user.tg || '—'}</span>
+                                <span class="kick">${user.kick || '—'}</span>
+                                <span class="epic">${epic}</span>
+                                <span class="date">${user.date ? user.date.slice(0,10) : '—'}</span>
+                                <span class="tickets-count">${totalTickets}</span>
+                                <button class="action-btn primary give-tickets-modal-btn" data-epic="${epic}" style="padding:6px 12px; font-size:12px; border-radius:10px; font-weight:700;">
+                                    🎟️ ВЫДАТЬ
+                                </button>
+                            </div>
+                        `;
+                });
+
+                document.getElementById('usersListContainer').innerHTML = html;
+
+                document.querySelectorAll('.give-tickets-modal-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const epic = this.dataset.epic;
+                        closeUsersModal();
+                        setTimeout(() => {
+                            openGiveTicketsModal(epic);
+                        }, 300);
+                    });
+                });
+            }
+
+            function openUsersModal() {
+                document.getElementById('usersModal').style.display = 'flex';
+                renderUsersList();
+            }
+
+            function closeUsersModal() {
+                document.getElementById('usersModal').style.display = 'none';
+            }
+
+            document.getElementById('openUsersModalBtn').addEventListener('click', openUsersModal);
+            document.getElementById('closeUsersModalBtn').addEventListener('click', closeUsersModal);
+            document.getElementById('usersSearchInput').addEventListener('input', renderUsersList);
+            document.getElementById('usersSortSelect').addEventListener('change', renderUsersList);
+
+            document.getElementById('usersModal').addEventListener('click', function(e) {
+                if (e.target === this) closeUsersModal();
+            });
+
+            // ============================================================
+            // 22. МОДАЛКА ВЫДАЧИ БИЛЕТОВ
+            // ============================================================
+            function openGiveTicketsModal(epic) {
+                const tickets = getUserTicketsByEpic(epic);
+
+                const modal = document.createElement('div');
+                modal.id = 'giveTicketsModal';
+                modal.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0,0,0,0.85);
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 2000;
+                        padding: 20px;
+                        display: flex;
+                    `;
+
+                modal.innerHTML = `
+                        <div style="
+                            background: radial-gradient(circle at 50% 30%, #1c0205, #0d0103);
+                            border: 2px solid #ff2a4b;
+                            border-radius: 28px;
+                            max-width: 420px;
+                            width: 100%;
+                            padding: 30px 24px;
+                            box-shadow: 0 0 60px rgba(255,0,35,0.4);
+                            max-height: 95vh;
+                            overflow-y: auto;
+                        ">
+                            <h2 style="
+                                font-family: 'Orbitron', sans-serif;
+                                font-size: 20px;
+                                letter-spacing: 4px;
+                                color: #fff;
+                                text-shadow: 0 0 20px #ff2a4b;
+                                text-align: center;
+                                margin-bottom: 16px;
+                            ">🎟️ ВЫДАЧА БИЛЕТОВ</h2>
+
+                            <div style="text-align:center;margin-bottom:16px;">
+                                <div style="color:#888;font-size:12px;letter-spacing:1px;">EPICSTAR</div>
+                                <div style="font-size:18px;font-weight:700;color:#ffcc00;">${epic}</div>
+                            </div>
+
+                            <div style="margin-bottom:12px;">
+                                <label style="color:#aaa;font-size:12px;letter-spacing:1px;">БРОНЗОВЫЕ</label>
+                                <div style="display:flex;gap:10px;align-items:center;">
+                                    <button class="modal-ticket-op bronze ticket-op-btn" data-type="bronze" data-dir="-1">−</button>
+                                    <span class="modal-ticket-count bronze" id="giveBronzeCount">${tickets.bronze}</span>
+                                    <button class="modal-ticket-op bronze ticket-op-btn" data-type="bronze" data-dir="1">+</button>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:12px;">
+                                <label style="color:#aaa;font-size:12px;letter-spacing:1px;">СЕРЕБРЯНЫЕ</label>
+                                <div style="display:flex;gap:10px;align-items:center;">
+                                    <button class="modal-ticket-op silver ticket-op-btn" data-type="silver" data-dir="-1">−</button>
+                                    <span class="modal-ticket-count silver" id="giveSilverCount">${tickets.silver}</span>
+                                    <button class="modal-ticket-op silver ticket-op-btn" data-type="silver" data-dir="1">+</button>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom:16px;">
+                                <label style="color:#aaa;font-size:12px;letter-spacing:1px;">ЗОЛОТЫЕ</label>
+                                <div style="display:flex;gap:10px;align-items:center;">
+                                    <button class="modal-ticket-op gold ticket-op-btn" data-type="gold" data-dir="-1">−</button>
+                                    <span class="modal-ticket-count gold" id="giveGoldCount">${tickets.gold}</span>
+                                    <button class="modal-ticket-op gold ticket-op-btn" data-type="gold" data-dir="1">+</button>
+                                </div>
+                            </div>
+
+                            <button id="saveGiveTicketsBtn" style="
+                                width: 100%;
+                                padding: 14px;
+                                background: #00aa55;
+                                border: none;
+                                border-radius: 30px;
+                                color: #fff;
+                                font-family: 'Orbitron', sans-serif;
+                                font-size: 14px;
+                                font-weight: 700;
+                                letter-spacing: 2px;
+                                cursor: pointer;
+                                box-shadow: 0 0 20px rgba(0,170,85,0.2);
+                                transition: 0.3s;
+                            ">💾 СОХРАНИТЬ</button>
+
+                            <button id="closeGiveTicketsBtn" style="
+                                width: 100%;
+                                padding: 12px;
+                                background: transparent;
+                                border: 1px solid #444;
+                                border-radius: 30px;
+                                color: #888;
+                                font-family: 'Orbitron', sans-serif;
+                                font-size: 13px;
+                                font-weight: 700;
+                                letter-spacing: 2px;
+                                cursor: pointer;
+                                transition: 0.3s;
+                                margin-top: 10px;
+                            ">✕ ЗАКРЫТЬ</button>
+                        </div>
+                    `;
+
+                document.body.appendChild(modal);
+
+                modal.querySelectorAll('.ticket-op-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const type = this.dataset.type;
+                        const dir = parseInt(this.dataset.dir);
+                        const span = modal.querySelector(
+                            `#give${type.charAt(0).toUpperCase() + type.slice(1)}Count`);
+                        let current = parseInt(span.textContent) || 0;
+                        current = Math.max(0, current + dir);
+                        span.textContent = current;
+                    });
+                });
+
+                modal.querySelector('#closeGiveTicketsBtn').addEventListener('click', function() {
+                    modal.remove();
+                });
+
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) modal.remove();
+                });
+
+                modal.querySelector('#saveGiveTicketsBtn').addEventListener('click', function() {
+                    const bronze = parseInt(modal.querySelector('#giveBronzeCount').textContent) || 0;
+                    const silver = parseInt(modal.querySelector('#giveSilverCount').textContent) || 0;
+                    const gold = parseInt(modal.querySelector('#giveGoldCount').textContent) || 0;
+
+                    saveUserTicketsByEpic(epic, { bronze, silver, gold });
+                    addLog(
+                        `Выданы билеты для Epicstar: ${epic} | Бронза ${bronze}, Серебро ${silver}, Золото ${gold}`
+                        );
+                    modal.remove();
+                    renderUsersList();
+                });
+            }
+
+            // ============================================================
+            // 23. ИНИЦИАЛИЗАЦИЯ
+            // ============================================================
+            renderAll();
+            console.log('🔐 Админ-панель загружена');
+            console.log('📌 Пароль: underd0gg2026');
+
+            window.toggleBan = toggleBan;
+
+        });
+    </script>
+
+</body>
+</html>
