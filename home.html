@@ -758,5 +758,51 @@
         window.openModal = openModal;
     </script>
     <script src="js/app.js"></script>
+   <!-- ===== СУПЕР-ФИКС ДЛЯ МОДАЛОК ===== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Находим все кнопки, у которых внутри текст "ЗАКРЫТЬ" или "✕"
+        var allButtons = document.querySelectorAll('button');
+        for (var i = 0; i < allButtons.length; i++) {
+            var btn = allButtons[i];
+            var text = btn.textContent.trim();
+            if (text === 'ЗАКРЫТЬ' || text === '✕ ЗАКРЫТЬ' || text === '✕ НАЗАД' || text === 'X') {
+                // Убираем все старые обработчики и вешаем свой
+                btn.replaceWith(btn.cloneNode(true));
+            }
+        }
+
+        // Теперь вешаем обработчики заново на все кнопки
+        var newButtons = document.querySelectorAll('button');
+        for (var j = 0; j < newButtons.length; j++) {
+            var btn2 = newButtons[j];
+            var text2 = btn2.textContent.trim();
+            if (text2 === 'ЗАКРЫТЬ' || text2 === '✕ ЗАКРЫТЬ' || text2 === '✕ НАЗАД' || text2 === 'X') {
+                btn2.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Ищем родительскую модалку (вверх по дереву)
+                    var modal = this;
+                    while (modal) {
+                        modal = modal.parentElement;
+                        if (modal && (modal.id === 'giveawayModal' || modal.id === 'ticketsModal' || modal.id === 'servicesModal' || modal.id === 'statsModal')) {
+                            modal.style.display = 'none';
+                            document.body.style.overflow = '';
+                            return;
+                        }
+                    }
+
+                    // Если не нашли — перебираем все модалки
+                    var modals = document.querySelectorAll('#giveawayModal, #ticketsModal, #servicesModal, #statsModal');
+                    for (var k = 0; k < modals.length; k++) {
+                        modals[k].style.display = 'none';
+                    }
+                    document.body.style.overflow = '';
+                });
+            }
+        }
+    });
+</script> 
 </body>
 </html>
