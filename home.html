@@ -465,7 +465,7 @@
         </div>
     </div>
 
-    <!-- ===== СКРИПТЫ (С ИСПРАВЛЕННОЙ РЕГИСТРАЦИЕЙ) ===== -->
+    <    <!-- ===== СКРИПТЫ ===== -->
     <script>
         const tg = window.Telegram?.WebApp;
         let db = null;
@@ -483,10 +483,10 @@
             console.error('Firebase init error:', e);
         }
 
-        // ===== ПОЛУЧАЕМ ДАННЫХ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ =====
+        // ===== ПОЛУЧАЕМ ДАННЫЕ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ =====
         function getCurrentUserData() {
             try {
-                // Сначала проверяем данные из Telegram
+                // Сначала пробуем взять из Telegram WebApp
                 if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
                     const u = tg.initDataUnsafe.user;
                     return {
@@ -496,17 +496,23 @@
                         lastName: u.last_name || ''
                     };
                 }
-                
                 // Если не получилось — берём из localStorage
-                const legacyData = localStorage.getItem('underdogg_user_data');
-                if (legacyData) return JSON.parse(legacyData);
-                const newData = localStorage.getItem('underdogg_user');
-                if (newData) return JSON.parse(newData);
-            } catch (e) { console.error(e); }
+                const saved = localStorage.getItem('underdogg_user');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if (data && data.telegramId) return data;
+                }
+                const legacy = localStorage.getItem('underdogg_user_data');
+                if (legacy) {
+                    const data = JSON.parse(legacy);
+                    if (data && data.telegramId) return data;
+                }
+            } catch (e) {
+                console.error('Ошибка получения данных:', e);
+            }
             return null;
         }
 
-        // ===== ПРОВЕРКА, УЧАСТВУЕТ ЛИ УЖЕ =====
         function isJoinedContest() {
             return localStorage.getItem('underdogg_joined_contest') === 'true';
         }
@@ -613,20 +619,19 @@
             const kickInput = document.getElementById('kickInput');
             const casinoInput = document.getElementById('casinoInput');
 
-            // Показываем ТЕКУЩЕГО пользователя
             if (tgDisplay) tgDisplay.textContent = user.tg || ('ID: ' + user.telegramId);
             if (tgIdDisplay && user.telegramId) tgIdDisplay.textContent = 'ID: ' + user.telegramId;
-            
-            // Если у пользователя уже есть сохранённые данные — подставляем их
+
+            // Подставляем сохранённые данные
             const saved = JSON.parse(localStorage.getItem('underdogg_user') || '{}');
             if (kickInput) {
-                kickInput.value = saved.kick || user.kick || '';
+                kickInput.value = saved.kick || '';
                 kickInput.readOnly = true;
                 kickInput.style.opacity = '0.7';
                 kickInput.style.cursor = 'not-allowed';
             }
             if (casinoInput) {
-                casinoInput.value = saved.epic || user.epic || '';
+                casinoInput.value = saved.epic || '';
                 casinoInput.readOnly = true;
                 casinoInput.style.opacity = '0.7';
                 casinoInput.style.cursor = 'not-allowed';
@@ -673,7 +678,7 @@
 
             const user = getCurrentUserData();
 
-            // === ЗАКРЫТИЕ МОДАЛОК ===
+            // === ЗАКРЫТИЕ МОДАЛОК (ОВЕРЛЕЙ) ===
             var allModals = document.querySelectorAll('#giveawayModal, #ticketsModal, #servicesModal, #statsModal');
             allModals.forEach(function(modal) {
                 modal.addEventListener('click', function(e) {
@@ -723,9 +728,9 @@
                 openModal('giveawayModal');
             });
 
-            // === 2. РЕГИСТРАЦИЯ В РОЗЫГРЫШЕ (СОХРАНЯЕМ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ) ===
+            // === 2. РЕГИСТРАЦИЯ В РОЗЫГРЫШЕ ===
             document.getElementById('registerBtn').addEventListener('click', function() {
-                // Получаем данные ТЕКУЩЕГО пользователя из Telegram
+                // Получаем данные ТЕКУЩЕГО пользователя
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
                 if (!tgUser) {
                     alert('⚠️ Откройте приложение через Telegram!');
@@ -740,7 +745,7 @@
                     return;
                 }
 
-                // Сохраняем ДАННЫЕ КОНКРЕТНОГО ПОЛЬЗОВАТЕЛЯ
+                // Сохраняем данные ИМЕННО ЭТОГО ПОЛЬЗОВАТЕЛЯ
                 const userData = {
                     telegramId: tgUser.id,
                     tg: tgUser.username ? '@' + tgUser.username : String(tgUser.id),
@@ -752,30 +757,26 @@
                     registeredAt: new Date().toISOString()
                 };
 
-                // Сохраняем в localStorage
                 localStorage.setItem('underdogg_user', JSON.stringify(userData));
                 localStorage.setItem('underdogg_user_data', JSON.stringify(userData));
                 localStorage.setItem('underdogg_joined_contest', 'true');
 
                 // Добавляем в список участников
                 let participants = JSON.parse(localStorage.getItem('underdogg_participants') || '[]');
-                // Проверяем, нет ли уже такого пользователя
                 const exists = participants.some(p => p.telegramId === userData.telegramId);
                 if (!exists) {
                     participants.push(userData);
                     localStorage.setItem('underdogg_participants', JSON.stringify(participants));
                 }
 
-                // Если есть Firebase — сохраняем туда
+                // Firebase
                 if (db) {
                     const cleanTg = String(userData.tg || '').replace('@', '');
                     db.ref('contest_participants/' + cleanTg).set(userData);
                     db.ref('users/' + cleanTg + '/kick').set(kick);
                     db.ref('users/' + cleanTg + '/epic').set(epic);
-                    db.ref('users/' + cleanTg + '/telegramId').set(userData.telegramId);
                 }
 
-                // Показываем успех
                 document.getElementById('registrationForm').style.display = 'none';
                 document.getElementById('tgContainer').style.display = 'none';
                 document.getElementById('registrationSuccess').style.display = 'block';
@@ -783,8 +784,6 @@
                 this.disabled = false;
                 this.textContent = 'УЧАСТВОВАТЬ';
                 updateStreamStatus();
-
-                // Обновляем отображение участников
                 loadContestStats();
             });
 
@@ -847,7 +846,7 @@
                 }
             });
 
-            // === 8. СТАТУС СТРИМА (Firebase) ===
+            // === 8. СТАТУС СТРИМА ===
             updateStreamStatus();
 
             if (db) {
