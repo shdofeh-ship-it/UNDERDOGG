@@ -449,17 +449,40 @@
             }, 50);
 
             // 2. Логика переходов
-            enterBtn.addEventListener('click', function() {
-                if (!isReady) return;
+            enterBtn.addEventListener('click', async function() {
+    if (!isReady) return;
 
-                const isRegistered = localStorage.getItem('underdogg_registered') === 'true';
-                if (!isRegistered) {
-                    alert('⚠️ Вы еще не зарегистрированы! Нажмите «ЗАРЕГИСТРИРОВАТЬСЯ».');
-                    return;
+    // 1. Быстрая локальная проверка
+    let isRegistered = localStorage.getItem('underdogg_registered') === 'true';
+
+    // 2. Если локально нет данных, проверяем базу данных Firebase по Telegram username
+    if (!isRegistered && typeof getTelegramUser === 'function' && window.db) {
+        const tgUser = getTelegramUser();
+        if (tgUser) {
+            const cleanTg = tgUser.replace('@', '');
+            try {
+                const snapshot = await window.db.ref('users/' + cleanTg).once('value');
+                if (snapshot.exists()) {
+                    // Пользователь найден в Firebase — подгружаем локально
+                    const userData = snapshot.val();
+                    localStorage.setItem('underdogg_user_data', JSON.stringify(userData));
+                    localStorage.setItem('underdogg_registered', 'true');
+                    isRegistered = true;
                 }
+            } catch (err) {
+                console.error("Ошибка проверки регистрации в Firebase:", err);
+            }
+        }
+    }
 
-                location.href = 'home.html';
-            });
+    if (!isRegistered) {
+        alert('⚠️ Вы еще не зарегистрированы! Нажмите «ЗАРЕГИСТРИРОВАТЬСЯ».');
+        return;
+    }
+
+    location.href = 'home.html';
+});
+
 
             openRegisterBtn.addEventListener('click', function() {
                 if (isReady) {
