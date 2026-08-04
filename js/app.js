@@ -6,19 +6,23 @@ const firebaseConfig = {
 };
 
 
+window.db = null;
 let db = null;
+
 try {
     if (window.firebase) {
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
         db = firebase.database();
+        window.db = db; // Делаем доступным глобально
     } else {
         console.error("Firebase SDK не загрузился в HTML!");
     }
 } catch (e) {
     console.error("Ошибка Firebase:", e);
 }
+
 
 // ============================================================
 // 1. ПОЛУЧЕНИЕ И ДЕНОНСАЦИЯ TELEGRAM USERNAME
