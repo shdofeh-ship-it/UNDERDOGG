@@ -726,5 +726,76 @@
         window.openModal = openModal;
     </script>
     <script src="js/app.js"></script>
+        <!-- ===== ПОЛНАЯ ПЕРЕЗАПИСЬ ВСЕХ КНОПОК ===== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== 1. КНОПКА "ВЕРНУТЬСЯ НАЗАД" (В РОЗЫГРЫШЕ) =====
+            var backBtn = document.getElementById('backToMenuBtn');
+            if (backBtn) {
+                // Убиваем старую кнопку
+                var newBackBtn = backBtn.cloneNode(true);
+                backBtn.parentNode.replaceChild(newBackBtn, backBtn);
+                // Вешаем новое событие
+                newBackBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var modal = document.getElementById('giveawayModal');
+                    if (modal) {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // ===== 2. ВСЕ КНОПКИ "ЗАКРЫТЬ" =====
+            var allBtns = document.querySelectorAll('button');
+            for (var i = 0; i < allBtns.length; i++) {
+                var btn = allBtns[i];
+                var text = btn.textContent.trim();
+                // Проверяем все возможные варианты надписей
+                if (text === 'ЗАКРЫТЬ' || text === '✕ ЗАКРЫТЬ' || text === '✕ НАЗАД' || text === 'X' || text === '✕') {
+                    
+                    // Полностью пересоздаём кнопку
+                    var newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+                    
+                    // Вешаем событие на новую кнопку
+                    newBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Ищем модалку вверх по дереву
+                        var modal = null;
+                        var parent = this;
+                        while (parent) {
+                            if (parent.id === 'giveawayModal' || 
+                                parent.id === 'ticketsModal' || 
+                                parent.id === 'servicesModal' || 
+                                parent.id === 'statsModal') {
+                                modal = parent;
+                                break;
+                            }
+                            parent = parent.parentElement;
+                        }
+                        
+                        // Если нашли — закрываем
+                        if (modal) {
+                            modal.style.display = 'none';
+                            document.body.style.overflow = '';
+                        } else {
+                            // Если не нашли — закрываем все подряд
+                            var modals = document.querySelectorAll('#giveawayModal, #ticketsModal, #servicesModal, #statsModal');
+                            for (var j = 0; j < modals.length; j++) {
+                                modals[j].style.display = 'none';
+                            }
+                            document.body.style.overflow = '';
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
 </body>
 </html>
