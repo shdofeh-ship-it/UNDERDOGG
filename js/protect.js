@@ -1,19 +1,13 @@
-// ===== ЗАЩИТА ОТ БРАУЗЕРА (ЧЁРНЫЙ ЭКРАН) =====
+// ===== ЗАЩИТА ОТ БРАУЗЕРА (ФИНАЛ) =====
 (function() {
-    // Проверяем, есть ли Telegram WebApp
-    var isTelegram = false;
-    try {
-        if (window.Telegram && window.Telegram.WebApp) {
-            isTelegram = true;
-        }
-    } catch(e) {}
-
-    // Если НЕ Telegram — блокируем
+    // Единственная правильная проверка на Telegram
+    var isTelegram = !!(window.Telegram && window.Telegram.WebApp);
+    
     if (!isTelegram) {
-        // Полностью очищаем страницу
+        // Убиваем старую страницу
         document.documentElement.innerHTML = '';
-
-        // Вставляем чёрный экран с сообщением
+        
+        // Вставляем новую с чёрным фоном
         document.write(`
             <!DOCTYPE html>
             <html>
@@ -26,7 +20,7 @@
                     html, body {
                         width: 100%;
                         height: 100%;
-                        background: #050102;
+                        background: #000000;
                         display: flex;
                         justify-content: center;
                         align-items: center;
