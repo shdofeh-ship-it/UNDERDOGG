@@ -1134,6 +1134,17 @@
             const streamDot = document.getElementById('streamDot');
             const streamLabel = document.getElementById('streamLabel');
             const streamToggleBtn = document.getElementById('streamToggleBtn');
+            // Функция в вашей админ-панели для включения / выключения стрима
+function setStreamStatus(isOnline) {
+    if (window.firebase && firebase.database()) {
+        firebase.database().ref('streamIsLive').set(isOnline)
+            .then(() => alert(`Статус стрима успешно изменен на: ${isOnline ? '🔴 В СЕТИ' : '⚪ ОФФЛАЙН'}`))
+            .catch(err => console.error("Ошибка Firebase:", err));
+    } else {
+        alert("Ошибка: База данных Firebase не подключена!");
+    }
+}
+
 
             // ============================================================
             // 2. LOCALSTORAGE
