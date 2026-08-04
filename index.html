@@ -373,11 +373,20 @@
 
     <div class="main-container">
 
-        <div class="status-header">
-            <span class="pulse" id="indexStatusDot"></span>
+            <div class="status-header">
+        <div class="status-left" style="display: flex; align-items: center; gap: 8px;">
+            <span class="pulse pulse-dot" id="indexStatusDot"></span>
             <span class="status-title">СТАТУС СТРИМА</span>
-            <span class="status-value" id="indexStatusLabel">ОФФЛАЙН</span>
         </div>
+        <div class="status-right" style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-value online-text" id="indexStatusLabel">ОФФЛАЙН</span>
+            <div class="signal-icon" id="signalIcon">
+                <span class="bar bar-1"></span>
+                <span class="bar bar-2"></span>
+                <span class="bar bar-3"></span>
+            </div>
+        </div>
+    </div>
 
         <div class="brand-title">UNDERDOGG</div>
         <div class="brand-subtitle">SYSTEM INITIALIZATION</div>
