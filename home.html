@@ -1317,6 +1317,383 @@ document.querySelectorAll('.btn-back, .btn-close, #closeTicketsBtn, #closeServic
             if (db) {
                 db.ref('streamIsLive').on('value', function(snapshot) {
                     const isOnline = snapshot.val() === true;
+    <!-- ===== СКРИПТЫ ===== -->
+    <script>
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        const tg = window.Telegram?.WebApp;
+        let db = null;
+
+        try {
+            if (window.firebase) {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp({
+                        databaseURL: 'https://underdogg-app-f5379-default-rtdb.firebaseio.com/'
+                    });
+                }
+                db = firebase.database();
+            }
+        } catch (e) {
+            console.error('Firebase init error:', e);
+        }
+
+        // ===== ПОЛЬЗОВАТЕЛЬ =====
+        function getCurrentUserData() {
+            try {
+                const legacyData = localStorage.getItem('underdogg_user_data');
+                if (legacyData) return JSON.parse(legacyData);
+
+                const newData = localStorage.getItem('underdogg_user');
+                if (newData) return JSON.parse(newData);
+
+                if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    const u = tg.initDataUnsafe.user;
+                    return {
+                        telegramId: u.id,
+                        tg: u.username ? '@' + u.username : String(u.id)
+                    };
+                }
+            } catch (e) {
+                console.error('Ошибка при получении данных пользователя:', e);
+            }
+            return null;
+        }
+
+        function isJoinedContest() {
+            return localStorage.getItem('underdogg_joined_contest') === 'true';
+        }
+
+        // ===== СТАТУС СТРИМА =====
+        function updateStreamStatus(forceOnline) {
+            const statusDot = document.getElementById('statusDot');
+            const statusLabel = document.getElementById('statusLabel');
+            const streamBadge = document.getElementById('streamBadge');
+            const giveawayBadge = document.getElementById('giveawayBadge');
+            const signalIcon = document.getElementById('signalIcon');
+
+            const streamIsLive = typeof forceOnline === 'boolean' ? forceOnline : localStorage.getItem('streamIsLive') === 'true';
+
+            if (statusDot) {
+                statusDot.className = 'pulse-dot';
+                statusDot.style.background = streamIsLive ? '#ff0000' : '#555555';
+                statusDot.style.boxShadow = streamIsLive ? '0 0 15px #ff0000' : 'none';
+            }
+            if (statusLabel) {
+                statusLabel.textContent = streamIsLive ? 'В СЕТИ' : 'ОФФЛАЙН';
+                statusLabel.style.color = streamIsLive ? '#ff3333' : '#888888';
+            }
+            if (streamBadge) {
+                streamBadge.textContent = streamIsLive ? 'ОНЛАЙН' : 'ОФФЛАЙН';
+                streamBadge.style.background = streamIsLive ? '#ff0000' : '#333333';
+                streamBadge.style.boxShadow = streamIsLive ? '0 0 10px rgba(255,0,0,0.5)' : 'none';
+            }
+            if (giveawayBadge) {
+                giveawayBadge.textContent = streamIsLive ? 'ОНЛАЙН' : 'ОФФЛАЙН';
+                giveawayBadge.style.background = streamIsLive ? '#ff0000' : '#333333';
+                giveawayBadge.style.boxShadow = streamIsLive ? '0 0 10px rgba(255,0,0,0.5)' : 'none';
+            }
+            if (signalIcon) {
+                signalIcon.style.opacity = streamIsLive ? '1' : '0.3';
+                signalIcon.querySelectorAll('.bar').forEach(function(bar) {
+                    bar.style.background = streamIsLive ? '#ff4040' : '#555555';
+                });
+            }
+        }
+
+        // ===== ТАЙМЕР =====
+        function startCountdown() {
+            var daysEl = document.getElementById('days');
+            var hoursEl = document.getElementById('hours');
+            var minutesEl = document.getElementById('minutes');
+            var secondsEl = document.getElementById('seconds');
+            if (!daysEl) return;
+
+            var savedDate = localStorage.getItem('giveawayDate');
+            var targetDate;
+            if (!savedDate) {
+                targetDate = new Date();
+                targetDate.setDate(targetDate.getDate() + 7);
+                targetDate.setHours(20, 0, 0, 0);
+            } else {
+                targetDate = new Date(savedDate);
+            }
+
+            function updateTimer() {
+                var now = new Date();
+                var diff = targetDate - now;
+                if (diff <= 0) diff = 0;
+
+                var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
+                if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+                if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+                if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        // ===== МОДАЛКИ =====
+        function openModal(modalId) {
+            var modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            var modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+
+        // ===== ЗАГРУЗКА ДАННЫХ ПОЛЬЗОВАТЕЛЯ =====
+        function loadUserData() {
+            var user = getCurrentUserData();
+            if (!user) return;
+
+            var tgDisplay = document.getElementById('tgDisplay');
+            var tgIdDisplay = document.getElementById('tgIdDisplay');
+            var kickInput = document.getElementById('kickInput');
+            var casinoInput = document.getElementById('casinoInput');
+
+            if (tgDisplay) tgDisplay.textContent = user.tg || ('ID: ' + user.telegramId);
+            if (tgIdDisplay && user.telegramId) tgIdDisplay.textContent = 'ID: ' + user.telegramId;
+            if (kickInput && user.kick) kickInput.value = user.kick;
+            if (casinoInput && user.epic) casinoInput.value = user.epic;
+        }
+
+        // ===== БИЛЕТЫ =====
+        function loadUserTickets() {
+            var user = getCurrentUserData();
+            var epic = user?.epic;
+            if (!epic) {
+                document.getElementById('bronzeTickets').textContent = '0';
+                document.getElementById('silverTickets').textContent = '0';
+                document.getElementById('goldTickets').textContent = '0';
+                document.getElementById('ticketTotalBalance').textContent = '0';
+                return;
+            }
+
+            var key = 'tickets_epic_' + epic.trim();
+            var raw = localStorage.getItem(key);
+            var tickets = { bronze: 0, silver: 0, gold: 0 };
+            if (raw) {
+                try {
+                    tickets = JSON.parse(raw);
+                } catch (e) {}
+            }
+
+            document.getElementById('bronzeTickets').textContent = tickets.bronze || 0;
+            document.getElementById('silverTickets').textContent = tickets.silver || 0;
+            document.getElementById('goldTickets').textContent = tickets.gold || 0;
+            document.getElementById('ticketTotalBalance').textContent = (tickets.bronze || 0) + (tickets.silver || 0) + (tickets.gold || 0);
+        }
+
+        // ===== СТАТИСТИКА =====
+        function loadContestStats() {
+            var participants = JSON.parse(localStorage.getItem('underdogg_participants') || '[]');
+            var countEl = document.getElementById('contestParticipantsCount');
+            if (countEl) countEl.textContent = participants.length;
+        }
+
+        // ===== DOMContentLoaded =====
+        document.addEventListener('DOMContentLoaded', function() {
+            if (tg) {
+                tg.ready();
+                tg.expand();
+            }
+
+            var user = getCurrentUserData();
+
+            // === ЗАКРЫТИЕ МОДАЛОК ПО КЛИКУ НА ОВЕРЛЕЙ ===
+            var allModals = document.querySelectorAll('#giveawayModal, #ticketsModal, #servicesModal, #statsModal');
+            allModals.forEach(function(modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+
+            // === КНОПКИ ЗАКРЫТИЯ ===
+            document.querySelectorAll('.btn-back, .btn-close, #closeTicketsBtn, #closeServicesBtn, #closeStatsBtn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var modal = this.closest('[id]');
+                    if (modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+
+            // === 1. УЧАСТВОВАТЬ В РОЗЫГРЫШЕ ===
+            var giveawayBtn = document.getElementById('giveawayButton');
+            if (giveawayBtn) {
+                giveawayBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    if (!user) {
+                        alert('⚠️ Ошибка инициализации. Откройте приложение через Telegram.');
+                        return;
+                    }
+
+                    loadUserData();
+
+                    var regForm = document.getElementById('registrationForm');
+                    var successBlock = document.getElementById('registrationSuccess');
+                    var tgContainer = document.getElementById('tgContainer');
+
+                    if (isJoinedContest()) {
+                        if (regForm) regForm.style.display = 'none';
+                        if (successBlock) successBlock.style.display = 'block';
+                        if (tgContainer) tgContainer.style.display = 'none';
+                    } else {
+                        if (regForm) regForm.style.display = 'block';
+                        if (successBlock) successBlock.style.display = 'none';
+                        if (tgContainer) tgContainer.style.display = 'flex';
+                    }
+
+                    openModal('giveawayModal');
+                });
+            }
+
+            // === РЕГИСТРАЦИЯ В РОЗЫГРЫШЕ ===
+            var registerBtn = document.getElementById('registerBtn');
+            if (registerBtn) {
+                registerBtn.addEventListener('click', function() {
+                    if (!user) return;
+
+                    var kickEl = document.getElementById('kickInput');
+                    var casinoEl = document.getElementById('casinoInput');
+                    var kickVal = kickEl ? kickEl.value.trim() : '';
+                    var epicVal = casinoEl ? casinoEl.value.trim() : '';
+
+                    if (!kickVal || !epicVal) {
+                        alert('⚠️ Заполните ник в Kick и ник в Казино!');
+                        return;
+                    }
+
+                    this.disabled = true;
+                    this.textContent = 'ОТПРАВКА...';
+
+                    user.kick = kickVal;
+                    user.epic = epicVal;
+                    user.joinDate = new Date().toISOString();
+
+                    localStorage.setItem('underdogg_user_data', JSON.stringify(user));
+                    localStorage.setItem('underdogg_user', JSON.stringify(user));
+                    localStorage.setItem('underdogg_joined_contest', 'true');
+
+                    if (db) {
+                        var cleanTg = String(user.tg || '').replace('@', '');
+                        db.ref('contest_participants/' + cleanTg).set(user);
+                        db.ref('users/' + cleanTg + '/kick').set(kickVal);
+                        db.ref('users/' + cleanTg + '/epic').set(epicVal);
+                    }
+
+                    setTimeout(function() {
+                        var regForm = document.getElementById('registrationForm');
+                        var tgCont = document.getElementById('tgContainer');
+                        var success = document.getElementById('registrationSuccess');
+                        if (regForm) regForm.style.display = 'none';
+                        if (tgCont) tgCont.style.display = 'none';
+                        if (success) success.style.display = 'block';
+                        document.getElementById('registerBtn').disabled = false;
+                        document.getElementById('registerBtn').textContent = 'УЧАСТВОВАТЬ';
+                        updateStreamStatus();
+                    }, 800);
+                });
+            }
+
+            // === 2. МОИ БИЛЕТЫ ===
+            var ticketsBtn = document.getElementById('ticketsButton');
+            if (ticketsBtn) {
+                ticketsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal('ticketsModal');
+
+                    var userEpicDisplay = document.getElementById('userEpicDisplay');
+                    if (userEpicDisplay) {
+                        var fullUser = getCurrentUserData();
+                        userEpicDisplay.textContent = (fullUser && fullUser.epic) ? fullUser.epic : 'НЕ УКАЗАН';
+                    }
+
+                    loadUserTickets();
+                });
+            }
+
+            // === 3. НАШИ СЕРВИСЫ ===
+            var servicesBtn = document.getElementById('servicesButton');
+            if (servicesBtn) {
+                servicesBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal('servicesModal');
+                });
+            }
+
+            // === 4. СТАТИСТИКА ===
+            var statsBtn = document.getElementById('statsButton');
+            if (statsBtn) {
+                statsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal('statsModal');
+                    loadContestStats();
+                });
+            }
+
+            // === ПРИГЛАСИТЬ ДРУГА ===
+            var inviteBtn = document.getElementById('inviteButton');
+            if (inviteBtn) {
+                inviteBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+                        alert('Свяжитесь с модератором для получения реферальной ссылки.');
+                        return;
+                    }
+
+                    var userId = tg.initDataUnsafe.user.id;
+                    var botUsername = 'underd0gg_bot';
+                    var inviteLink = 'https://t.me/' + botUsername + '?start=ref_' + userId;
+                    var inviteText = 'Присоединяйся к UNDERDOGG PANEL 🚀 Получай билеты за депозиты и участвуй в розыгрышах!';
+
+                    if (tg.shareUrl) {
+                        tg.shareUrl(inviteLink, inviteText);
+                    } else if (tg.openTelegramLink) {
+                        tg.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(inviteLink) + '&text=' + encodeURIComponent(inviteText));
+                    } else {
+                        alert(inviteLink);
+                    }
+                });
+            }
+
+            // === ПРОЕКТЫ ===
+            var projectsBtn = document.getElementById('projectsButton');
+            if (projectsBtn) {
+                projectsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (tg && tg.openLink) {
+                        tg.openLink('https://t.me/und3r_d0gg');
+                    } else {
+                        window.open('https://t.me/und3r_d0gg', '_blank');
+                    }
+                });
+            }
+
+            // === СТАТУС СТРИМА (Firebase) ===
+            updateStreamStatus();
+
+            if (db) {
+                db.ref('streamIsLive').on('value', function(snapshot) {
+                    var isOnline = snapshot.val() === true;
                     localStorage.setItem('streamIsLive', isOnline ? 'true' : 'false');
                     updateStreamStatus(isOnline);
                 });
@@ -1331,13 +1708,36 @@ document.querySelectorAll('.btn-back, .btn-close, #closeTicketsBtn, #closeServic
 
             // === ЗАГРУЗКА ДАННЫХ ПОЛЬЗОВАТЕЛЯ ===
             loadUserData();
+
+            // ===== ЖЁСТКИЙ ФИКС ДЛЯ КНОПКИ "ЗАКРЫТЬ" =====
+            document.querySelectorAll('button').forEach(function(btn) {
+                var text = btn.textContent.trim();
+                if (text === 'ЗАКРЫТЬ' || text === '✕ ЗАКРЫТЬ' || text === '✕ НАЗАД' || text === 'X') {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var modal = btn.closest('[id]');
+                        if (modal) {
+                            modal.style.display = 'none';
+                            document.body.style.overflow = '';
+                        } else {
+                            document.querySelectorAll('#giveawayModal, #ticketsModal, #servicesModal, #statsModal').forEach(function(m) {
+                                m.style.display = 'none';
+                            });
+                            document.body.style.overflow = '';
+                        }
+                    });
+                }
+            });
         });
 
-        // === ДЕЛАЕМ ФУНКЦИИ ГЛОБАЛЬНЫМИ ДЛЯ HTML ===
+        // === ДЕЛАЕМ ФУНКЦИИ ГЛОБАЛЬНЫМИ ===
         window.loadUserTickets = loadUserTickets;
         window.loadContestStats = loadContestStats;
         window.getCurrentUserData = getCurrentUserData;
         window.updateStreamStatus = updateStreamStatus;
+        window.closeModal = closeModal;
+        window.openModal = openModal;
     </script>
     <script src="js/app.js"></script>
 </body>
