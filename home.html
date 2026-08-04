@@ -1162,12 +1162,22 @@
             });
 
             // === КНОПКИ ЗАКРЫТИЯ ===
-            document.querySelectorAll('.btn-back, .btn-close').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const modal = this.closest('[id]');
-                    if (modal) closeModal(modal.id);
-                });
-            });
+document.querySelectorAll('.btn-back, .btn-close, #closeTicketsBtn, #closeServicesBtn, #closeStatsBtn, #backToMenuBtn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const modal = this.closest('[id]') || document.getElementById(this.dataset.modal);
+        if (modal) {
+            closeModal(modal.id);
+        } else {
+            // Если кнопка не внутри модалки — ищем по ID
+            const parentModal = this.closest('.modal-content')?.parentElement;
+            if (parentModal && parentModal.id) {
+                closeModal(parentModal.id);
+            }
+        }
+    });
+});
 
             // === 1. УЧАСТВОВАТЬ В РОЗЫГРЫШЕ ===
             document.getElementById('giveawayButton')?.addEventListener('click', function(e) {
