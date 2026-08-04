@@ -488,57 +488,159 @@
             }
         } catch (err) {
             alert('⚠️ Ошибка подключения к Firebase: ' + err.message);
-            return;
-        }
-    } else {
-        alert('⚠️ Ошибка: База данных Firebase не подключена.');
-    }
-});
+    <!-- СНАЧАЛА ЗАГРУЖАЕМ ЛОГИКУ БАЗЫ -->
+    <script src="js/app.js"></script>
 
-            });
+    <!-- СКРИПТ ИНТЕРФЕЙСА И ВХОДА -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fill = document.getElementById('loadingFill');
+            const percent = document.getElementById('loadingPercent');
 
-            openRegisterBtn.addEventListener('click', function() {
-                if (isReady) {
-                    checkUserRegistration();
-                    modal.classList.add('active');
+            const enterBtn = document.getElementById('enterBtn');
+            const openRegisterBtn = document.getElementById('openRegisterBtn');
+            const supportBtn = document.getElementById('supportBtn');
+            const modal = document.getElementById('registerModal');
+            const closeBtn = document.getElementById('closeRegisterBtn');
+
+            let isReady = false;
+
+            // 1. Плавная загрузка
+            let progress = 0;
+            const interval = setInterval(function() {
+                progress += Math.floor(Math.random() * 5) + 2;
+                if (progress > 100) progress = 100;
+                
+                if (fill) fill.style.width = progress + '%';
+                if (percent) percent.textContent = progress;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    isReady = true;
+
+                    if (enterBtn) {
+                        enterBtn.removeAttribute('disabled');
+                        enterBtn.classList.add('ready');
+                    }
+                    if (openRegisterBtn) {
+                        openRegisterBtn.removeAttribute('disabled');
+                        openRegisterBtn.classList.add('ready');
+                    }
+                    if (supportBtn) {
+                        supportBtn.classList.add('ready');
+                    }
                 }
-            });
+            }, 50);
 
-            closeBtn.addEventListener('click', function() {
-                modal.classList.remove('active');
-            });
+            // 2. Кнопка ВОЙТИ В СИСТЕМУ
+            if (enterBtn) {
+                enterBtn.addEventListener('click', async function() {
+                    if (!isReady) return;
 
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) modal.classList.remove('active');
-            });
+                    // Локальная проверка
+                    let isRegistered = localStorage.getItem('underdogg_registered') === 'true';
 
-            // 3. Проверка состояния формы в модалке
+                    if (isRegistered) {
+                        location.href = 'home.html';
+                        return;
+                    }
+
+                    // Получаем юзера Telegram
+                    let tgUser = null;
+                    if (typeof getTelegramUser === 'function') {
+                        tgUser = getTelegramUser();
+                    } else if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+                        const u = window.Telegram.WebApp.initDataUnsafe.user;
+                        if (u && u.username) tgUser = '@' + u.username;
+                    }
+
+                    if (!tgUser) {
+                        alert('⚠️ Telegram не передал ваш @username. Перезапустите бота!');
+                        return;
+                    }
+
+                    // Проверка в базе Firebase
+                    if (window.firebase) {
+                        const cleanTg = tgUser.replace('@', '');
+                        try {
+                            const dbRef = firebase.database().ref('users/' + cleanTg);
+                            const snapshot = await dbRef.once('value');
+                            
+                            if (snapshot.exists()) {
+                                const userData = snapshot.val();
+                                localStorage.setItem('underdogg_user_data', JSON.stringify(userData));
+                                localStorage.setItem('underdogg_registered', 'true');
+                                location.href = 'home.html';
+                            } else {
+                                alert('⚠️ Пользователь ' + tgUser + ' не найден в базе! Нажмите «ЗАРЕГИСТРИРОВАТЬСЯ».');
+                            }
+                        } catch (err) {
+                            alert('⚠️ Ошибка подключения к базе: ' + err.message);
+                        }
+                    } else {
+                        alert('⚠️ Ошибка: База данных не подключена.');
+                    }
+                });
+            }
+
+            // 3. Открытие и закрытие модалки
+            if (openRegisterBtn) {
+                openRegisterBtn.addEventListener('click', function() {
+                    if (isReady) {
+                        checkUserRegistration();
+                        if (modal) modal.classList.add('active');
+                    }
+                });
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    if (modal) modal.classList.remove('active');
+                });
+            }
+
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) modal.classList.remove('active');
+                });
+            }
+
+            // 4. Проверка формы
             function checkUserRegistration() {
                 const isRegistered = localStorage.getItem('underdogg_registered') === 'true';
                 if (isRegistered) {
                     const savedData = JSON.parse(localStorage.getItem('underdogg_user_data') || '{}');
                     
-                    document.getElementById('regTg').value = savedData.tg || '';
-                    document.getElementById('regKick').value = savedData.kick || '';
-                    document.getElementById('regEpic').value = savedData.epic || '';
-
-                    document.getElementById('regTg').disabled = true;
-                    document.getElementById('regKick').disabled = true;
-                    document.getElementById('regEpic').disabled = true;
-
+                    const regTg = document.getElementById('regTg');
+                    const regKick = document.getElementById('regKick');
+                    const regEpic = document.getElementById('regEpic');
                     const regBtn = document.getElementById('registerBtn');
-                    regBtn.disabled = true;
-                    regBtn.textContent = 'УЖЕ СОХРАНЕНО';
-                    document.getElementById('warningBlock').style.display = 'none';
-                    document.getElementById('successBlock').style.display = 'block';
+                    const warn = document.getElementById('warningBlock');
+                    const succ = document.getElementById('successBlock');
+
+                    if (regTg) { regTg.value = savedData.tg || ''; regTg.disabled = true; }
+                    if (regKick) { regKick.value = savedData.kick || ''; regKick.disabled = true; }
+                    if (regEpic) { regEpic.value = savedData.epic || ''; regEpic.disabled = true; }
+
+                    if (regBtn) {
+                        regBtn.disabled = true;
+                        regBtn.textContent = 'УЖЕ СОХРАНЕНО';
+                    }
+                    if (warn) warn.style.display = 'none';
+                    if (succ) succ.style.display = 'block';
                 }
             }
 
-            supportBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                window.open('https://t.me/underd0gg_support', '_blank');
-            });
+            // 5. Кнопка поддержки
+            if (supportBtn) {
+                supportBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.open('https://t.me/underd0gg_support', '_blank');
+                });
+            }
         });
+    </script>
+
     </script>
 
 </body>
