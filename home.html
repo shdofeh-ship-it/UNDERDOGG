@@ -1287,18 +1287,341 @@
             } else {
                 setInterval(function() {
                     updateStreamStatus();
+    <script>
+        var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+
+        var db = null;
+        try {
+            if (window.firebase) {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp({
+                        databaseURL: 'https://underdogg-app-f5379-default-rtdb.firebaseio.com/'
+                    });
+                }
+                db = firebase.database();
+            }
+        } catch (e) {
+            console.error('Firebase init error:', e);
+        }
+
+        function getCurrentUserData() {
+            try {
+                var legacyData = localStorage.getItem('underdogg_user_data');
+                if (legacyData) return JSON.parse(legacyData);
+
+                var newData = localStorage.getItem('underdogg_user');
+                if (newData) return JSON.parse(newData);
+
+                if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    var u = tg.initDataUnsafe.user;
+                    return {
+                        telegramId: u.id,
+                        tg: u.username ? '@' + u.username : String(u.id)
+                    };
+                }
+            } catch (e) {
+                console.error('Ошибка при получении данных пользователя:', e);
+            }
+            return null;
+        }
+
+        function isJoinedContest() {
+            return localStorage.getItem('underdogg_joined_contest') === 'true';
+        }
+
+        function updateStreamStatus(forceOnline) {
+            var statusDot = document.getElementById('statusDot');
+            var statusLabel = document.getElementById('statusLabel');
+            var streamBadge = document.getElementById('streamBadge');
+            var giveawayBadge = document.getElementById('giveawayBadge');
+            var signalIcon = document.getElementById('signalIcon');
+
+            var streamIsLive;
+            if (typeof forceOnline === 'boolean') {
+                streamIsLive = forceOnline;
+            } else {
+                streamIsLive = localStorage.getItem('streamIsLive') === 'true';
+            }
+
+            if (statusDot) {
+                statusDot.className = 'pulse-dot';
+                statusDot.style.background = streamIsLive ? '#ff0000' : '#555555';
+                statusDot.style.boxShadow = streamIsLive ? '0 0 15px #ff0000' : 'none';
+            }
+            if (statusLabel) {
+                statusLabel.textContent = streamIsLive ? 'В СЕТИ' : 'ОФФЛАЙН';
+                statusLabel.style.color = streamIsLive ? '#ff3333' : '#888888';
+            }
+            if (streamBadge) {
+                streamBadge.textContent = streamIsLive ? 'ОНЛАЙН' : 'ОФФЛАЙН';
+                streamBadge.style.background = streamIsLive ? '#ff0000' : '#333333';
+                streamBadge.style.boxShadow = streamIsLive ? '0 0 10px rgba(255,0,0,0.5)' : 'none';
+            }
+            if (giveawayBadge) {
+                giveawayBadge.textContent = streamIsLive ? 'ОНЛАЙН' : 'ОФФЛАЙН';
+                giveawayBadge.style.background = streamIsLive ? '#ff0000' : '#333333';
+                giveawayBadge.style.boxShadow = streamIsLive ? '0 0 10px rgba(255,0,0,0.5)' : 'none';
+            }
+            if (signalIcon) {
+                signalIcon.style.opacity = streamIsLive ? '1' : '0.3';
+                var bars = signalIcon.querySelectorAll('.bar');
+                for (var i = 0; i < bars.length; i++) {
+                    bars[i].style.background = streamIsLive ? '#ff4040' : '#555555';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (tg) {
+                tg.ready();
+                tg.expand();
+            }
+
+            var user = getCurrentUserData();
+
+            function openModal(modalId) {
+                var modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeModal(modalId) {
+                var modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            }
+
+            var allModals = document.querySelectorAll('#giveawayModal, #ticketsModal, #servicesModal, #statsModal');
+            for (var m = 0; m < allModals.length; m++) {
+                (function(modal) {
+                    modal.addEventListener('click', function(e) {
+                        if (e.target === modal) {
+                            closeModal(modal.id);
+                        }
+                    });
+                })(allModals[m]);
+            }
+
+            var backBtns = document.querySelectorAll('.btn-back, .btn-close');
+            for (var b = 0; b < backBtns.length; b++) {
+                backBtns[b].addEventListener('click', function() {
+                    var modal = this.closest('[id]');
+                    if (modal) closeModal(modal.id);
+                });
+            }
+
+            var backToMenuBtn = document.getElementById('backToMenuBtn');
+            if (backToMenuBtn) {
+                backToMenuBtn.addEventListener('click', function() {
+                    closeModal('giveawayModal');
+                });
+            }
+
+            // === 1. УЧАСТВОВАТЬ В РОЗЫГРЫШЕ ===
+            var giveawayBtn = document.getElementById('giveawayButton');
+            if (giveawayBtn) {
+                giveawayBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    if (!user) {
+                        alert('⚠️ Ошибка инициализации. Откройте приложение через Telegram.');
+                        return;
+                    }
+
+                    var tgDisplay = document.getElementById('tgDisplay');
+                    var tgIdDisplay = document.getElementById('tgIdDisplay');
+                    var regForm = document.getElementById('registrationForm');
+                    var successBlock = document.getElementById('registrationSuccess');
+                    var tgContainer = document.getElementById('tgContainer');
+
+                    if (tgDisplay) tgDisplay.textContent = user.tg || ('ID: ' + user.telegramId);
+                    if (tgIdDisplay && user.telegramId) tgIdDisplay.textContent = 'ID: ' + user.telegramId;
+
+                    if (isJoinedContest()) {
+                        if (regForm) regForm.style.display = 'none';
+                        if (successBlock) successBlock.style.display = 'block';
+                        if (tgContainer) tgContainer.style.display = 'none';
+                    } else {
+                        if (regForm) regForm.style.display = 'block';
+                        if (successBlock) successBlock.style.display = 'none';
+                        if (tgContainer) tgContainer.style.display = 'flex';
+
+                        var kickInput = document.getElementById('kickInput');
+                        var casinoInput = document.getElementById('casinoInput');
+
+                        if (kickInput) {
+                            if (user.kick) kickInput.value = user.kick;
+                            kickInput.readOnly = true;
+                            kickInput.style.opacity = '0.7';
+                            kickInput.style.cursor = 'not-allowed';
+                        }
+                        if (casinoInput) {
+                            if (user.epic) casinoInput.value = user.epic;
+                            casinoInput.readOnly = true;
+                            casinoInput.style.opacity = '0.7';
+                            casinoInput.style.cursor = 'not-allowed';
+                        }
+                    }
+
+                    openModal('giveawayModal');
+                });
+            }
+
+            var registerInContestBtn = document.getElementById('registerBtn');
+            if (registerInContestBtn) {
+                registerInContestBtn.addEventListener('click', function() {
+                    if (!user) return;
+
+                    var kickEl = document.getElementById('kickInput');
+                    var casinoEl = document.getElementById('casinoInput');
+                    var kickVal = kickEl ? kickEl.value.trim() : '';
+                    var epicVal = casinoEl ? casinoEl.value.trim() : '';
+
+                    if (!kickVal || !epicVal) {
+                        alert('⚠️ Заполните ник в Kick и ник в Казино!');
+                        return;
+                    }
+
+                    registerInContestBtn.disabled = true;
+                    registerInContestBtn.textContent = 'ОТПРАВКА...';
+
+                    user.kick = kickVal;
+                    user.epic = epicVal;
+                    user.joinDate = new Date().toISOString();
+
+                    localStorage.setItem('underdogg_user_data', JSON.stringify(user));
+                    localStorage.setItem('underdogg_user', JSON.stringify(user));
+                    localStorage.setItem('underdogg_joined_contest', 'true');
+
+                    if (db) {
+                        var cleanTg = String(user.tg).replace('@', '');
+                        db.ref('contest_participants/' + cleanTg).set(user);
+                        db.ref('users/' + cleanTg + '/kick').set(kickVal);
+                        db.ref('users/' + cleanTg + '/epic').set(epicVal);
+                    }
+
+                    setTimeout(function() {
+                        var regForm = document.getElementById('registrationForm');
+                        var tgCont = document.getElementById('tgContainer');
+                        var success = document.getElementById('registrationSuccess');
+                        if (regForm) regForm.style.display = 'none';
+                        if (tgCont) tgCont.style.display = 'none';
+                        if (success) success.style.display = 'block';
+                        registerInContestBtn.disabled = false;
+                        registerInContestBtn.textContent = 'УЧАСТВОВАТЬ';
+                        updateStreamStatus();
+                    }, 800);
+                });
+            }
+
+            // === 2. МОИ БИЛЕТЫ ===
+            var ticketsBtn = document.getElementById('ticketsButton');
+            if (ticketsBtn) {
+                ticketsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal('ticketsModal');
+
+                    var userEpicDisplay = document.getElementById('userEpicDisplay');
+                    if (userEpicDisplay) {
+                        var fullUser = getCurrentUserData();
+                        userEpicDisplay.textContent = (fullUser && fullUser.epic) ? fullUser.epic : 'НЕ УКАЗАН';
+                    }
+
+                    if (typeof window.loadUserTickets === 'function') {
+                        window.loadUserTickets();
+                    }
+                });
+            }
+
+            // === 3. НАШИ СЕРВИСЫ ===
+            var servicesBtn = document.getElementById('servicesButton');
+            if (servicesBtn) {
+                servicesBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal('servicesModal');
+                });
+            }
+
+            // === 4. СТАТИСТИКА ===
+            var statsBtn = document.getElementById('statsButton');
+            if (statsBtn) {
+                statsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal('statsModal');
+
+                    if (typeof window.loadContestStats === 'function') {
+                        window.loadContestStats();
+                    }
+                });
+            }
+
+            // === ПРИГЛАСИТЬ ДРУГА ===
+            var inviteBtn = document.getElementById('inviteButton');
+            if (inviteBtn) {
+                inviteBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+                        alert('Свяжитесь с модератором для получения реферальной ссылки.');
+                        return;
+                    }
+
+                    var userId = tg.initDataUnsafe.user.id;
+                    var botUsername = 'underd0gg_bot';
+                    var inviteLink = 'https://t.me/' + botUsername + '?start=ref_' + userId;
+                    var inviteText = 'Присоединяйся к UNDERDOGG PANEL 🚀 Получай билеты за депозиты и участвуй в розыгрышах!';
+
+                    if (tg.shareUrl) {
+                        tg.shareUrl(inviteLink, inviteText);
+                    } else if (tg.openTelegramLink) {
+                        tg.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(inviteLink) + '&text=' + encodeURIComponent(inviteText));
+                    } else {
+                        alert(inviteLink);
+                    }
+                });
+            }
+
+            // === ПРОЕКТЫ ===
+            var projectsBtn = document.getElementById('projectsButton');
+            if (projectsBtn) {
+                projectsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (tg && tg.openLink) {
+                        tg.openLink('https://t.me/und3r_d0gg');
+                    } else {
+                        window.open('https://t.me/und3r_d0gg', '_blank');
+                    }
+                });
+            }
+
+            // Статус стрима
+            updateStreamStatus();
+
+            if (db) {
+                db.ref('streamIsLive').on('value', function(snapshot) {
+                    var isOnline = snapshot.val() === true;
+                    localStorage.setItem('streamIsLive', isOnline ? 'true' : 'false');
+                    updateStreamStatus(isOnline);
+                });
+            } else {
+                setInterval(function() {
+                    updateStreamStatus();
                 }, 3000);
             }
 
+            // Таймер
             function startCountdown() {
-                const daysEl = document.getElementById('days');
-                const hoursEl = document.getElementById('hours');
-                const minutesEl = document.getElementById('minutes');
-                const secondsEl = document.getElementById('seconds');
+                var daysEl = document.getElementById('days');
+                var hoursEl = document.getElementById('hours');
+                var minutesEl = document.getElementById('minutes');
+                var secondsEl = document.getElementById('seconds');
                 if (!daysEl) return;
 
-                let savedDate = localStorage.getItem('giveawayDate');
-                let targetDate;
+                var savedDate = localStorage.getItem('giveawayDate');
+                var targetDate;
                 if (!savedDate) {
                     targetDate = new Date();
                     targetDate.setDate(targetDate.getDate() + (7 - targetDate.getDay()) % 7);
@@ -1308,14 +1631,14 @@
                 }
 
                 function updateTimer() {
-                    const now = new Date();
-                    let diff = targetDate - now;
+                    var now = new Date();
+                    var diff = targetDate - now;
                     if (diff <= 0) diff = 0;
 
-                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
                     if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
                     if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
@@ -1328,7 +1651,7 @@
             }
             startCountdown();
         });
-    </script>
+                    </script>
     <script src="js/app.js"></script>
 </body>
 </html>
