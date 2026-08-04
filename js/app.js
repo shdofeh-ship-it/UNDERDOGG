@@ -2,8 +2,9 @@
 // 0. ИНИЦИАЛИЗАЦИЯ FIREBASE (СЕРВЕР)
 // ============================================================
 const firebaseConfig = {
-    databaseURL: "https://underdogg-app-f5379-default-rtdb.europe-west1.firebasedatabase.app/"
+    databaseURL: "https://underdogg-app-f5379-default-rtdb.firebaseio.com/"
 };
+
 
 let db = null;
 try {
