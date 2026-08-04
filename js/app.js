@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const regKickInput = document.getElementById('regKick');
     const regEpicInput = document.getElementById('regEpic');
 
-    if (registerBtn) {
+        if (registerBtn) {
         registerBtn.addEventListener('click', function(e) {
             e.preventDefault();
 
@@ -110,8 +110,20 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
-            const userData = { tg: tgVal, kick: kickVal, epic: epicVal };
+            const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+
+            const userData = { 
+                tg: tgVal, 
+                kick: kickVal, 
+                epic: epicVal,
+                telegramId: tgUser ? tgUser.id : tgVal,
+                username: tgVal.replace('@', ''),
+                registered: true
+            };
+
+            // Сохраняем под всеми ключами, чтобы обе страницы видоизменяли данные
             localStorage.setItem('underdogg_user_data', JSON.stringify(userData));
+            localStorage.setItem('underdogg_user', JSON.stringify(userData));
             localStorage.setItem('underdogg_registered', 'true');
 
             // Сохраняем в Базу Firebase
@@ -121,8 +133,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
             alert('🎉 Данные сохранены!');
             closeAllModals();
+            
+            // Если на странице есть заблокированные кнопки — разблокируем их сразу
+            document.querySelectorAll(".disabled").forEach(btn => btn.classList.remove("disabled"));
         });
     }
+
 
     // ============================================================
     // 3. ЗАКРЫТИЕ МОДАЛОК
