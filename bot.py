@@ -29,7 +29,7 @@ def webapp_keyboard():
         inline_keyboard=[
             [InlineKeyboardButton(
                 text="🚀 ОТКРЫТЬ UNDERDOGG",
-                web_app=WebAppInfo(url="https://shdofeh-ship-it.github.io/UNDERDOGG-v2-base/home.html")
+                web_app=WebAppInfo(url="https://shdofeh-ship-it.github.io/UNDERDOGG/home.html")
             )]
         ]
     )
