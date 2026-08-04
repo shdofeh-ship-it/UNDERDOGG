@@ -451,39 +451,50 @@
 
             // 2. Логика кнопки "ВОЙТИ В СИСТЕМУ" с проверкой в базе данных
             enterBtn.addEventListener('click', async function() {
-                if (!isReady) return;
+    if (!isReady) return;
 
-                // Сначала смотрим локально
-                let isRegistered = localStorage.getItem('underdogg_registered') === 'true';
+    // 1. Проверка LocalStorage
+    let isRegistered = localStorage.getItem('underdogg_registered') === 'true';
 
-                // Если локально информации нет — запрашиваем из Firebase
-                if (!isRegistered) {
-                    const tgUser = (typeof getTelegramUser === 'function') ? getTelegramUser() : null;
-                    
-                    if (tgUser && window.firebase) {
-                        const cleanTg = tgUser.replace('@', '');
-                        try {
-                            const dbRef = firebase.database().ref('users/' + cleanTg);
-                            const snapshot = await dbRef.once('value');
-                            
-                            if (snapshot.exists()) {
-                                // Юзер найден в БД! Записываем его локально и впускаем
-                                const userData = snapshot.val();
-                                localStorage.setItem('underdogg_user_data', JSON.stringify(userData));
-                                localStorage.setItem('underdogg_registered', 'true');
-                                isRegistered = true;
-                            }
-                        } catch (err) {
-                            console.error("Ошибка при поиске юзера в БД:", err);
-                        }
-                    }
-                }
+    if (isRegistered) {
+        location.href = 'home.html';
+        return;
+    }
 
-                if (isRegistered) {
-                    location.href = 'home.html';
-                } else {
-                    alert('⚠️ Вы еще не зарегистрированы! Нажмите «ЗАРЕГИСТРИРОВАТЬСЯ».');
-                }
+    // 2. Проверка Telegram WebApp API
+    const tgUser = (typeof getTelegramUser === 'function') ? getTelegramUser() : null;
+    
+    if (!tgUser) {
+        alert('⚠️ Telegram не передал ваш @username. Перезапустите бота в Telegram!');
+        return;
+    }
+
+    // 3. Проверка в Firebase
+    if (window.firebase) {
+        const cleanTg = tgUser.replace('@', '');
+        try {
+            const dbRef = firebase.database().ref('users/' + cleanTg);
+            const snapshot = await dbRef.once('value');
+            
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                localStorage.setItem('underdogg_user_data', JSON.stringify(userData));
+                localStorage.setItem('underdogg_registered', 'true');
+                location.href = 'home.html';
+                return;
+            } else {
+                alert(`⚠️ Пользователь ${tgUser} не найден в БД! Зарегистрируйтесь.`);
+                return;
+            }
+        } catch (err) {
+            alert('⚠️ Ошибка подключения к Firebase: ' + err.message);
+            return;
+        }
+    } else {
+        alert('⚠️ Ошибка: База данных Firebase не подключена.');
+    }
+});
+
             });
 
             openRegisterBtn.addEventListener('click', function() {
