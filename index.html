@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<script>
+if(!(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)){
+ location.replace('/blocked.html');
+}
+</script>
+
+    <!-- ===== ЖЁСТКАЯ ЗАЩИТА ОТ БРАУЗЕРА (ЧЁРНЫЙ ЭКРАН) ===== -->
+    <!-- Конфетти библиотека -->
+    <script src="js/protect.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>UNDERDOGG — ВХОД</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #050102;
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image:
+                radial-gradient(circle at 50% 30%, rgba(180, 10, 25, 0.25) 0%, rgba(5, 1, 2, 1) 75%);
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Статус стрима */
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        .pulse {
+            width: 9px;
+            height: 9px;
+            background: #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ff0000;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
+        }
+        .status-title { color: #a0a0a0; }
+        .status-value {
+            color: #ff3333;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+        }
+
+        /* Глитч заголовок */
+        .brand-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #ffffff;
+            text-shadow: 0 0 5px #fff, 0 0 15px #ff2a2a, 0 0 30px #ff0000;
+            animation: glitchMain 3.5s infinite;
+            margin-bottom: 4px;
+        }
+
+        @keyframes glitchMain {
+            0%, 85%, 100% {
+                transform: none;
+                text-shadow: 0 0 5px #fff, 0 0 15px #ff2a2a, 0 0 30px #ff0000;
+            }
+            86% {
+                transform: skewX(-12deg) translateX(-3px);
+                color: #ff3355;
+                text-shadow: 3px 0 #00ffff, -3px 0 #ff0000;
+            }
+            87% {
+                transform: skewX(8deg) translateX(3px);
+                color: #ffffff;
+                text-shadow: -2px 0 #ff0055, 2px 0 #00ffff;
+            }
+            88% {
+                transform: none;
+            }
+            92% {
+                transform: scaleY(1.08) skewX(-4deg);
+                text-shadow: 0 0 20px #ff0000;
+            }
+        }
+
+        .brand-subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            color: #ff3333;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .hood {
+            width: 75%;
+            max-width: 240px;
+            margin: 0 auto 20px;
+            display: block;
+            filter: drop-shadow(0 0 30px rgba(255, 0, 0, 0.45));
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        /* Загрузка */
+        .loading-block {
+            width: 100%;
+            margin-bottom: 22px;
+        }
+        .loading-text {
+            color: #666;
+            letter-spacing: 4px;
+            font-size: 11px;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .loading-bar {
+            width: 100%;
+            height: 3px;
+            background: #150507;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 0, 0, 0.15);
+        }
+        .loading-fill {
+            width: 0%;
+            height: 100%;
+            background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+            transition: width 0.1s linear;
+        }
+        .loading-percent {
+            margin-top: 8px;
+            color: #ff2a2a;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        /* Кнопки */
+        .btn-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 16px;
+            background: rgba(15, 2, 4, 0.5);
+            border: 1.5px solid rgba(255, 0, 0, 0.3);
+            border-radius: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            cursor: not-allowed;
+            transition: all 0.5s ease;
+            box-shadow: none;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-main.ready {
+            cursor: pointer;
+            color: #ffffff;
+            border-color: #ff0000;
+            background: rgba(22, 4, 7, 0.75);
+            box-shadow: 0 0 12px rgba(255, 0, 0, 0.35), inset 0 0 8px rgba(255, 0, 0, 0.15);
+        }
+        .btn-main.ready:hover {
+            background: #ff0000;
+            color: #000000;
+            box-shadow: 0 0 22px rgba(255, 0, 0, 0.75);
+        }
+
+        .btn-secondary.ready {
+            border-color: #cc0000;
+            box-shadow: 0 0 10px rgba(204, 0, 0, 0.25);
+            font-size: 13px;
+            padding: 14px;
+        }
+
+        .btn-support {
+            border-color: rgba(136, 68, 255, 0.2);
+            color: rgba(170, 102, 255, 0.4);
+        }
+        .btn-support.ready {
+            border-color: rgba(136, 68, 255, 0.5);
+            color: #aa66ff;
+            box-shadow: 0 0 10px rgba(136, 68, 255, 0.2);
+            font-size: 12px;
+            padding: 12px;
+        }
+        .btn-support.ready:hover {
+            background: #8844ff;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(136, 68, 255, 0.6);
+        }
+
+        /* Модалка */
+        #registerModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        #registerModal.active { display: flex; }
+
+        .modal-content {
+            background: #0d0103;
+            border: 2px solid #ff2a4b;
+            border-radius: 20px;
+            max-width: 380px;
+            width: 100%;
+            padding: 24px 20px;
+            box-shadow: 0 0 35px rgba(255, 0, 35, 0.4);
+        }
+
+        .modal-content h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .field { margin-bottom: 12px; text-align: left; }
+        .field label { display: block; color: #888; font-size: 11px; margin-bottom: 4px; }
+        .field input {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #ff2a4b;
+            border-radius: 8px;
+            color: #fff;
+            outline: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+        }
+        .field input:disabled, .field input[readonly] {
+            opacity: 0.6;
+            border-color: #444;
+            cursor: not-allowed;
+        }
+
+        .info-warning {
+            background: rgba(255, 42, 75, 0.08);
+            border: 1px solid rgba(255, 42, 75, 0.3);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin: 14px 0;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #ff99a8;
+            text-align: center;
+        }
+
+        /* Предупреждение без смайликов */
+        .form-warning-text {
+            color: #888888;
+            font-size: 11px;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .registered-msg {
+            display: none;
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 12px 0;
+            color: #00ff88;
+            font-size: 12px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .btn-modal {
+            width: 100%;
+            padding: 12px;
+            background: #ff2a4b;
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.4);
+        }
+        .btn-modal:disabled {
+            background: #444;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .btn-close, .btn-back {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 12px;
+            color: #888;
+            margin-top: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        .btn-close:hover, .btn-back:hover {
+            border-color: #ff2a4b;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+
+            <div class="status-header">
+        <div class="status-left" style="display: flex; align-items: center; gap: 8px;">
+            <span class="pulse pulse-dot" id="indexStatusDot"></span>
+            <span class="status-title">СТАТУС СТРИМА</span>
+        </div>
+        <div class="status-right" style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-value online-text" id="indexStatusLabel">ОФФЛАЙН</span>
+            <div class="signal-icon" id="signalIcon">
+                <span class="bar bar-1"></span>
+                <span class="bar bar-2"></span>
+                <span class="bar bar-3"></span>
+            </div>
+        </div>
+    </div>
+
+        <div class="brand-title">UNDERDOGG</div>
+        <div class="brand-subtitle">SYSTEM INITIALIZATION</div>
+
+        <img class="hood" src="images/hood.png" alt="UNDERDOGG" />
+
+        <div class="loading-block">
+            <div class="loading-text">INITIALIZING SYSTEM...</div>
+            <div class="loading-bar">
+                <div class="loading-fill" id="loadingFill"></div>
+            </div>
+            <div class="loading-percent">
+                <span id="loadingPercent">0</span>%
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-main" id="enterBtn" disabled>ВОЙТИ В СИСТЕМУ</button>
+            <button class="btn-main btn-secondary" id="openRegisterBtn" disabled>ЗАРЕГИСТРИРОВАТЬСЯ</button>
+            <a href="#" class="btn-main btn-support" id="supportBtn">СВЯЗАТЬСЯ С МОДЕРАТОРОМ</a>
+        </div>
+
+    </div>
+
+    <!-- Модалка -->
+    <div id="registerModal">
+        <div class="modal-content">
+            <h2>РЕГИСТРАЦИЯ</h2>
+            
+            <div class="field">
+                <label>TELEGRAM (АВТОМАТИЧЕСКИ)</label>
+                <input type="text" id="regTg" placeholder="Загрузка ID..." readonly />
+            </div>
+            <div class="field">
+                <label>KICK</label>
+                <input type="text" id="regKick" placeholder="ник в Kick" />
+            </div>
+            <div class="field">
+                <label>EPICSTAR</label>
+                <input type="text" id="regEpic" placeholder="ник в Epicstar" />
+            </div>
+
+            <div class="form-warning-text">
+                Вводите корректные данные. В случае ошибки свяжитесь с модератором
+            </div>
+
+            <div class="info-warning" id="warningBlock">
+                ⚠️ Убедитесь в правильности предоставленной информации! Регистрация происходит единоразово.
+            </div>
+
+            <div class="registered-msg" id="successBlock">
+                ✓ ВЫ УЖЕ ЗАРЕГИСТРИРОВАНЫ
+            </div>
+
+            <button class="btn-modal" id="registerBtn">СОХРАНИТЬ</button>
+            <button class="btn-close" id="closeRegisterBtn">ЗАКРЫТЬ</button>
+        </div>
+    </div>
+
+    <!-- СНАЧАЛА ЗАГРУЖАЕМ ЛОГИКУ БАЗЫ -->
+    <script src="js/app.js"></script>
+
+    <!-- СТРИПТ ИНТЕРФЕЙСА -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fill = document.getElementById('loadingFill');
+            const percent = document.getElementById('loadingPercent');
+
+            const enterBtn = document.getElementById('enterBtn');
+            const openRegisterBtn = document.getElementById('openRegisterBtn');
+            const supportBtn = document.getElementById('supportBtn');
+            const modal = document.getElementById('registerModal');
+            const closeBtn = document.getElementById('closeRegisterBtn');
+            const backBtn = document.getElementById('backBtn');
+            const saveBtn = document.getElementById('registerBtn');
+
+            let isReady = false;
+
+            // 1. Плавная загрузка
+            let progress = 0;
+            const interval = setInterval(function() {
+                progress += Math.floor(Math.random() * 5) + 2;
+                if (progress > 100) progress = 100;
+                
+                fill.style.width = progress + '%';
+                percent.textContent = progress;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    isReady = true;
+
+                    enterBtn.removeAttribute('disabled');
+                    openRegisterBtn.removeAttribute('disabled');
+
+                    enterBtn.classList.add('ready');
+                    openRegisterBtn.classList.add('ready');
+                    supportBtn.classList.add('ready');
+                }
+            }, 50);
+
+            // Конфетти при клике на сохранение/участие
+            saveBtn.addEventListener('click', function() {
+                const isRegistered = localStorage.getItem('underdogg_registered') === 'true';
+                if (!isRegistered) {
+                    // Запуск конфетти на пару секунд
+                    if (window.confetti) {
+                        confetti({
+                            particleCount: 70,
+                            spread: 60,
+                            origin: { y: 0.6 }
+                        });
+                    }
+                }
+            });
+
+            // 2. Логика кнопки "ВОЙТИ В СИСТЕМУ" с проверкой в базе данных
+            enterBtn.addEventListener('click', async function() {
+                if (!isReady) return;
+
+                let isRegistered = localStorage.getItem('underdogg_registered') === 'true';
+
+                if (!isRegistered) {
+                    const tgUser = (typeof getTelegramUser === 'function') ? getTelegramUser() : null;
+                    
+                    if (tgUser && window.firebase) {
+                        const cleanTg = tgUser.replace('@', '');
+                        try {
+                            const dbRef = firebase.database().ref('users/' + cleanTg);
+                            const snapshot = await dbRef.once('value');
+                            
+                            if (snapshot.exists()) {
+                                const userData = snapshot.val();
+                                localStorage.setItem('underdogg_user_data', JSON.stringify(userData));
+                                localStorage.setItem('underdogg_registered', 'true');
+                                isRegistered = true;
+                            }
+                        } catch (err) {
+                            console.error("Ошибка при поиске юзера в БД:", err);
+                        }
+                    }
+                }
+
+                if (isRegistered) {
+                    location.href = 'home.html';
+                } else {
+                    alert('⚠️ Вы еще не зарегистрированы! Нажмите «ЗАРЕГИСТРИРОВАТЬСЯ».');
+                }
+            });
+
+            openRegisterBtn.addEventListener('click', function() {
+                if (isReady) {
+                    checkUserRegistration();
+                    modal.classList.add('active');
+                }
+            });
+
+            closeBtn.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+
+            backBtn.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+
+            // 3. Проверка состояния формы в модалке
+            function checkUserRegistration() {
+                const isRegistered = localStorage.getItem('underdogg_registered') === 'true';
+                if (isRegistered) {
+                    const savedData = JSON.parse(localStorage.getItem('underdogg_user_data') || '{}');
+                    
+                    document.getElementById('regTg').value = savedData.tg || '';
+                    document.getElementById('regKick').value = savedData.kick || '';
+                    document.getElementById('regEpic').value = savedData.epic || '';
+
+                    document.getElementById('regTg').disabled = true;
+                    document.getElementById('regKick').disabled = true;
+                    document.getElementById('regEpic').disabled = true;
+
+                    const regBtn = document.getElementById('registerBtn');
+                    regBtn.disabled = true;
+                    regBtn.textContent = 'УЖЕ СОХРАНЕНО';
+                    document.getElementById('warningBlock').style.display = 'none';
+                    document.getElementById('successBlock').style.display = 'block';
+                }
+            }
+
+            supportBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.open('https://t.me/underd0gg_support', '_blank');
+            });
+        });
+    </script>
+
+</body>
+</html>
