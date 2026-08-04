@@ -991,23 +991,71 @@
             return localStorage.getItem('underdogg_joined_contest') === 'true';
         }
 
-        function updateStreamStatus() {
+                function updateStreamStatus(forceOnline) {
             const statusDot = document.getElementById('statusDot');
             const statusLabel = document.getElementById('statusLabel');
             const streamBadge = document.getElementById('streamBadge');
             const giveawayBadge = document.getElementById('giveawayBadge');
             const signalIcon = document.getElementById('signalIcon');
 
-            const streamIsLive = localStorage.getItem('streamIsLive') === 'true';
+            let streamIsLive;
+            if (typeof forceOnline === 'boolean') {
+                streamIsLive = forceOnline;
+            } else {
+                streamIsLive = localStorage.getItem('streamIsLive') === 'true';
+            }
 
-            if (statusDot) statusDot.className = streamIsLive ? "pulse-dot live" : "pulse-dot offline";
+            if (statusDot) {
+                statusDot.className = 'pulse-dot';
+                statusDot.style.background = streamIsLive ? '#ff0000' : '#555555';
+                statusDot.style.boxShadow = streamIsLive ? '0 0 15px #ff0000' : 'none';
+            }
+            if (statusLabel) {
+                statusLabel.textContent = streamIsLive ? 'В СЕТИ' : 'ОФФЛАЙН';
+                statusLabel.style.color = streamIsLive ? '#ff3333' : '#888888';
+            }
+            if (streamBadge) {
+                streamBadge.textContent = streamIsLive ? 'ОНЛАЙН' : 'ОФФЛАЙН';
+                streamBadge.style.background = streamIsLive ? '#ff0000' : '#333333';
+                streamBadge.style.boxShadow = streamIsLive ? '0 0 10px rgba(255,0,0,0.5)' : 'none';
+            }
+            if (giveawayBadge) {
+                giveawayBadge.textContent = streamIsLive ? 'ОНЛАЙН' : 'ОФФЛАЙН';
+                giveawayBadge.style.background = streamIsLive ? '#ff0000' : '#333333';
+                giveawayBadge.style.boxShadow = streamIsLive ? '0 0 10px rgba(255,0,0,0.5)' : 'none';
+            }
+            if (signalIcon) {
+                signalIcon.style.opacity = streamIsLive ? '1' : '0.3';
+                signalIcon.querySelectorAll('.bar').forEach(function(bar) {
+                    bar.style.background = streamIsLive ? '#ff4040' : '#555555';
+                });
+            }
+                }
+            if (statusDot) {
+                statusDot.className = streamIsLive ? "pulse-dot" : "pulse-dot";
+                statusDot.style.background = streamIsLive ? '#ff0000' : '#555555';
+                statusDot.style.boxShadow = streamIsLive ? '0 0 15px #ff0000' : 'none';
+            }
             if (statusLabel) {
                 statusLabel.textContent = streamIsLive ? "В СЕТИ" : "ОФФЛАЙН";
                 statusLabel.style.color = streamIsLive ? "#ff3333" : "#888888";
             }
-            if (streamBadge) streamBadge.textContent = streamIsLive ? "ОНЛАЙН" : "ОФФЛАЙН";
-            if (giveawayBadge) giveawayBadge.textContent = streamIsLive ? "ОНЛАЙН" : "ОФФЛАЙН";
-            if (signalIcon) signalIcon.style.opacity = streamIsLive ? "1" : "0.3";
+            if (streamBadge) {
+                streamBadge.textContent = streamIsLive ? "ОНЛАЙН" : "ОФФЛАЙН";
+                streamBadge.style.background = streamIsLive ? '#ff0000' : '#333333';
+                streamBadge.style.boxShadow = streamIsLive ? '0 0 10px rgba(255,0,0,0.5)' : 'none';
+            }
+            if (giveawayBadge) {
+                giveawayBadge.textContent = streamIsLive ? "ОНЛАЙН" : "ОФФЛАЙН";
+                giveawayBadge.style.background = streamIsLive ? '#ff0000' : '#333333';
+                giveawayBadge.style.boxShadow = streamIsLive ? '0 0 10px rgba(255,0,0,0.5)' : 'none';
+            }
+            if (signalIcon) {
+                signalIcon.style.opacity = streamIsLive ? "1" : "0.3";
+                signalIcon.querySelectorAll('.bar').forEach(bar => {
+                    bar.style.background = streamIsLive ? '#ff4040' : '#555555';
+                });
+            }
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -1215,15 +1263,31 @@
                 window.open('https://t.me/und3r_d0gg', '_blank');
             });
 
-            updateStreamStatus();
-            
+                        updateStreamStatus();
+
+            try {
+                if (window.firebase && !firebase.apps.length) {
+                    firebase.initializeApp({
+                        databaseURL: 'https://underdogg-app-f5379-default-rtdb.firebaseio.com/'
+                    });
+                }
+                if (window.firebase) {
+                    db = firebase.database();
+                }
+            } catch (e) {
+                console.error('Firebase init error:', e);
+            }
+
             if (db) {
-                db.ref('streamIsLive').on('value', (snapshot) => {
-                    localStorage.setItem('streamIsLive', snapshot.val());
-                    updateStreamStatus();
+                db.ref('streamIsLive').on('value', function(snapshot) {
+                    var isOnline = snapshot.val() === true;
+                    localStorage.setItem('streamIsLive', isOnline ? 'true' : 'false');
+                    updateStreamStatus(isOnline);
                 });
             } else {
-                setInterval(updateStreamStatus, 5000);
+                setInterval(function() {
+                    updateStreamStatus();
+                }, 3000);
             }
 
             function startCountdown() {
