@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>UNDERDOGG — CYBER SLOTS</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}
+body{display:flex;align-items:center;justify-content:center}
+#stage{
+  position:relative;
+  width:min(100vw,150vh);
+  aspect-ratio:1536/1024;
+  background:#000 url("./screen.png") center/100% 100% no-repeat;
+  overflow:hidden;
+}
+.hit{position:absolute;background:transparent;border:0;padding:0;cursor:pointer;z-index:10}
+#sound{right:10.7%;top:2.0%;width:4.2%;height:5.2%}
+#menu{right:5.2%;top:2.0%;width:4.2%;height:5.2%}
+#spin{left:41.8%;bottom:2.0%;width:17.5%;height:12.5%}
+#minus{left:29.5%;bottom:2.7%;width:4.0%;height:9%}
+#plus{left:34.2%;bottom:2.7%;width:4.0%;height:9%}
+#max{left:61.8%;bottom:2.7%;width:16.5%;height:9%}
+#auto{left:79.0%;bottom:2.7%;width:16.0%;height:9%}
+#info{left:2.0%;bottom:2.7%;width:6.5%;height:9%}
+#gear{left:9.5%;bottom:2.7%;width:6.5%;height:9%}
+
+#balance{
+ position:absolute;left:2.0%;top:67.2%;width:10.5%;height:4.2%;
+ display:flex;align-items:center;justify-content:center;
+ color:#eee;font:700 clamp(10px,1.45vw,24px) Arial,sans-serif;
+ z-index:7;pointer-events:none;
+}
+#win{
+ position:absolute;left:2.0%;top:75.0%;width:10.5%;height:4.2%;
+ display:flex;align-items:center;justify-content:center;
+ color:#eee;font:700 clamp(10px,1.45vw,24px) Arial,sans-serif;
+ z-index:7;pointer-events:none;
+}
+#bet{
+ position:absolute;left:20.2%;bottom:4.5%;width:9.2%;height:6%;
+ display:flex;align-items:center;justify-content:center;
+ color:#eee;font:700 clamp(9px,1.25vw,20px) Arial,sans-serif;
+ z-index:7;pointer-events:none;
+}
+#status{
+ position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);
+ color:#fff;font:900 clamp(22px,5vw,72px) Arial,sans-serif;
+ text-shadow:0 0 12px #fff,0 0 30px #f00;
+ opacity:0;pointer-events:none;z-index:20;
+}
+#reelFX{
+ position:absolute;left:14.8%;top:18.8%;width:77.8%;height:63%;
+ opacity:0;pointer-events:none;z-index:15;
+ background:repeating-linear-gradient(0deg,rgba(255,0,0,.0) 0 16px,rgba(255,0,0,.16) 17px 19px);
+ mix-blend-mode:screen;
+}
+.spin #reelFX{opacity:1;animation:scan .16s linear infinite}
+@keyframes scan{from{background-position-y:0}to{background-position-y:38px}}
+.flash{animation:flash .7s ease}
+@keyframes flash{0%,100%{filter:none}20%{filter:brightness(1.8) saturate(1.5)}}
+#toast{
+ position:absolute;left:50%;top:10%;transform:translateX(-50%);
+ padding:8px 15px;background:#080808;border:1px solid #f21b24;
+ color:#fff;font:700 11px Arial,sans-serif;opacity:0;z-index:30
+}
+#toast.show{opacity:1}
+@media(max-aspect-ratio:1/1){
+ #stage{width:100vw}
+}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="reelFX"></div>
+  <button class="hit" id="sound" aria-label="sound"></button>
+  <button class="hit" id="menu" aria-label="menu"></button>
+  <button class="hit" id="info"></button>
+  <button class="hit" id="gear"></button>
+  <button class="hit" id="minus"></button>
+  <button class="hit" id="plus"></button>
+  <button class="hit" id="spin"></button>
+  <button class="hit" id="max"></button>
+  <button class="hit" id="auto"></button>
+  <div id="balance">₽100,000.00</div>
+  <div id="win">₽2,450.00</div>
+  <div id="bet">₽100.00</div>
+  <div id="status"></div>
+  <div id="toast"></div>
+</div>
+<script>
+(() => {
+ let balance=100000, bet=100, win=2450, auto=false, spinning=false, muted=false, audio;
+ const stage=document.getElementById('stage'), balanceEl=document.getElementById('balance'),
+ winEl=document.getElementById('win'), betEl=document.getElementById('bet'),
+ status=document.getElementById('status'), toast=document.getElementById('toast');
+
+ const money=n=>'₽'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+ function update(){balanceEl.textContent=money(balance);winEl.textContent=money(win);betEl.textContent=money(bet)}
+ function beep(freq=240,d=.08){
+   if(muted)return;
+   audio ||= new (window.AudioContext||window.webkitAudioContext)();
+   if(audio.state==='suspended')audio.resume();
+   const o=audio.createOscillator(),g=audio.createGain();
+   o.type='sawtooth';o.frequency.value=freq;g.gain.value=.025;
+   g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);
+   o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d);
+ }
+ function msg(t){
+   toast.textContent=t;toast.classList.add('show');
+   setTimeout(()=>toast.classList.remove('show'),900);
+ }
+ async function spin(){
+   if(spinning)return;
+   if(balance<bet){msg('NOT ENOUGH BALANCE');beep(80,.18);return}
+   spinning=true; balance-=bet; win=0; update();
+   stage.classList.add('spin'); beep(110,.12);
+   for(let i=0;i<12;i++){beep(130+i*9,.035);await new Promise(r=>setTimeout(r,55))}
+   stage.classList.remove('spin');
+   const won=Math.random()<.38 ? bet*(2+Math.floor(Math.random()*24)) : 0;
+   win=won; balance+=won; update();
+   if(won){
+     status.textContent='WIN '+money(won);status.style.opacity='1';
+     status.animate([{opacity:0,transform:'translate(-50%,-45%) scale(.75)'},{opacity:1,transform:'translate(-50%,-50%) scale(1)'},{opacity:0,transform:'translate(-50%,-65%) scale(1.08)'}],{duration:1100,easing:'ease-out'});
+     beep(440,.12);setTimeout(()=>beep(660,.12),90);setTimeout(()=>beep(880,.16),180);
+   }else beep(90,.12);
+   spinning=false;
+   if(auto)setTimeout(spin,650);
+ }
+ document.getElementById('spin').onclick=spin;
+ document.getElementById('minus').onclick=()=>{bet=Math.max(10,bet-10);update();beep(180)};
+ document.getElementById('plus').onclick=()=>{bet=Math.min(5000,bet+10);update();beep(240)};
+ document.getElementById('max').onclick=()=>{bet=5000;update();beep(300)};
+ document.getElementById('auto').onclick=()=>{auto=!auto;msg(auto?'AUTO PLAY ON':'AUTO PLAY OFF');beep(330);if(auto&&!spinning)spin()};
+ document.getElementById('sound').onclick=()=>{muted=!muted;msg(muted?'SOUND OFF':'SOUND ON');if(!muted)beep(440)};
+ document.getElementById('menu').onclick=()=>msg('UNDERDOGG CYBER SLOTS');
+ document.getElementById('info').onclick=()=>msg('5 LINES × 5 REELS');
+ document.getElementById('gear').onclick=()=>msg('DEMO SETTINGS');
+ update();
+})();
+</script>
+</body>
+</html>
