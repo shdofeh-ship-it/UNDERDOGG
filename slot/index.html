@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>UNDERDOGG — Cyber Slots</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:#000;overflow:hidden}
+body{display:flex;align-items:center;justify-content:center;font-family:Arial,Helvetica,sans-serif}
+#game{
+  position:relative;
+  width:min(100vw,150vh);
+  aspect-ratio:1536/1024;
+  background:#000 url("./design.png") center/100% 100% no-repeat;
+  overflow:hidden;
+}
+
+/* These windows sit exactly inside the 15 symbol frames of the supplied design. */
+.reels{
+  position:absolute;
+  left:16.20%; top:19.22%;
+  width:74.25%; height:62.72%;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  grid-template-rows:repeat(3,1fr);
+  column-gap:1.15%;
+  row-gap:1.15%;
+  pointer-events:none;
+}
+.cell{
+  position:relative;
+  overflow:hidden;
+  background:#020202;
+}
+.strip{
+  position:absolute;
+  inset:0 0 auto 0;
+  will-change:transform;
+}
+.symbol{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.symbol img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+.reelColumn{
+  position:absolute;
+  inset:0;
+  display:grid;
+  grid-template-rows:repeat(3,1fr);
+  gap:1.15%;
+}
+.reelColumn .cell{height:auto}
+
+#fx{
+  position:absolute;inset:18% 15.9% 17.6% 15.9%;
+  pointer-events:none;opacity:0;
+  background:repeating-linear-gradient(0deg,transparent 0 12px,rgba(255,0,0,.14) 13px 15px);
+  mix-blend-mode:screen;z-index:8;
+}
+.spinning #fx{opacity:1;animation:scan .12s linear infinite}
+@keyframes scan{to{background-position-y:36px}}
+
+.hit{
+  position:absolute;border:0;background:transparent;padding:0;cursor:pointer;z-index:20;
+}
+#sound{right:10.2%;top:1.5%;width:4.5%;height:5.5%}
+#menu{right:5.2%;top:1.5%;width:4.5%;height:5.5%}
+#minus{left:29.3%;bottom:2.0%;width:4.2%;height:9.0%}
+#plus{left:34.1%;bottom:2.0%;width:4.2%;height:9.0%}
+#spin{left:41.9%;bottom:1.7%;width:17.8%;height:12.0%}
+#max{left:61.4%;bottom:2.0%;width:16.6%;height:9.0%}
+#auto{left:79.1%;bottom:2.0%;width:16.0%;height:9.0%}
+#info{left:1.7%;bottom:2.0%;width:7.0%;height:9.0%}
+#gear{left:9.4%;bottom:2.0%;width:7.0%;height:9.0%}
+
+/* Live values are placed over the exact value areas, without covering the labels. */
+.value{
+  position:absolute;z-index:25;display:flex;align-items:center;justify-content:center;
+  color:#eee;font-weight:700;pointer-events:none;white-space:nowrap;
+  text-shadow:0 0 2px #000;
+}
+#balance{left:2.0%;top:66.7%;width:10.0%;height:5.0%;font-size:clamp(11px,1.55vw,24px)}
+#win{left:2.0%;top:75.0%;width:10.0%;height:5.0%;font-size:clamp(11px,1.55vw,24px)}
+#bet{left:19.3%;bottom:3.3%;width:11.0%;height:6.2%;font-size:clamp(10px,1.4vw,21px)}
+#message{
+  position:absolute;left:50%;top:49%;transform:translate(-50%,-50%);
+  color:#fff;font-size:clamp(28px,5vw,78px);font-weight:900;
+  text-shadow:0 0 10px #fff,0 0 28px #f00;opacity:0;z-index:30;pointer-events:none;
+  white-space:nowrap
+}
+@keyframes win{0%{opacity:0;transform:translate(-50%,-45%) scale(.75)}
+20%,75%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+100%{opacity:0;transform:translate(-50%,-62%) scale(1.08)}}
+#toast{
+  position:absolute;left:50%;top:4%;transform:translateX(-50%);
+  padding:7px 13px;background:#030303;border:1px solid #e21a23;color:#fff;
+  font-size:11px;opacity:0;z-index:40;pointer-events:none
+}
+#toast.show{opacity:1}
+
+@media(max-aspect-ratio:1/1){
+  #game{width:100vw;height:100dvh;aspect-ratio:auto}
+  /* Keep the exact 1536:1024 composition intact rather than stretching individual controls. */
+  #game{background-size:100% auto;background-position:center center;background-color:#000}
+}
+</style>
+</head>
+<body>
+<div id="game">
+  <div class="reels" id="reels"></div>
+  <div id="fx"></div>
+
+  <button class="hit" id="sound" aria-label="sound"></button>
+  <button class="hit" id="menu" aria-label="menu"></button>
+  <button class="hit" id="info"></button>
+  <button class="hit" id="gear"></button>
+  <button class="hit" id="minus"></button>
+  <button class="hit" id="plus"></button>
+  <button class="hit" id="spin"></button>
+  <button class="hit" id="max"></button>
+  <button class="hit" id="auto"></button>
+
+  <div class="value" id="balance">₽100,000.00</div>
+  <div class="value" id="win">₽2,450.00</div>
+  <div class="value" id="bet">₽100.00</div>
+
+  <div id="message"></div>
+  <div id="toast"></div>
+</div>
+
+<script>
+const A='assets/';
+const symbols=['hood.png','A.png','wild.png','K.png','Q.png','bag.png','10.png','laptop.png','spray.png','card.png'];
+const reelCount=5;
+const reels=document.getElementById('reels');
+let columns=[], balance=100000, bet=100, win=2450, auto=false, spinning=false, muted=false, audio;
+
+function money(n){return '₽'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function update(){
+  document.getElementById('balance').textContent=money(balance);
+  document.getElementById('win').textContent=money(win);
+  document.getElementById('bet').textContent=money(bet);
+}
+function pick(){return symbols[Math.floor(Math.random()*symbols.length)]}
+function sound(freq=250,d=.07){
+  if(muted)return;
+  audio ||= new (window.AudioContext||window.webkitAudioContext)();
+  if(audio.state==='suspended')audio.resume();
+  const o=audio.createOscillator(),g=audio.createGain();
+  o.type='sawtooth';o.frequency.value=freq;g.gain.value=.018;
+  g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);
+  o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d);
+}
+function toast(t){
+  const e=document.getElementById('toast');
+  e.textContent=t;e.classList.add('show');
+  clearTimeout(window.__toast);window.__toast=setTimeout(()=>e.classList.remove('show'),900);
+}
+
+function makeSymbol(){
+  const d=document.createElement('div');d.className='symbol';
+  const im=document.createElement('img');im.src=A+pick();d.appendChild(im);return d;
+}
+function build(){
+  reels.innerHTML='';
+  columns=[];
+  for(let c=0;c<reelCount;c++){
+    const col=document.createElement('div');col.className='reelColumn';
+    for(let r=0;r<3;r++){
+      const cell=document.createElement('div');cell.className='cell';
+      const strip=document.createElement('div');strip.className='strip';
+      strip.append(makeSymbol());
+      cell.appendChild(strip);col.appendChild(cell);
+      columns.push({cell,strip});
+    }
+    reels.appendChild(col);
+  }
+}
+build();
+
+/* Each column is one independently animated 3-symbol reel.
+   The visible cells retain the exact positions of the supplied design. */
+function animateColumn(col, duration, index){
+  return new Promise(resolve=>{
+    const strip=col.strip;
+    const h=col.cell.clientHeight;
+    strip.innerHTML='';
+    for(let i=0;i<12;i++)strip.appendChild(makeSymbol());
+    strip.style.height=(h*12)+'px';
+    strip.style.transform='translateY(0)';
+    strip.style.transition='none';
+    col.cell.parentElement.classList.add('spinning');
+    requestAnimationFrame(()=>{
+      const turns=8+index;
+      const stopAt=-(turns*h);
+      strip.style.transition=`transform ${duration}ms cubic-bezier(.08,.72,.12,1)`;
+      strip.style.transform=`translateY(${stopAt}px)`;
+    });
+    setTimeout(()=>{
+      const final=makeSymbol();
+      strip.innerHTML='';
+      strip.appendChild(final);
+      strip.style.height='100%';
+      strip.style.transition='none';
+      strip.style.transform='translateY(0)';
+      col.cell.parentElement.classList.remove('spinning');
+      resolve();
+    },duration+30);
+  });
+}
+
+async function spin(){
+  if(spinning)return;
+  if(balance<bet){toast('NOT ENOUGH BALANCE');sound(80,.15);return}
+  spinning=true;
+  balance-=bet;win=0;update();
+  document.getElementById('game').classList.add('spinning');
+  sound(110,.12);
+
+  /* Rebuild each of the 5 reel columns and stop them one after another. */
+  const starts=[0,3,6,9,12];
+  const promises=starts.map((start,i)=>new Promise(res=>{
+    setTimeout(()=>{
+      animateColumn(columns[start],1250+i*170,i).then(res);
+      sound(170+i*45,.06);
+    },i*180);
+  }));
+  await Promise.all(promises);
+
+  document.getElementById('game').classList.remove('spinning');
+
+  const won=Math.random()<.42 ? bet*(2+Math.floor(Math.random()*24)) : 0;
+  win=won;balance+=won;update();
+
+  if(won){
+    const m=document.getElementById('message');
+    m.textContent='WIN '+money(won);
+    m.style.animation='none';void m.offsetWidth;m.style.animation='win 1.15s ease-out';
+    sound(440,.12);setTimeout(()=>sound(660,.12),90);setTimeout(()=>sound(880,.15),180);
+  }else sound(90,.1);
+
+  spinning=false;
+  if(auto)setTimeout(spin,700);
+}
+
+document.getElementById('spin').onclick=spin;
+document.getElementById('minus').onclick=()=>{bet=Math.max(10,bet-10);update();sound(170)};
+document.getElementById('plus').onclick=()=>{bet=Math.min(5000,bet+10);update();sound(230)};
+document.getElementById('max').onclick=()=>{bet=5000;update();sound(300)};
+document.getElementById('auto').onclick=()=>{
+  auto=!auto;
+  document.getElementById('auto').style.filter=auto?'brightness(1.7)':'';
+  toast(auto?'AUTO PLAY ON':'AUTO PLAY OFF');sound(330);
+  if(auto&&!spinning)spin();
+};
+document.getElementById('sound').onclick=()=>{
+  muted=!muted;toast(muted?'SOUND OFF':'SOUND ON');if(!muted)sound(440);
+};
+document.getElementById('menu').onclick=()=>toast('UNDERDOGG CYBER SLOTS');
+document.getElementById('info').onclick=()=>toast('5 LINES × 5 REELS');
+document.getElementById('gear').onclick=()=>toast('DEMO SETTINGS');
+
+update();
+</script>
+</body>
+</html>
